@@ -190,6 +190,10 @@ a { color: inherit; }
 .send .btn { flex: 1 1 200px; }
 .fine { font-size: 13px; margin: 14px 0 0; color: var(--steel) !important; }
 .err { color: #ffb59a !important; font-weight: 600; margin: 10px 0 0; }
+.ok { color: var(--cyan) !important; font-weight: 700; margin: 10px 0 0; }
+.send .btn-wide { flex-basis: 100%; }
+.hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+.fine a { color: var(--cyan); }
 
 /* Fußzeile */
 .foot { background: #070c16; color: var(--steel); padding: 40px 0 26px; font-size: 15px; }
