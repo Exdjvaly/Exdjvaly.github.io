@@ -206,3 +206,9 @@ a { color: inherit; }
   *, *::before, *::after { animation: none !important; transition: none !important; }
   .js .reveal { opacity: 1; transform: none; }
 }
+
+/* Smart Home: Loxone und Home Assistant nebeneinander */
+.sys { display: grid; gap: 16px; margin: 34px 0 28px; }
+@media (min-width: 760px) { .sys { grid-template-columns: 1fr 1fr; } }
+.sys .card p { margin-bottom: 16px; }
+.sys .ticks li { font-size: 16px; }
