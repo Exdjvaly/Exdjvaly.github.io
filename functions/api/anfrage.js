@@ -19,6 +19,11 @@ function antwort(status, body) {
   });
 }
 
+// Kurzer Selbsttest im Browser: https://voltherm.de/api/anfrage zeigt, ob der Kanal eingerichtet ist.
+export function onRequestGet({ env }) {
+  return antwort(200, { eingerichtet: Boolean(env.NTFY_TOPIC) });
+}
+
 export async function onRequestPost({ request, env }) {
   if (!env.NTFY_TOPIC) return antwort(503, { ok: false, grund: 'nicht eingerichtet' });
 
@@ -75,7 +80,12 @@ export async function onRequestPost({ request, env }) {
   const kopf = { 'Content-Type': 'application/json' };
   if (env.NTFY_TOKEN) kopf.Authorization = 'Bearer ' + env.NTFY_TOKEN;
 
-  const res = await fetch(server + '/', { method: 'POST', headers: kopf, body: JSON.stringify(nachricht) });
-  if (!res.ok) return antwort(502, { ok: false });
+  let res;
+  try {
+    res = await fetch(server + '/', { method: 'POST', headers: kopf, body: JSON.stringify(nachricht) });
+  } catch {
+    return antwort(502, { ok: false, grund: 'ntfy nicht erreichbar' });
+  }
+  if (!res.ok) return antwort(502, { ok: false, grund: 'ntfy antwortet ' + res.status });
   return antwort(200, { ok: true });
 }
