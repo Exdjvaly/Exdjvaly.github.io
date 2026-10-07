@@ -61,7 +61,7 @@ export async function onRequestPost({ request, env }) {
     title: 'Neue Anfrage: ' + name,
     message: zeilen.join('\n'),
     tags: ['incoming_envelope'],
-    priority: 5,
+    priority: 4,
   };
 
   // Knöpfe in der Benachrichtigung: direkt anrufen, WhatsApp oder E-Mail.
