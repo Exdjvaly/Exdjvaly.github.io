@@ -1,4 +1,4 @@
-// VOLTHERM Firmenseite: Menü, Einblenden, Anfrage über WhatsApp oder E-Mail (nichts wird an einen Server gesendet).
+// VOLTHERM Firmenseite: Menü, Einblenden, Anfrage direkt (Push über /api/anfrage) oder über WhatsApp bzw. E-Mail.
 (function () {
   document.documentElement.classList.add('js');
   var jahr = document.getElementById('jahr');
@@ -33,26 +33,50 @@
     });
   });
 
-  // Anfrage: Text zusammenstellen und WhatsApp oder E-Mail öffnen
+  // Anfrage: direkt senden (Push an VOLTHERM) oder Text für WhatsApp bzw. E-Mail vorbereiten
   var form = document.getElementById('anfrage');
   if (!form) return;
-  var gewaehlt = 'wa';
+  var gewaehlt = 'direkt';
   form.querySelectorAll('button[type=submit]').forEach(function (b) {
     b.addEventListener('click', function () { gewaehlt = b.value; });
   });
+  var fehler = form.querySelector('.err'), okText = form.querySelector('.ok');
+  function zeigeFehler(text, feld) {
+    fehler.textContent = text; fehler.hidden = false; okText.hidden = true;
+    if (feld) feld.focus();
+  }
   form.addEventListener('submit', function (e) {
     e.preventDefault();
-    var fehler = form.querySelector('.err');
     var name = form.elements['name'].value.trim();
-    if (!name) { fehler.hidden = false; form.elements['name'].focus(); return; }
-    fehler.hidden = true;
+    if (!name) { zeigeFehler('Bitte geben Sie Ihren Namen an.', form.elements['name']); return; }
+    var kontakt = form.elements['kontakt'].value.trim();
     var interessen = Array.prototype.map.call(form.querySelectorAll('input[name=i]:checked'), function (c) { return c.value; });
+    var text = form.elements['text'].value.trim();
+    var ort = form.elements['ort'].value.trim();
+    fehler.hidden = true;
+
+    if (gewaehlt === 'direkt') {
+      if (!kontakt) { zeigeFehler('Bitte geben Sie Telefon oder E-Mail an, damit wir Sie erreichen.', form.elements['kontakt']); return; }
+      var knopf = form.querySelector('button[value=direkt]');
+      knopf.disabled = true;
+      fetch('/api/anfrage', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: name, kontakt: kontakt, ort: ort, text: text, interesse: interessen.join(', '), website: form.elements['website'].value })
+      }).then(function (r) {
+        if (!r.ok) throw new Error(r.status);
+        form.reset(); okText.hidden = false;
+      }).catch(function () {
+        zeigeFehler('Das Senden hat leider nicht geklappt. Bitte nutzen Sie WhatsApp, E-Mail oder rufen Sie uns an: 01556 8656548.');
+      }).then(function () { knopf.disabled = false; });
+      return;
+    }
+
     var zeilen = ['Hallo VOLTHERM,', ''];
     zeilen.push(interessen.length ? 'ich interessiere mich für: ' + interessen.join(', ') + '.' : 'ich habe eine Anfrage.');
-    var text = form.elements['text'].value.trim();
     if (text) zeilen.push('', text);
     zeilen.push('', 'Name: ' + name);
-    var ort = form.elements['ort'].value.trim();
+    if (kontakt) zeilen.push('Kontakt: ' + kontakt);
     if (ort) zeilen.push('Ort: ' + ort);
     var nachricht = zeilen.join('\n');
     if (gewaehlt === 'mail') {
