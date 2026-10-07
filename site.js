@@ -67,8 +67,7 @@
         if (!r.ok) return r.json().catch(function () { return {}; }).then(function (d) { throw new Error(r.status + (d.grund ? ' ' + d.grund : '')); });
         form.reset(); okText.hidden = false;
       }).catch(function (err) {
-        zeigeFehler('Das Senden hat leider nicht geklappt. Bitte nutzen Sie WhatsApp, E-Mail oder rufen Sie uns an: 01556 8656548.');
-        if (window.console) console.warn('Anfrage:', err.message);
+        zeigeFehler('Das Senden hat leider nicht geklappt. Bitte nutzen Sie WhatsApp, E-Mail oder rufen Sie uns an: 01556 8656548. (Fehler ' + err.message + ')');
       }).then(function () { knopf.disabled = false; });
       return;
     }
