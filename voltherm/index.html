@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Was ist VOLTHERM?</title>
+<meta name="description" content="VOLTHERM verteilt Ihren Strom intelligent: Sonnenstrom selbst nutzen, günstig laden, Warmwasser aus Sonne. Alles in einer App, Ihre Daten bleiben im Haus.">
+<meta name="theme-color" content="#0B1220">
+<meta property="og:title" content="Was ist VOLTHERM?">
+<meta property="og:description" content="Ihre Energie. Intelligent verteilt.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 300'%3E%3Crect width='300' height='300' rx='60' fill='%230B1220'/%3E%3Cpolygon points='22,20 86,20 166,232 150,272' fill='%238FA3C8'/%3E%3Cpolygon points='74,20 112,20 168,200 154,226' fill='%23FFFFFF'/%3E%3Cpolygon points='200,20 290,20 214,118 276,118 126,286 176,170 128,170' fill='%2319C3E6'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Filtru „desenat de mână”: tremur ușor pe liniile statice. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <filter id="wobble" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="2.2"/>
+    </filter>
+    <symbol id="logo" viewBox="0 0 300 300">
+      <polygon points="22,20 86,20 166,232 150,272" fill="#8FA3C8"/>
+      <polygon points="74,20 112,20 168,200 154,226" fill="#FFFFFF"/>
+      <polygon points="200,20 290,20 214,118 276,118 126,286 176,170 128,170" fill="#19C3E6"/>
+    </symbol>
+  </defs>
+</svg>
+
+<!-- ============ 1. Hero ============ -->
+<header class="hero" id="start">
+  <div class="hero-glow" aria-hidden="true"></div>
+  <div class="hero-inner">
+    <svg class="hero-logo" viewBox="0 0 300 300" role="img" aria-label="VOLTHERM Logo"><use href="#logo"/></svg>
+    <div class="wordmark">VOLT<span>HERM</span></div>
+    <div class="tagline">INTEGRATED SOLUTIONS · MEISTERBETRIEB</div>
+    <h1>Ihre Energie.<br><span class="grad">Intelligent verteilt.</span></h1>
+    <p class="sub">Ein kleiner Rechner im Haus verbindet Solaranlage, Batterie, Wallbox, Warmwasser und Wärmepumpe und entscheidet, wohin jede Kilowattstunde geht.</p>
+    <!-- Narațiune audio opțională: textele sunt în audio/sprechtext.md, mp3-urile se generează cu app/scripts/sprache-bauen.py. -->
+    <div class="ton-box" hidden>
+      <button type="button" class="ton-schalter" id="ton-an" aria-pressed="false">
+        <svg data-i="voice" viewBox="0 0 48 48"></svg><span>Mit Ton erleben</span><span class="ton-switch" aria-hidden="true"><i></i></span>
+      </button>
+      <small class="ton-hinweis">Eine Stimme erklärt jeden Abschnitt, während Sie scrollen.</small>
+    </div>
+  </div>
+  <a class="scroll-cue" href="#frage" aria-label="Weiter nach unten"><span></span></a>
+</header>
+
+<main>
+
+<!-- ============ Einstieg ============ -->
+<section class="paper hook" id="frage">
+  <div class="wrap">
+    <p class="kicker reveal">Eine einfache Frage</p>
+    <h2 class="hook-q reveal">Weiß Ihr Haus, wann <mark class="hl">Strom</mark> im <mark class="hl">Angebot</mark> ist?</h2>
+    <button type="button" class="hoer" data-clip="frage" hidden><span class="hoer-i" aria-hidden="true"></span><span class="hoer-t">Anhören</span></button>
+    <p class="lead reveal">Strom kostet nicht den ganzen Tag gleich viel. Mittags scheint die Sonne kostenlos aufs Dach, abends ist Strom aus dem Netz oft am teuersten. VOLTHERM sorgt dafür, dass Ihr Haus das ausnutzt, automatisch.</p>
+  </div>
+</section>
+
+<!-- ============ Kapitel 1: Preiswellen ============ -->
+<section class="paper chapter" id="kapitel-1">
+  <div class="wrap">
+    <div class="chap-head reveal"><span class="chap-nr">1</span><div class="chap-card"><small>Kapitel 1</small>Preiswellen reiten<em>Wie dynamische Stromtarife funktionieren</em></div></div>
+    <button type="button" class="hoer" data-clip="kapitel-1" hidden><span class="hoer-i" aria-hidden="true"></span><span class="hoer-t">Anhören</span></button>
+    <p class="lead reveal">Mit einem dynamischen Tarif (z.&nbsp;B. Tibber oder aWATTar) ändert sich der Strompreis jede Stunde, je nach Angebot und Nachfrage an der Strombörse. Wer im richtigen Moment Strom nimmt, zahlt deutlich weniger.</p>
+
+    <figure class="price-fig sketch reveal" id="preiskurve">
+      <svg viewBox="0 0 360 230" role="img" aria-label="Preisverlauf eines Tages: mittags 15 Cent, abends 103 Cent">
+        <g class="axis" filter="url(#wobble)">
+          <path d="M30 196 H346" pathLength="1" class="draw"/>
+          <path d="M30 196 V14" pathLength="1" class="draw"/>
+        </g>
+        <g class="ticks"></g>
+        <path id="kurve-flaeche" class="curve-area" d=""/>
+        <path id="kurve" class="curve draw" pathLength="1" d=""/>
+        <g class="surfer" id="surfer" aria-hidden="true">
+          <path d="M-15 -1 Q0 6 15 -1 Q0 -4 -15 -1 Z" class="board"/>
+          <path d="M-5 -2 L-2 -10 L4 -2 M-2 -10 L0 -18 M-8 -15 L0 -16 L8 -13" class="ink"/>
+          <circle cx="1" cy="-22" r="3.4" class="ink"/>
+        </g>
+        <g class="pin pin-low"><circle r="5"/><path d="M0 8 V30" class="leader"/></g>
+        <g class="pin pin-high"><circle r="5"/></g>
+      </svg>
+      <div class="big-nums">
+        <div class="bn low"><span class="outline">15&nbsp;¢</span><small>um 12:45 Uhr: Sonne satt, Strom billig</small></div>
+        <div class="bn high"><span class="outline">103&nbsp;¢</span><small>um 19:45 Uhr: alle kochen, die Sonne ist weg</small></div>
+      </div>
+      <figcaption>Beispiel aus einem realen Tag mit dynamischem Tarif, Verlauf vereinfacht. Preise schwanken jeden Tag.</figcaption>
+    </figure>
+    <p class="lead reveal">Das ist ein Unterschied um fast das <mark class="hl">Siebenfache</mark>. Ein Mensch kann nicht jede Stunde auf die Börse schauen. Ein Haus mit VOLTHERM schon: Es <mark class="hl">reitet die Preiswelle</mark>.</p>
+  </div>
+</section>
+
+<!-- ============ Kapitel 2: Bausteine ============ -->
+<section class="paper chapter" id="kapitel-2">
+  <div class="wrap">
+    <div class="chap-head reveal"><span class="chap-nr">2</span><div class="chap-card"><small>Kapitel 2</small>Die Bausteine<em>Was in einem VOLTHERM-Haus zusammenarbeitet</em></div></div>
+    <button type="button" class="hoer" data-clip="kapitel-2" hidden><span class="hoer-i" aria-hidden="true"></span><span class="hoer-t">Anhören</span></button>
+    <div class="blocks">
+      <article class="block sketch reveal">
+        <svg class="ic" data-i="panel" viewBox="0 0 48 48"></svg>
+        <h3>Solarmodule</h3>
+        <p>fangen <mark class="hl">kostenlose Energie</mark> ein. Jede Kilowattstunde vom Dach, die Sie selbst nutzen, müssen Sie nicht kaufen. VOLTHERM kennt die Sonnenprognose für heute und morgen.</p>
+      </article>
+      <article class="block sketch reveal">
+        <svg class="ic" data-i="meter" viewBox="0 0 48 48"></svg>
+        <h3>Der Smart Meter</h3>
+        <p>überwacht <mark class="hl">exakt</mark>, wie viel Strom ins Haus fließt und wie viel hinausgeht. So weiß VOLTHERM jede Sekunde, ob gerade Überschuss da ist.</p>
+      </article>
+      <article class="block sketch reveal">
+        <svg class="ic" data-i="battery" viewBox="0 0 48 48"></svg>
+        <h3>Der Batteriespeicher</h3>
+        <p>ist ein <mark class="hl">brillanter Puffer</mark>: Er lädt mit Sonne oder günstigem Strom (im Beispiel 15&nbsp;¢) und liefert abends, wenn Netzstrom teuer ist (im Beispiel 103&nbsp;¢).</p>
+        <div class="buffer" aria-hidden="true"><span class="in">rein: 15&nbsp;¢</span><span class="arrow">→</span><span class="out">raus statt 103&nbsp;¢</span></div>
+      </article>
+      <article class="block sketch reveal">
+        <svg class="ic" data-i="cockpit" viewBox="0 0 48 48"></svg>
+        <h3>Das Live-Cockpit</h3>
+        <p>zeigt den Energiefluss im Haus, live und verständlich, in der VOLTHERM-App und auf dem Wandtablet.</p>
+        <div class="cockpit" id="cockpit" aria-label="Beispielwerte Energiefluss">
+          <div class="node"><svg data-i="sun" viewBox="0 0 48 48"></svg><b data-w="6.4">6,4</b><small>kW Solar</small></div>
+          <div class="flow"><i></i></div>
+          <div class="node"><svg data-i="house" viewBox="0 0 48 48"></svg><b data-w="5.0">5,0</b><small>kW Haus</small></div>
+          <div class="flow"><i></i></div>
+          <div class="node"><svg data-i="pylon" viewBox="0 0 48 48"></svg><b data-w="1.4">1,4</b><small>kW ins Netz</small></div>
+        </div>
+        <p class="note">Beispielwerte</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ Kapitel 3: Ein Tag mit VOLTHERM (scrollytelling) ============ -->
+<section class="paper chapter" id="kapitel-3">
+  <div class="wrap">
+    <div class="chap-head reveal"><span class="chap-nr">3</span><div class="chap-card"><small>Kapitel 3</small>Das Haus entscheidet<em>Ein Tag mit VOLTHERM</em></div></div>
+    <button type="button" class="hoer" data-clip="kapitel-3" hidden><span class="hoer-i" aria-hidden="true"></span><span class="hoer-t">Anhören</span></button>
+    <p class="lead reveal">Scrollen Sie durch einen Tag. VOLTHERM entscheidet laufend, wohin der Strom fließt: zuerst ins Haus, dann in Batterie, Auto und Warmwasser, und erst der Rest ins Netz.</p>
+  </div>
+
+  <div class="scrolly" id="tag">
+    <div class="scene-wrap">
+      <div class="scene sketch" data-phase="morgen">
+        <svg viewBox="0 0 360 250" role="img" aria-label="Haus mit Solaranlage, Batterie, Auto, Boiler, Wärmepumpe und Stromnetz">
+          <defs>
+            <linearGradient id="himmel" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" class="sky-top"/><stop offset="1" class="sky-bot"/>
+            </linearGradient>
+          </defs>
+          <rect x="0" y="0" width="360" height="250" fill="url(#himmel)"/>
+          <g class="stars"><circle cx="40" cy="30" r="1.2"/><circle cx="90" cy="18" r="1"/><circle cx="150" cy="40" r="1.3"/><circle cx="230" cy="22" r="1"/><circle cx="300" cy="44" r="1.2"/><circle cx="335" cy="16" r="1"/><circle cx="270" cy="70" r=".9"/></g>
+          <g class="sun"><circle r="15"/><path d="M0 -24v-6M0 24v6M-24 0h-6M24 0h6M-17 -17l-4 -4M17 17l4 4M17 -17l4 -4M-17 17l-4 4"/></g>
+          <g class="moon"><path d="M8 -14 A15 15 0 1 0 8 14 A11 11 0 1 1 8 -14 Z"/></g>
+
+          <!-- linia solului și desenul casei -->
+          <g class="lines" filter="url(#wobble)">
+            <path d="M0 208 H360"/>
+            <path d="M118 120 L184 66 L252 120"/>
+            <path d="M128 112 V208 M242 112 V208"/>
+            <path class="pv" d="M136 104 L176 72 L186 80 L146 112 Z M146 96 L156 104 M156 88 L166 96 M166 80 L176 88 M141 100 L181 76"/>
+            <!-- baterie -->
+            <path d="M138 160 H160 V200 H138 Z M144 156 H154"/>
+            <!-- boiler -->
+            <path d="M210 150 Q210 144 221 144 Q232 144 232 150 V196 Q232 202 221 202 Q210 202 210 196 Z"/>
+            <!-- creierul VOLTHERM -->
+            <path d="M174 136 H198 V156 H174 Z"/>
+            <!-- wallbox și mașină -->
+            <path d="M100 158 H112 V184 H100 Z M106 184 C106 194 96 196 86 192"/>
+            <path d="M14 200 V190 L24 176 H64 L78 188 H86 V200 Z"/>
+            <path d="M22 200 a7 7 0 1 0 14 0 M60 200 a7 7 0 1 0 14 0"/>
+            <!-- pompă de căldură -->
+            <path d="M256 176 H290 V206 H256 Z M262 191 a8 8 0 1 0 16 0 a8 8 0 1 0 -16 0 M270 183 V199 M262 191 H278"/>
+            <!-- stâlp -->
+            <path d="M330 92 L316 208 M330 92 L344 208 M316 110 H344 M318 128 H342 M320 110 L340 128 M340 110 L320 128 M321 160 H339"/>
+          </g>
+          <svg x="177" y="137" width="18" height="18" viewBox="0 0 300 300"><use href="#logo"/></svg>
+          <rect class="bat-fill" x="141" y="163" width="16" height="34" rx="1.5"/>
+          <rect class="boiler-fill" x="213" y="160" width="16" height="38" rx="3"/>
+          <g class="car-glow"><path d="M28 186 h8 l-3 6 h5 l-8 9 2 -6 h-5 z"/></g>
+
+          <!-- fluxuri de energie -->
+          <path class="fl sol" id="f-haus" d="M164 92 C170 112 182 120 186 136"/>
+          <path class="fl sol" id="f-bat" d="M150 108 C148 126 149 140 149 156"/>
+          <path class="fl sol" id="f-boiler" d="M186 92 C204 104 216 120 221 144"/>
+          <path class="fl sol" id="f-auto" d="M140 108 C120 120 110 140 106 158"/>
+          <path class="fl sol" id="f-wp" d="M252 120 C262 140 270 156 272 176"/>
+          <path class="fl sol" id="f-netz" d="M252 118 C280 108 304 104 326 104"/>
+          <path class="fl bat" id="f-bathaus" d="M160 172 C168 166 172 160 176 156"/>
+          <path class="fl netz" id="f-netzauto" d="M330 210 V224 H106 V184"/>
+          <path class="fl netz" id="f-netzbat" d="M336 210 V232 H149 V200"/>
+
+          <!-- uhr și preț -->
+          <g class="hud">
+            <rect x="10" y="10" width="140" height="34" rx="8"/>
+            <text x="20" y="25" class="hud-zeit">07:00</text>
+            <text x="20" y="38" class="hud-preis">Preis: mittel</text>
+          </g>
+          <g class="bubble">
+            <rect x="194" y="10" width="158" height="34" rx="10"/>
+            <path d="M226 44 l-6 9 l14 -9"/>
+            <text x="273" y="31" class="bubble-t" text-anchor="middle"></text>
+          </g>
+        </svg>
+      </div>
+    </div>
+    <div class="steps">
+      <article class="step" data-phase="morgen">
+        <button type="button" class="hoer" data-clip="morgen" hidden><span class="hoer-i" aria-hidden="true"></span><span class="hoer-t">Anhören</span></button>
+        <span class="step-zeit">Morgen</span>
+        <h3>Die Sonne geht auf</h3>
+        <p>Der erste Sonnenstrom deckt den Frühstücksverbrauch. Das Auto hängt an der Wallbox, aber VOLTHERM lässt es <mark class="hl">auf den Überschuss warten</mark>, denn der kommt gleich.</p>
+      </article>
+      <article class="step" data-phase="mittag">
+        <button type="button" class="hoer" data-clip="mittag" hidden><span class="hoer-i" aria-hidden="true"></span><span class="hoer-t">Anhören</span></button>
+        <span class="step-zeit">Mittag</span>
+        <h3>Sonne satt, Strom billig</h3>
+        <p>Jetzt gibt es mehr Strom, als das Haus braucht. Statt ihn für wenige Cent einzuspeisen, lädt VOLTHERM die <mark class="hl">Batterie</mark>, das <mark class="hl">Auto aus Überschuss</mark> und heizt mit dem Heizstab das <mark class="hl">Warmwasser mit Sonne</mark>.</p>
+      </article>
+      <article class="step" data-phase="nachmittag">
+        <button type="button" class="hoer" data-clip="nachmittag" hidden><span class="hoer-i" aria-hidden="true"></span><span class="hoer-t">Anhören</span></button>
+        <span class="step-zeit">Nachmittag</span>
+        <h3>Wärme speichern</h3>
+        <p>Batterie voll, Wasser heiß. Über SG-Ready bekommt die <mark class="hl">Wärmepumpe einen Boost</mark> und speichert die Sonne als Wärme im Haus. Erst was dann noch übrig ist, geht ins Netz. Vorgaben des Netzbetreibers nach §14a haben immer Vorrang.</p>
+      </article>
+      <article class="step" data-phase="abend">
+        <button type="button" class="hoer" data-clip="abend" hidden><span class="hoer-i" aria-hidden="true"></span><span class="hoer-t">Anhören</span></button>
+        <span class="step-zeit">Abend</span>
+        <h3>Teure Stunden umgehen</h3>
+        <p>Die Sonne ist weg, alle kochen, der Börsenpreis steigt. Das Haus läuft jetzt <mark class="hl">aus der Batterie</mark>, das Netz bleibt fast still.</p>
+      </article>
+      <article class="step" data-phase="nacht">
+        <button type="button" class="hoer" data-clip="nacht" hidden><span class="hoer-i" aria-hidden="true"></span><span class="hoer-t">Anhören</span></button>
+        <span class="step-zeit">Nacht</span>
+        <h3>Günstigste Stunden nutzen</h3>
+        <p>In den <mark class="hl">billigsten Nachtstunden</mark> lädt das Auto fertig. Ist für morgen wenig Sonne angesagt, lädt VOLTHERM auch die Batterie günstig nach. Am Morgen sagt das Tablet: „Das Auto ist geladen.“</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ Kapitel 4: Was übrig bleibt ============ -->
+<section class="paper chapter" id="kapitel-4">
+  <div class="wrap">
+    <div class="chap-head reveal"><span class="chap-nr">4</span><div class="chap-card"><small>Kapitel 4</small>Was am Ende übrig bleibt<em>Wofür Sie bezahlen und was Sie sparen können</em></div></div>
+    <button type="button" class="hoer" data-clip="kapitel-4" hidden><span class="hoer-i" aria-hidden="true"></span><span class="hoer-t">Anhören</span></button>
+
+    <div class="split">
+      <figure class="donut-fig sketch reveal" id="donut">
+        <svg viewBox="0 0 200 200" role="img" aria-label="Ungefähre Zusammensetzung des Strompreises">
+          <g transform="rotate(-90 100 100)">
+            <circle class="seg s1" cx="100" cy="100" r="70" pathLength="100" style="--a:40;--o:0"/>
+            <circle class="seg s2" cx="100" cy="100" r="70" pathLength="100" style="--a:25;--o:-40"/>
+            <circle class="seg s3" cx="100" cy="100" r="70" pathLength="100" style="--a:30;--o:-65"/>
+            <circle class="seg s4" cx="100" cy="100" r="70" pathLength="100" style="--a:5;--o:-95"/>
+          </g>
+          <circle cx="100" cy="100" r="50" class="donut-hole" filter="url(#wobble)"/>
+          <text x="100" y="96" class="donut-t1">1 kWh</text>
+          <text x="100" y="116" class="donut-t2">Strompreis</text>
+        </svg>
+        <ul class="legend">
+          <li><i class="s1"></i>Energie <b>ca. 40&nbsp;%</b></li>
+          <li><i class="s2"></i>Netzentgelt <b>ca. 25&nbsp;%</b></li>
+          <li><i class="s3"></i>Steuern &amp; Abgaben <b>ca. 30&nbsp;%</b></li>
+          <li><i class="s4"></i>Grundgebühr <b>ca. 5&nbsp;%</b></li>
+        </ul>
+        <figcaption>Ungefähre Anteile, je nach Tarif und Region verschieden.</figcaption>
+      </figure>
+      <div class="reveal">
+        <p class="lead">Jede Kilowattstunde vom eigenen Dach spart den <mark class="hl">ganzen Preis</mark>: Energie, Netzentgelt, Steuern. Darum lohnt es sich, Sonnenstrom selbst zu nutzen, statt ihn zu verkaufen.</p>
+        <div class="money sketch" aria-hidden="true">
+          <svg viewBox="0 0 300 140">
+            <g class="lines" filter="url(#wobble)">
+              <path d="M20 120 H280"/>
+              <path d="M30 70 L66 40 L102 70 M38 64 V120 H94 V64"/>
+              <path d="M250 30 L238 120 M250 30 L262 120 M238 52 H262 M240 76 H260 M240 52 L260 76 M260 52 L240 76"/>
+            </g>
+            <text x="66" y="136" class="lbl">mittags: verschenkt</text>
+            <text x="250" y="136" class="lbl">abends: teuer</text>
+            <g class="coin c1"><use href="#coinwing"/></g>
+            <g class="coin c2"><use href="#coinwing"/></g>
+            <g class="coin c3"><use href="#coinwing"/></g>
+            <defs>
+              <g id="coinwing">
+                <path d="M-9 -3 C-16 -13 -24 -10 -22 -5 C-26 -2 -18 3 -9 2" class="wing"/>
+                <path d="M9 -3 C16 -13 24 -10 22 -5 C26 -2 18 3 9 2" class="wing"/>
+                <circle r="9" class="coinbody"/>
+                <text y="4.3" class="eur">€</text>
+              </g>
+            </defs>
+          </svg>
+        </div>
+        <p class="money-t">Ohne Steuerung fliegt Geld davon: Mittags wird Sonnenstrom für wenige Cent eingespeist, abends teurer Netzstrom zurückgekauft.</p>
+      </div>
+    </div>
+
+    <!-- calculator -->
+    <div class="calc sketch reveal" id="rechner">
+      <h3 class="calc-h">Was spare ich? <span>Ihr Haus in Zahlen</span></h3>
+      <form class="calc-form" id="calc-form" onsubmit="return false">
+        <label><span>Jahresverbrauch <small>kWh</small></span><input type="number" name="verbrauch" value="4500" min="500" max="30000" step="100" inputmode="numeric"></label>
+        <label><span>PV-Leistung <small>kWp</small></span><input type="number" name="kwp" value="10" min="0" max="60" step="0.5" inputmode="decimal"></label>
+        <label><span>Batterie <small>kWh</small></span><input type="number" name="bat" value="10" min="0" max="60" step="0.5" inputmode="decimal"></label>
+        <label><span>E-Auto <small>km/Jahr</small></span><input type="number" name="km" value="12000" min="0" max="80000" step="500" inputmode="numeric"></label>
+        <label><span>Strompreis <small>ct/kWh</small></span><input type="number" name="preis" value="35" min="5" max="100" step="0.5" inputmode="decimal"></label>
+        <label><span>Einspeisevergütung <small>ct/kWh</small></span><input type="number" name="verg" value="8" min="0" max="30" step="0.1" inputmode="decimal"></label>
+      </form>
+      <div class="calc-out" aria-live="polite">
+        <div class="res-main">
+          <small>Mehr-Ersparnis durch VOLTHERM, grob geschätzt</small>
+          <span class="outline big" id="r-spar">–</span>
+          <small>pro Jahr, gegenüber der gleichen Anlage ohne intelligente Steuerung</small>
+        </div>
+        <div class="cmp">
+          <div class="cmp-row"><span>Eigenverbrauch</span><b id="r-ev">–</b><span class="bar"><i class="mit" id="b-ev-mit"></i><i class="ohne" id="b-ev-ohne"></i></span></div>
+          <div class="cmp-row"><span>Autarkie</span><b id="r-au">–</b><span class="bar"><i class="mit" id="b-au-mit"></i><i class="ohne" id="b-au-ohne"></i></span></div>
+          <p class="cmp-leg"><i class="ohne"></i>ohne Steuerung <i class="mit"></i>mit VOLTHERM</p>
+        </div>
+        <div class="kosten">
+          <div><small>Stromkosten pro Jahr ohne PV</small><b id="r-k0">–</b></div>
+          <div><small>mit PV, ohne Steuerung</small><b id="r-k1">–</b></div>
+          <div><small>mit PV und VOLTHERM</small><b id="r-k2">–</b></div>
+        </div>
+      </div>
+      <div class="months">
+        <h4>Geschätzte Prognose: Mehr-Ersparnis pro Monat</h4>
+        <div class="mbars" id="mbars"></div>
+      </div>
+      <p class="disclaimer"><b>Grobe Schätzung, ersetzt keine Beratung.</b> Ihre echte Ersparnis hängt von Dachausrichtung, Verbrauchsgewohnheiten, Tarif und Geräten ab. Wir rechnen es gern für Ihr Haus genau durch.</p>
+      <details class="annahmen">
+        <summary>So rechnen wir (Annahmen)</summary>
+        <ul>
+          <li>Solarertrag: <b>950 kWh je kWp und Jahr</b> (Mittelwert Deutschland).</li>
+          <li>E-Auto: <b>18 kWh je 100 km</b> inkl. Ladeverluste.</li>
+          <li>Direktverbrauch im Haushalt: <b>30 %</b> des Verbrauchs kommen direkt vom Dach (höchstens so viel, wie erzeugt wird).</li>
+          <li>Batterie: <b>250 volle Zyklen</b> im Jahr, 90 % Wirkungsgrad, höchstens 80 % des restlichen Verbrauchs. Sie arbeitet in beiden Fällen.</li>
+          <li>Ohne Steuerung lädt das Auto zu <b>25 %</b> mit Sonnenstrom (zufällig), mit VOLTHERM zu <b>60 %</b>, höchstens die Hälfte des verbleibenden Überschusses.</li>
+          <li>Flexible Verbraucher (z. B. Warmwasser per Heizstab oder Wärmepumpe): <b>10 %</b> des Haushaltsverbrauchs; VOLTHERM verschiebt davon zusätzlich 40 Prozentpunkte in die Sonnenstunden.</li>
+          <li>Restlicher Autostrom wird mit VOLTHERM in den günstigsten Nachtstunden geladen; angenommen <b>5 ct/kWh</b> unter Ihrem Durchschnittspreis (nur mit dynamischem Tarif).</li>
+          <li>Kosten = Netzbezug × Strompreis − Einspeisung × Vergütung. Ohne Grundgebühr, ohne Anschaffungskosten.</li>
+        </ul>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ============ Demo ============ -->
+<section class="dark demo" id="demo">
+  <div class="wrap demo-grid">
+    <div class="demo-text reveal">
+      <p class="kicker">Live ausprobieren</p>
+      <h2>Probieren Sie es selbst</h2>
+      <button type="button" class="hoer" data-clip="demo" hidden><span class="hoer-i" aria-hidden="true"></span><span class="hoer-t">Anhören</span></button>
+      <p>Das ist die echte VOLTHERM-App, hier mit einem Beispielhaus: Solaranlage, Batterie, Auto in der Garage, Warmwasser, Wärmepumpe und Klimageräte. Tippen Sie sich durch, ändern Sie Einstellungen, schauen Sie in die Bilanz. Nichts davon wirkt auf eine echte Anlage.</p>
+      <ul class="demo-points">
+        <li>Live-Energiefluss und Batteriestand</li>
+        <li>Tages- und Monatsbilanz mit gesparten Euro</li>
+        <li>Sonnenprognose für heute und morgen</li>
+        <li>Warmwasser sofort, Auto-Ladeziel, Pause</li>
+      </ul>
+      <a class="btn ghost" href="demo.html" target="_blank" rel="noopener">Im Vollbild öffnen</a>
+    </div>
+    <div class="phone reveal" aria-label="VOLTHERM-App mit Beispieldaten">
+      <div class="phone-notch"></div>
+      <div class="phone-screen">
+        <div class="phone-load" id="phone-load"><svg viewBox="0 0 300 300"><use href="#logo"/></svg><span>Demo wird geladen…</span></div>
+        <iframe id="demo-frame" title="VOLTHERM-App Demo mit Beispielwerten" data-src="demo.html" loading="lazy"></iframe>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ Ein System statt fünf Apps ============ -->
+<section class="paper apps" id="apps">
+  <div class="wrap">
+    <h2 class="sec-h reveal">Ein System statt <mark class="hl">fünf Apps</mark></h2>
+    <button type="button" class="hoer" data-clip="apps" hidden><span class="hoer-i" aria-hidden="true"></span><span class="hoer-t">Anhören</span></button>
+    <p class="lead reveal">Jeder Hersteller bringt seine eigene App mit. Mit VOLTHERM haben Sie eine einzige, mit Ihrem Installateur im Rücken.</p>
+    <div class="apps-stage" id="apps-stage">
+      <div class="tile t1"><svg data-i="panel" viewBox="0 0 48 48"></svg><span>Wechselrichter-App</span></div>
+      <div class="tile t2"><svg data-i="plug" viewBox="0 0 48 48"></svg><span>Wallbox-App</span></div>
+      <div class="tile t3"><svg data-i="heatpump" viewBox="0 0 48 48"></svg><span>Wärmepumpen-App</span></div>
+      <div class="tile t4"><svg data-i="battery" viewBox="0 0 48 48"></svg><span>Batterie-App</span></div>
+      <div class="tile t5"><svg data-i="clock" viewBox="0 0 48 48"></svg><span>Stromtarif-App</span></div>
+      <div class="vt-app">
+        <div class="vt-icon"><svg viewBox="0 0 300 300"><use href="#logo"/></svg></div>
+        <span>VOLTHERM</span>
+      </div>
+    </div>
+    <p class="apps-note reveal">Auf dem Handy und auf dem Wandtablet. Bei Fragen hilft Ihr Installateur per Fernwartung, aber nur, wenn Sie es erlauben.</p>
+  </div>
+</section>
+
+<!-- ============ Vorteile ============ -->
+<section class="paper vorteile" id="vorteile">
+  <div class="wrap">
+    <h2 class="sec-h reveal">Ihre Vorteile</h2>
+    <button type="button" class="hoer" data-clip="vorteile" hidden><span class="hoer-i" aria-hidden="true"></span><span class="hoer-t">Anhören</span></button>
+    <div class="cards">
+      <article class="card sketch reveal"><svg class="ic" data-i="sun" viewBox="0 0 48 48"></svg><h3>Sonnenstrom selbst nutzen</h3><p>Erst ins Haus, dann in Batterie, Auto und Warmwasser. Eingespeist wird nur, was übrig bleibt.</p></article>
+      <article class="card sketch reveal"><svg class="ic" data-i="car" viewBox="0 0 48 48"></svg><h3>Günstig laden</h3><p>Das Auto lädt mit Überschuss und in den günstigsten Nachtstunden, rechtzeitig bis zur Abfahrt.</p></article>
+      <article class="card sketch reveal"><svg class="ic" data-i="drop" viewBox="0 0 48 48"></svg><h3>Warmwasser aus Sonne</h3><p>Der Heizstab heizt den Boiler mit Sonnenüberschuss, statt Strom billig ins Netz zu geben.</p></article>
+      <article class="card sketch reveal"><svg class="ic" data-i="phone" viewBox="0 0 48 48"></svg><h3>Alles in einer App</h3><p>Ein VOLTHERM-Bildschirm für alle Geräte, mit Tages- und Monatsbilanz und gesparten Euro.</p></article>
+      <article class="card sketch reveal"><svg class="ic" data-i="voice" viewBox="0 0 48 48"></svg><h3>Ansagen auf Deutsch</h3><p>„Das Auto ist geladen.“ „Warmwasser ist fertig.“ Kurze Sprachansagen, nur wenn es etwas zu sagen gibt.</p></article>
+      <article class="card sketch reveal"><svg class="ic" data-i="shield" viewBox="0 0 48 48"></svg><h3>Daten bleiben im Haus</h3><p>Die Steuerung läuft auf einem kleinen Rechner bei Ihnen zu Hause. Kein Cloud-Konto nötig. Fällt etwas aus, laufen alle Geräte sicher normal weiter.</p></article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ Abschluss + Kontakt ============ -->
+<section class="dark kontakt" id="kontakt">
+  <div class="wrap">
+    <svg class="end-logo" viewBox="0 0 300 300" aria-hidden="true"><use href="#logo"/></svg>
+    <h2 class="end-q reveal">Überlassen Sie Ihrem Haus den <span class="grad">Energiehandel</span>?</h2>
+    <button type="button" class="hoer" data-clip="kontakt" hidden><span class="hoer-i" aria-hidden="true"></span><span class="hoer-t">Anhören</span></button>
+    <p class="lead reveal">Wir schauen uns Ihre Anlage an und sagen Ihnen ehrlich, was VOLTHERM bei Ihnen bringt. Als Meisterbetrieb planen, installieren und betreuen wir alles aus einer Hand.</p>
+    <div class="cta reveal">
+      <a class="btn" id="c-tel" href="#"><svg data-i="call" viewBox="0 0 48 48"></svg>Anrufen</a>
+      <a class="btn wa" id="c-wa" href="#" target="_blank" rel="noopener"><svg data-i="chat" viewBox="0 0 48 48"></svg>WhatsApp</a>
+      <a class="btn ghost" id="c-mail" href="#"><svg data-i="mail" viewBox="0 0 48 48"></svg>E-Mail</a>
+    </div>
+    <figure class="kontakt-qr" id="c-qr" hidden><img src="qr-voltherm.svg" alt="QR-Code zu dieser Präsentation" width="150" height="150"><figcaption>Mit dem eigenen Handy scannen und in Ruhe ansehen</figcaption></figure>
+    <p class="firma" id="c-firma"></p>
+  </div>
+  <footer class="foot">
+    <div class="wordmark small">VOLT<span>HERM</span></div>
+    <nav>
+      <a href="impressum.html">Impressum</a>
+      <a href="impressum.html#datenschutz">Datenschutz</a>
+      <a href="datenschutz-app.html">Datenschutz der App</a>
+    </nav>
+    <p>Diese Seite setzt keine Cookies und lädt keine Tracker.</p>
+  </footer>
+</section>
+
+</main>
+
+<!-- Comutator mic, fix în colț, apare când butonul din antet nu se mai vede. -->
+<button type="button" class="ton-dock" id="ton-dock" aria-pressed="false" aria-label="Mit Ton erleben" hidden>
+  <svg data-i="voice" viewBox="0 0 48 48"></svg><span>Ton</span><span class="ton-switch" aria-hidden="true"><i></i></span>
+</button>
+<script src="main.js" defer></script>
+</body>
+</html>

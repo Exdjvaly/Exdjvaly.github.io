@@ -1,0 +1,1456 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#070c16">
+<title>VOLTHERM Demo</title>
+<link rel="icon" href="data:,">
+<style>
+  :root { --band: calc(40px + env(safe-area-inset-top)); }
+  html, body { margin: 0; height: 100%; background: #070c16; color: #e6ebf5; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  #band { position: fixed; left: 0; right: 0; top: 0; z-index: 4; display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    box-sizing: border-box; height: var(--band); padding: env(safe-area-inset-top) 14px 0;
+    background: #0e1626; border-bottom: 1px solid #1c2a44; font-size: 13px; letter-spacing: .06em; color: #8fa3c8; }
+  #band b { color: #19C3E6; font-weight: 700; }
+  #band button { font: inherit; letter-spacing: 0; color: #070c16; background: #19C3E6; border: 0; border-radius: 9px;
+    padding: 7px 16px; font-weight: 700; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+  voltherm-home { display: block; height: 100%; box-sizing: border-box;
+    padding-top: var(--band); padding-bottom: env(safe-area-inset-bottom); }
+  #status { position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px;
+    background: #070c16; text-align: center; padding: 24px; box-sizing: border-box; z-index: 5; }
+  #status.weg { display: none; }
+  #status h1 { margin: 0; font-size: 28px; letter-spacing: 2px; } #status h1 span { color: #19C3E6; }
+  #status p { margin: 0; color: #8fa3c8; max-width: 320px; line-height: 1.4; }
+  .punkt { width: 10px; height: 10px; border-radius: 50%; background: #19C3E6; animation: puls 1.2s infinite ease-in-out; }
+  @keyframes puls { 50% { opacity: .25; transform: scale(.7); } }
+  #ende { display: none; }
+</style>
+</head>
+<body>
+<div id="band"><span><b>Demo</b> · Beispielwerte</span><button id="ende" type="button">Beenden</button></div>
+<voltherm-home></voltherm-home>
+<div id="status"><h1>VOLT<span>HERM</span></h1><div class="punkt"></div><p>Demo wird vorbereitet…</p></div>
+<script type="module">
+// VOLTHERM Home: die Kundenansicht (Tablet, TV, Handy). Nur Anzeige und einfache Bedienung, keine Einrichtung.
+// Liest die vt_*-Sensoren der Integration; Einstellungen kommen über `daten` (später websocket voltherm/stare).
+// Ecrane: Energie, PV (doar info), Speicher, Wallbox, Warmwasser, Klima, Wärmepumpe (acțiune + info). Rundlauf pentru TV.
+
+const C = {
+  pv: "#FFC531", netz_bezug: "#FF5A5F", netz_einsp: "#3DDC97", batterie: "#4D8DFF", haus: "#E6EBF5",
+  wallbox: "#19C3E6", heizstab: "#FF6B2C", klima: "#2FD0C2", wp: "#B78CFF",
+};
+
+const ICON = {
+  energie: '<circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M12 2v5M12 17v5M2 12h5M17 12h5" stroke="currentColor" stroke-width="1.6"/>',
+  pv: '<path d="M4 15h16l-2-7H6l-2 7Zm4-7-1 7m5-7v7m4-7 1 7M3 19h18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="18" cy="4" r="1.6" fill="currentColor"/>',
+  haus: '<path d="M3 11 12 4l9 7v9H3z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M10 20v-5h4v5" fill="none" stroke="currentColor" stroke-width="1.6"/>',
+  batterie: '<rect x="5" y="5" width="14" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M9 3h6" stroke="currentColor" stroke-width="1.6"/><path d="m13 8-3 5h4l-3 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>',
+  netz: '<path d="M12 2 7 22M12 2l5 20M8.5 15h7M10 9h4M5 6h14M6.5 11h11" fill="none" stroke="currentColor" stroke-width="1.6"/>',
+  wallbox: '<rect x="6" y="3" width="10" height="18" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M16 9h2a2 2 0 0 1 2 2v5a1.5 1.5 0 0 0 3 0" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="m12 7-2 4h3l-2 4" fill="none" stroke="currentColor" stroke-width="1.6"/>',
+  heizstab: '<path d="M8 3h8v12a4 4 0 1 1-8 0Z" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M12 9v8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>',
+  klima: '<rect x="3" y="5" width="18" height="8" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M7 10h10M8 16v3M12 16v4M16 16v3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>',
+  wp: '<rect x="3" y="4" width="18" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="10" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M10 7.5v9M5.5 12h9" stroke="currentColor" stroke-width="1.2"/><path d="M17.5 8v8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>',
+  bilanz: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>',
+  mehr: '<circle cx="5" cy="12" r="2" fill="currentColor"/><circle cx="12" cy="12" r="2" fill="currentColor"/><circle cx="19" cy="12" r="2" fill="currentColor"/>',
+  pause: '<path d="M8 5v14M16 5v14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>',
+  rund: '<path d="M20 12a8 8 0 1 1-2.3-5.6M20 4v4h-4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>',
+};
+
+const MOD_WALLBOX = { pv: "Sonnenstrom", tarif: "günstige Stunden", now: "lädt sofort", off: "aus", auto: "automatisch", fara_masina: "kein Auto" };
+const MOD_HEIZSTAB = { boost: "Jetzt heizen", oprit: "aus", siguranta: "Sicherheit", confort: "Komfort", legionella: "Legionellenschutz",
+  tarif: "günstiger Tarif", surplus: "Sonnenstrom", necunoscut: "unbekannt" };
+const SG = [[1, "Sperre", "Teurer Strom: kurze Pause"], [2, "Normal", "eigene Regelung"], [3, "Empfohlen", "mehr Wärme speichern"], [4, "Ein", "Maximum mit Sonnenstrom"]];
+const HVAC = { off: "Aus", heat: "Heizt", cool: "Kühlt", auto: "Automatisch", heat_cool: "Automatisch", dry: "Entfeuchtet", fan_only: "Lüftet" };
+
+const SEITEN = [
+  ["energie", "Energie", C.haus], ["pv", "Photovoltaik", C.pv], ["batterie", "Speicher", C.batterie], ["wallbox", "Wallbox", C.wallbox],
+  ["heizstab", "Warmwasser", C.heizstab], ["klima", "Klima", C.klima], ["wp", "Wärmepumpe", C.wp],
+  ["bilanz", "Bilanz", C.netz_einsp],
+];
+const MONATE = ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"];
+const WOCHENTAG = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"];
+const eur = (v) => `${zahl(v ?? 0, 2)} €`;
+const kwhT = (v) => `${zahl(v ?? 0, (v ?? 0) < 100 ? 1 : 0)} kWh`;
+const isoTag = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+const RUNDLAUF_S = 20, PAUSE_S = 60;
+// Telefon: unten nur die wichtigsten Seiten, der Rest unter „Mehr“; kein Rundlauf.
+const HANDY_HAUPT = ["energie", "batterie", "wallbox", "heizstab"];
+const istHandy = () => window.matchMedia?.("(max-width:600px)").matches;
+
+// Prezentarea „Was ist VOLTHERM?” (GitHub Pages din docs/) și codul ei QR (docs/qr-voltherm.svg), ca să o arate clientul prietenilor.
+const PRAES_URL = "https://exdjvaly.github.io/voltherm/";
+const PRAES_QR = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 450" class="segno"><g transform="scale(10)"><path fill="#fff" d="M0 0h45v45h-45z"/><path class="qrline" stroke="#0b1220" d="M4 4.5h7m1 0h3m1 0h1m1 0h1m2 0h3m1 0h2m2 0h1m2 0h1m1 0h7m-37 1h1m5 0h1m1 0h2m2 0h1m2 0h2m1 0h5m2 0h4m1 0h1m5 0h1m-37 1h1m1 0h3m1 0h1m1 0h5m1 0h3m9 0h1m1 0h1m1 0h1m1 0h3m1 0h1m-37 1h1m1 0h3m1 0h1m2 0h1m2 0h1m3 0h1m1 0h2m4 0h4m2 0h1m1 0h3m1 0h1m-37 1h1m1 0h3m1 0h1m2 0h5m2 0h1m1 0h1m1 0h2m1 0h2m5 0h1m1 0h3m1 0h1m-37 1h1m5 0h1m1 0h1m1 0h1m1 0h4m3 0h1m3 0h1m3 0h2m1 0h1m5 0h1m-37 1h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7m-29 1h1m2 0h3m2 0h1m1 0h1m4 0h1m2 0h1m1 0h1m-27 1h3m1 0h1m1 0h1m6 0h1m2 0h5m1 0h1m4 0h3m2 0h3m-36 1h4m2 0h1m1 0h2m5 0h2m3 0h8m1 0h1m2 0h1m-33 1h3m1 0h2m1 0h2m2 0h2m1 0h1m2 0h1m1 0h1m1 0h1m1 0h3m3 0h1m2 0h4m-37 1h4m3 0h2m1 0h2m2 0h1m3 0h1m2 0h4m1 0h1m1 0h1m1 0h1m4 0h2m-37 1h1m1 0h1m1 0h1m1 0h4m1 0h1m1 0h1m3 0h1m1 0h1m2 0h1m1 0h3m2 0h2m1 0h5m-37 1h3m4 0h2m1 0h1m2 0h1m2 0h2m1 0h1m1 0h1m1 0h3m2 0h2m1 0h1m1 0h2m-34 1h2m1 0h1m1 0h2m1 0h2m2 0h1m1 0h10m2 0h1m1 0h1m1 0h1m1 0h1m1 0h2m-37 1h1m1 0h3m2 0h2m2 0h1m1 0h4m1 0h3m1 0h1m3 0h1m1 0h1m1 0h1m1 0h1m3 0h1m-35 1h2m2 0h1m1 0h1m2 0h1m1 0h1m3 0h1m4 0h2m1 0h3m1 0h2m1 0h1m1 0h3m-37 1h2m1 0h2m3 0h3m1 0h1m2 0h1m2 0h1m3 0h1m1 0h3m1 0h2m1 0h1m1 0h2m-35 1h7m1 0h1m3 0h1m2 0h2m3 0h1m1 0h1m1 0h1m1 0h2m1 0h1m1 0h1m1 0h4m-37 1h3m1 0h2m1 0h1m1 0h1m1 0h2m1 0h3m2 0h1m1 0h4m3 0h2m6 0h1m-37 1h1m2 0h2m1 0h1m3 0h2m1 0h4m1 0h1m1 0h1m4 0h2m3 0h3m1 0h3m-37 1h6m1 0h5m1 0h1m3 0h5m1 0h4m4 0h1m1 0h1m1 0h1m-36 1h1m4 0h4m3 0h6m1 0h9m1 0h1m3 0h4m-35 1h2m1 0h1m1 0h1m4 0h1m1 0h1m4 0h5m1 0h1m5 0h1m1 0h1m1 0h2m-34 1h7m1 0h1m2 0h1m1 0h3m1 0h1m2 0h2m1 0h1m1 0h2m3 0h4m-37 1h1m4 0h1m2 0h2m7 0h2m1 0h1m6 0h1m2 0h1m3 0h2m-36 1h1m1 0h1m3 0h2m2 0h1m1 0h1m1 0h1m1 0h1m1 0h7m1 0h3m1 0h3m2 0h2m-37 1h1m1 0h1m1 0h2m2 0h2m1 0h1m1 0h3m4 0h2m1 0h1m2 0h2m1 0h1m1 0h3m2 0h1m-37 1h1m3 0h1m1 0h3m1 0h1m1 0h3m2 0h2m2 0h1m1 0h12m-27 1h2m1 0h2m1 0h4m1 0h3m1 0h1m2 0h1m1 0h1m3 0h1m-33 1h7m3 0h1m1 0h2m2 0h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h2m1 0h2m-37 1h1m5 0h1m3 0h1m1 0h2m2 0h1m1 0h2m4 0h1m3 0h1m3 0h1m3 0h1m-37 1h1m1 0h3m1 0h1m1 0h1m3 0h1m4 0h1m1 0h2m2 0h1m1 0h8m1 0h1m-35 1h1m1 0h3m1 0h1m1 0h9m2 0h4m1 0h1m3 0h1m1 0h1m1 0h1m-33 1h1m1 0h3m1 0h1m1 0h3m2 0h1m4 0h1m1 0h3m3 0h1m1 0h2m1 0h1m1 0h2m1 0h1m-37 1h1m5 0h1m3 0h4m6 0h3m1 0h1m2 0h2m3 0h1m3 0h1m-37 1h7m3 0h1m2 0h1m1 0h2m4 0h1m2 0h4m1 0h8"/></g></svg>';
+
+const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const zahl = (v, z = 1) => Number(v).toLocaleString("de-DE", { maximumFractionDigits: z, minimumFractionDigits: z });
+const kw = (w) => (w == null ? "–" : Math.abs(w) < 1000 ? `${Math.round(Math.abs(w))} W` : `${zahl(Math.abs(w) / 1000)} kW`);
+const ico = (n, f = "currentColor", g = 24) => `<svg viewBox="0 0 24 24" width="${g}" height="${g}" style="color:${f}" aria-hidden="true">${ICON[n]}</svg>`;
+const cheie = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}T${String(d.getHours()).padStart(2, "0")}:00`;
+
+class VolthermHome extends HTMLElement {
+  constructor() {
+    super();
+    this.attachShadow({ mode: "open" });
+    this._seite = "energie";
+    this._bz = { zeit: "monat", datum: isoTag(new Date()), daten: null, tip: null };
+    try { this._rundlauf = localStorage.getItem("voltherm-rundlauf") === "1"; } catch { this._rundlauf = false; }
+    this._pauseBis = 0;
+    this._cfg = {};
+    this._uhr = setInterval(() => this._takt(), 1000);
+    this.shadowRoot.addEventListener("click", (e) => this._klick(e));
+    this.shadowRoot.addEventListener("input", (e) => this._eingabe(e));
+    this.shadowRoot.addEventListener("change", (e) => this._eingabe(e, true));
+    this.shadowRoot.addEventListener("pointerdown", () => this._beruehrt());
+  }
+
+  disconnectedCallback() {
+    clearInterval(this._uhr);
+    clearInterval(this._ladeTimer);
+  }
+
+  set hass(hass) {
+    const erstes = !this._hass;
+    this._hass = hass;
+    if (erstes && !this._extern && hass.callWS) {
+      this._laden();
+      this._ladeTimer = setInterval(() => this._laden(), 60000);
+    }
+    if (Date.now() > (this._ruhe || 0)) this._render();
+  }
+
+  // Einstellungen der Module (wallbox, heizstab, clima, pompa, baterie, pv). Von außen gesetzt = Vorschau ohne HA.
+  set daten(d) {
+    this._extern = true;
+    this._cfg = structuredClone(d || {});
+    this._render();
+  }
+
+  set panel(_p) {}
+
+  set narrow(n) {
+    this._schmal = n;
+  }
+
+  async _laden() {
+    try {
+      this._cfg = await this._hass.callWS({ type: "voltherm/home" });
+      this._fehler = null;
+      if (this._seite === "bilanz") this._bzLaden();
+    } catch (err) {
+      this._fehler = err.message || "VOLTHERM antwortet nicht.";
+    }
+    if (Date.now() > (this._ruhe || 0)) this._render();
+  }
+
+  async _senden(nachricht) {
+    if (this._extern) return true;
+    try {
+      const r = await this._hass.callWS(nachricht);
+      return r || true;
+    } catch (err) {
+      this._hinweis = { zeit: Date.now(), text: err.message || "Nicht gespeichert.", fehler: true };
+      await this._laden();
+      return false;
+    }
+  }
+
+  _s(id) {
+    return this._hass?.states[id.includes(".") ? id : `sensor.${id}`];
+  }
+
+  _n(id) {
+    const s = this._s(id);
+    const v = s ? Number(s.state) : NaN;
+    return Number.isFinite(v) ? v : null;
+  }
+
+  _takt() {
+    const el = this.shadowRoot.querySelector(".uhr");
+    if (el) el.textContent = new Date().toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" });
+    if (this._rundlauf && !this._praes && !istHandy() && Date.now() > this._pauseBis && Date.now() - (this._gewechselt || 0) > RUNDLAUF_S * 1000) {
+      const sichtbar = this._seiten().map(([id]) => id);
+      this._seite = sichtbar[(sichtbar.indexOf(this._seite) + 1) % sichtbar.length];
+      this._gewechselt = Date.now();
+      if (this._seite === "bilanz") this._bzLaden();
+      this._render();
+    }
+  }
+
+  _beruehrt() {
+    this._pauseBis = Date.now() + PAUSE_S * 1000;  // im Rundlauf: eine Berührung hält die Seite 60 s an
+  }
+
+  // Nur Seiten zeigen, deren Gerät es gibt.
+  _seiten() {
+    const da = { energie: true, pv: this._n("vt_pv_putere") != null, batterie: this._n("vt_baterie_soc") != null,
+      wallbox: !!this._s("vt_wallbox_decizie"), heizstab: !!this._s("vt_heizstab_decizie"),
+      klima: !!this._s("vt_clima_decizie")?.attributes?.camere?.length, wp: !!this._s("vt_pompa_decizie"),
+      bilanz: !!(this._s("vt_heute") || this._cfg.heute || (this._extern && window.VOLTHERM_BILANZ)) };
+    return SEITEN.filter(([id]) => da[id]);
+  }
+
+  _klick(e) {
+    const el = e.target.closest("[data-akt]");
+    if (!el) return;
+    const [akt, a, b] = el.dataset.akt.split("|");
+    if (akt === "seite") { this._seite = a; this._mehr = false; this._gewechselt = Date.now(); if (a === "bilanz") this._bzLaden(); }
+    else if (akt === "bzzeit") { this._bz.zeit = a; this._bzLaden(); }
+    else if (akt === "bzweiter") { this._bzSchieben(Number(a)); }
+    else if (akt === "bztip") { this._bz.tip = Number(a); }
+    else if (akt === "ansagezu") { this._ansageZu = el.dataset.akt.slice("ansagezu|".length); }
+    else if (akt === "mehr") { this._mehr = !this._mehr; }
+    else if (akt === "pause") { this._pauseFrage = a === "frage"; if (a === "an" || a === "aus") this._pausieren(a === "an"); }
+    else if (akt === "fern") { this._fern(a === "an"); return; }
+    else if (akt === "praes") { this._praesentation(a === "auf"); return; }
+    else if (akt === "sicherzu") { this._sicherZu = el.dataset.akt.slice("sicherzu|".length); }
+    else if (akt === "rundlauf") {
+      this._rundlauf = !this._rundlauf; this._gewechselt = Date.now(); this._pauseBis = 0;
+      try { localStorage.setItem("voltherm-rundlauf", this._rundlauf ? "1" : "0"); } catch { /* Vorschau ohne Speicher */ }
+    } else if (akt === "menue") this.dispatchEvent(new Event("hass-toggle-menu", { bubbles: true, composed: true }));
+    else if (akt === "setze") this._setze(a, el.dataset.wert === "null" ? null : isNaN(el.dataset.wert) ? el.dataset.wert : Number(el.dataset.wert));
+    else if (akt === "schritt") {
+      const alt = Number(this._hole(a) ?? el.dataset.start);
+      this._setze(a, Math.min(Number(el.dataset.max), Math.max(Number(el.dataset.min), Math.round((alt + Number(b)) * 10) / 10)));
+    } else if (akt === "zeit") {
+      const [h, m] = String(this._hole(a) || "07:00").split(":").map(Number);
+      const t = (h * 60 + m + Number(b) + 1440) % 1440;
+      this._setze(a, `${String(Math.floor(t / 60)).padStart(2, "0")}:${String(t % 60).padStart(2, "0")}`);
+    } else if (akt === "boost") this._boostUmschalten();
+    this._render();
+  }
+
+  _eingabe(e, fertig = false) {
+    const el = e.target;
+    if (!el.dataset?.pfad) return;
+    this._ruhe = Date.now() + 1500;  // während des Ziehens nicht neu zeichnen
+    const v = el.dataset.leer && Number(el.value) >= Number(el.max) ? null : Number(el.value);
+    this._setze(el.dataset.pfad, v, !fertig);
+    const anz = this.shadowRoot.querySelector(`[data-anzeige="${el.dataset.pfad}"]`);
+    if (anz) anz.textContent = v == null ? el.dataset.leer : `${zahl(v, 0)} ${el.dataset.einheit || ""}`;
+    if (fertig) { this._ruhe = 0; this._render(); }
+  }
+
+  _boostAktiv() {
+    const bis = this._cfg.heizstab?.boost_pana;
+    return bis && new Date(bis) > new Date() ? new Date(bis) : null;
+  }
+
+  async _boostUmschalten() {
+    const an = !this._boostAktiv();
+    this._cfg.heizstab ??= {};
+    this._cfg.heizstab.boost_pana = an ? new Date(Date.now() + 3600e3).toISOString() : null;
+    this._render();
+    const r = await this._senden({ type: "voltherm/home_boost", minute: an ? 60 : 0 });
+    if (r && r.boost_pana !== undefined) { this._cfg.heizstab.boost_pana = r.boost_pana; this._render(); }
+  }
+
+  _hole(pfad) {
+    return pfad.split(".").reduce((o, k) => o?.[k], this._cfg);
+  }
+
+  // Ändert eine Einstellung lokal und meldet sie nach außen (voltherm-aendern); das Panel speichert sie über voltherm/salveaza.
+  _setze(pfad, wert, still = false) {
+    const teile = pfad.split("."), letzt = teile.pop();
+    let o = this._cfg;
+    for (const k of teile) o = o[k] ??= {};
+    o[letzt] = wert;
+    if (still) return;
+    this._hinweis = { zeit: Date.now(), text: `Gespeichert${this._sim() ? " · Simulation: an die Geräte geht nichts" : ""}` };
+    this._senden({ type: "voltherm/home_seteaza", pfad, wert }).then(() => (pfad.startsWith("bilant.") ? this._bzLaden() : this._render()));
+  }
+
+  // ---------- Energie ----------
+  _knoten(x, y, farbe, icon, wert, titel, unter, aktiv = true) {
+    return `<g class="knoten ${aktiv ? "" : "aus"}" transform="translate(${x} ${y})" style="--f:${farbe}">
+      <circle r="76" class="ring"/><circle r="76" class="glow"/>
+      <svg x="-17" y="-58" width="34" height="34" viewBox="0 0 24 24" style="color:${farbe}">${icon}</svg>
+      <text y="10" class="wert">${esc(wert)}</text>
+      <text y="38" class="titel">${esc(titel)}</text>
+      ${unter ? `<text y="108" class="unter">${esc(unter)}</text>` : ""}
+    </g>`;
+  }
+
+  _linie(x1, y1, x2, y2, w, farbe) {
+    const p = Math.abs(w || 0);
+    if (p < 20) return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" class="leer"/>`;
+    const dicke = 2 + Math.min(8, p / 1000);
+    const dauer = Math.max(0.6, 3 - p / 3000);
+    const [a, b] = w > 0 ? [[x1, y1], [x2, y2]] : [[x2, y2], [x1, y1]];
+    return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${farbe}" stroke-width="${dicke}" class="spur"/>
+      <line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" stroke="${farbe}" stroke-width="${dicke + 2}" class="fluss" style="animation-duration:${dauer}s"/>`;
+  }
+
+  _fluss() {
+    const pv = this._n("vt_pv_putere"), netz = this._n("vt_retea_putere"), bat = this._n("vt_baterie_putere");
+    const soc = this._n("vt_baterie_soc"), haus = this._n("vt_consum_casa");
+    const wb = this._n("vt_wallbox_putere"), hz = this._n("vt_heizstab_putere"), hzT = this._hzTemp();
+    const demo = !!this._cfg.wallbox?.demo;
+    const wbAttr = this._s("vt_wallbox_decizie")?.attributes?.puncte?.[0];
+    const H = [500, 330];
+    const netzF = netz > 0 ? C.netz_bezug : C.netz_einsp;
+    return `<svg viewBox="0 0 1000 720" class="fluss-svg" role="img" aria-label="Energiefluss">
+      ${this._linie(500, 100, ...H, pv, C.pv)}
+      ${this._linie(150, 330, ...H, bat, C.batterie)}
+      ${this._linie(850, 330, ...H, netz, netzF)}
+      ${wb != null ? this._linie(...H, 270, 580, demo ? 0 : wb, C.wallbox) : ""}
+      ${hz != null ? this._linie(...H, 730, 580, hz, C.heizstab) : ""}
+      ${this._knoten(500, 100, C.pv, ICON.pv, kw(pv), "Photovoltaik", "", (pv || 0) > 20)}
+      ${this._knoten(150, 330, C.batterie, ICON.batterie, soc == null ? "–" : `${Math.round(soc)} %`, "Speicher",
+        bat == null ? "" : Math.abs(bat) < 20 ? "Ruhe" : bat > 0 ? `entlädt ${kw(bat)}` : `lädt ${kw(bat)}`)}
+      ${this._knoten(850, 330, netzF, ICON.netz, kw(netz), "Netz", netz == null ? "" : netz > 20 ? "Bezug" : netz < -20 ? "Einspeisung" : "ausgeglichen")}
+      ${this._knoten(500, 330, C.haus, ICON.haus, kw(haus), "Haus", "")}
+      ${wb != null ? this._knoten(270, 580, C.wallbox, ICON.wallbox, demo ? "Demo" : kw(wb), "Wallbox",
+        demo ? "Testgerät, nicht im Haus" : wbAttr?.conectat ? `${wbAttr.masina || "Auto"}${wbAttr.soc != null ? ` · ${Math.round(wbAttr.soc)} %` : ""}` : "kein Auto", !demo && (wb || 0) > 20) : ""}
+      ${hz != null ? this._knoten(730, 580, C.heizstab, ICON.heizstab, hzT == null ? kw(hz) : `${zahl(hzT)} °C`, "Warmwasser", (hz || 0) > 20 ? `heizt ${kw(hz)}` : "aus", (hz || 0) > 20) : ""}
+    </svg>`;
+  }
+
+  // Temperatur nur aus einem Fühler, der wirklich im Speicher sitzt; sonst unbekannt.
+  _hzTemp() {
+    return this._cfg.heizstab?.temp_sigura === false ? null : this._n("vt_heizstab_temperatura");
+  }
+
+  _wallboxTitel(dec) {
+    if (dec.mod === "pv" && /aus dem Netz/.test(dec.motiv || "")) return "Sonne + Nachtladung";
+    return MOD_WALLBOX[dec.mod] || dec.mod;
+  }
+
+  _preisliste() {
+    return this._s("vt_pret_curent")?.attributes?.preturi || [];
+  }
+
+  // Preisbalken; markiere(p, i) gibt die Klasse je Stunde, grenze (EUR/kWh) zeichnet eine gestrichelte Linie.
+  _balken(ore, markiere = () => "", grenze = null) {
+    if (!ore.length) return '<div class="leerhinweis">Noch keine Strompreise.</div>';
+    const werte = ore.map((p) => p.pret);
+    const max = Math.max(...werte, grenze ?? 0) * 1.03, basis = Math.min(...werte, grenze ?? Infinity) * 0.85;
+    const y = (v) => 10 + 90 * (v - basis) / (max - basis || 1);
+    const jede = ore.length > 16 ? 3 : 1;
+    const bars = ore.map((p, i) => `<div class="pb ${markiere(p, i)}"><i style="height:${y(p.pret)}%" title="${p.ora.slice(11, 16)} · ${zahl(p.pret * 100)} ct"></i>
+      <span class="${i % jede ? "klein" : ""}">${p.ora.slice(11, 13)}</span></div>`).join("");
+    const linie = grenze != null ? `<div class="grenze" style="bottom:calc(18px + (100% - 18px) * ${(y(grenze) / 100).toFixed(3)})"><span>max. ${zahl(grenze * 100, 0)} ct</span></div>` : "";
+    return `<div class="balken">${bars}${linie}</div>`;
+  }
+
+  _preise() {
+    const ore = this._preisliste().slice(0, 24);
+    if (!ore.length) return "";
+    const billig = new Set([...ore].sort((a, b) => a.pret - b.pret).slice(0, 4).map((p) => p.ora));
+    const teuer = new Set([...ore].sort((a, b) => b.pret - a.pret).slice(0, 4).map((p) => p.ora));
+    const w = ore.map((p) => p.pret);
+    return `<div class="karte preise"><div class="kopf"><span class="etikett">Strompreis · nächste 24 Stunden</span>
+        <span class="mini"><b class="lg billig"></b>günstig <b class="lg teuer"></b>teuer</span></div>
+      ${this._balken(ore, (p, i) => (i === 0 ? "jetzt" : billig.has(p.ora) ? "billig" : teuer.has(p.ora) ? "teuer" : ""))}
+      <div class="spanne">${zahl(Math.min(...w) * 100)} – ${zahl(Math.max(...w) * 100)} ct/kWh</div></div>`;
+  }
+
+  _jetzt() {
+    const zeilen = [];
+    const bat = this._s("vt_baterie_decizie");
+    if (bat?.attributes?.motiv) zeilen.push(["batterie", C.batterie, "Speicher", bat.attributes.actiune, bat.attributes.motiv]);
+    const wb = this._s("vt_wallbox_decizie")?.attributes?.puncte?.[0];
+    if (wb?.decizie) zeilen.push(["wallbox", C.wallbox, "Wallbox", this._wallboxTitel(wb.decizie), wb.decizie.motiv]);
+    const hz = this._s("vt_heizstab_decizie");
+    if (hz?.attributes?.motiv) zeilen.push(["heizstab", C.heizstab, "Warmwasser", MOD_HEIZSTAB[hz.attributes.mod] || kw(Number(hz.state) || 0), hz.attributes.motiv]);
+    const wp = this._s("vt_pompa_decizie");
+    if (wp?.attributes?.motiv) zeilen.push(["wp", C.wp, "Wärmepumpe", wp.attributes.titlu, wp.attributes.motiv]);
+    const kl = this._s("vt_clima_decizie");
+    for (const r of kl?.attributes?.camere || []) if (r.decizie) zeilen.push(["klima", C.klima, r.nume || "Klima", r.decizie.titlu, r.decizie.motiv]);
+    if (!zeilen.length) return "";
+    return `<div class="karte jetzt"><div class="kopf"><span class="etikett">VOLTHERM jetzt</span>${this._sim() ? '<span class="sim">Simulation</span>' : ""}</div>
+      ${zeilen.map(([s, f, wer, was, warum]) => `<button class="zeile" data-akt="seite|${s}" style="--f:${f}"><b>${esc(wer)}</b><span class="was">${esc(was)}</span><span class="warum">${esc(warum)}</span></button>`).join("")}</div>`;
+  }
+
+  _sim() {
+    return ["vt_baterie_decizie", "vt_heizstab_decizie", "vt_pompa_decizie", "vt_clima_decizie", "vt_wallbox_decizie"]
+      .some((id) => this._s(id)?.attributes?.comanda === "simulare");
+  }
+
+  _heute() {
+    const h = this._s("vt_heute")?.attributes;
+    const werte = h ? [["Erzeugt", `${zahl(h.erzeugt)} kWh`, C.pv], ["Verbraucht", `${zahl(h.verbraucht)} kWh`, C.haus],
+      ["Autarkie", h.autarkie == null ? "–" : `${Math.round(h.autarkie)} %`, C.netz_einsp], ["Ersparnis", `${zahl(h.ersparnis, 2)} €`, C.wallbox]] : [];
+    if (!werte.length) return "";
+    return `<div class="karte heute"><span class="etikett">Heute</span><div class="kacheln">
+      ${werte.map(([t, v, f]) => `<div><span>${t}</span><b style="color:${f}">${v}</b></div>`).join("")}</div></div>`;
+  }
+
+  // Service-Zugang (Tailscale): der Kunde sieht, wann der Service verbunden war, und kann ihn sperren.
+  _fernKarte() {
+    const f = this._cfg.fern;
+    if (!f) return "";
+    const am = (t) => new Date(t).toLocaleString("de-DE", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" });
+    const v = f.verbindungen || [];
+    return `<section class="karte fern"><div class="kopf"><span class="etikett">Service-Zugang</span></div>
+      <div class="fern-zeile"><div><b>VOLTHERM-Service darf sich verbinden</b>
+        <small>${f.erlaubt ? "Erlaubt. Der Service kann Störungen aus der Ferne prüfen und Updates einspielen." : "Gesperrt. Niemand kann sich von außen verbinden."}</small></div>
+        <button class="sw" role="switch" aria-checked="${!!f.erlaubt}" aria-label="Service-Zugang" data-akt="fern|${f.erlaubt ? "aus" : "an"}"></button></div>
+      <div class="zeilen">${v.length ? v.slice(0, 2).map((x, i) => `<div><span>${i ? "Davor" : "Zuletzt verbunden"}</span><b>${am(x.t)} Uhr, ${esc(x.wer)}</b></div>`).join("")
+        : `<div><span>Zuletzt verbunden</span><b>noch nie</b></div>`}</div></section>`;
+  }
+
+  async _fern(an) {
+    const r = this._extern ? { ...this._cfg.fern, erlaubt: an } : await this._senden({ type: "voltherm/home_fern", erlaubt: an });
+    if (r) { this._cfg.fern = r; this._hinweis = { zeit: Date.now(), text: an ? "Service-Zugang erlaubt." : "Service-Zugang gesperrt." }; }
+    this._render();
+  }
+
+  // Clientul mulțumit arată prezentarea unui prieten: aici pe ecran sau, prin cod, pe telefonul prietenului.
+  _praesKarte() {
+    // Nu în demo: pe site demo-ul stă chiar în prezentare, iar în aplicație demo-ul e offline (about:blank).
+    if (!/^https?:$/.test(location.protocol) || location.href.startsWith(PRAES_URL)) return "";
+    return `<section class="karte praes"><div class="praes-text"><span class="etikett">VOLTHERM weiterempfehlen</span>
+        <b>Freunde fragen, was Ihr Haus da macht?</b>
+        <small>Zeigen Sie ihnen die kurze Präsentation, auf Wunsch mit Sprecher.<span class="praes-qrtext"> Oder sie scannen den Code und schauen sie sich auf dem eigenen Handy an.</span></small>
+        <button class="praes-knopf" data-akt="praes|auf"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M7 4.5v15l12.5-7.5z" fill="currentColor"/></svg><span>Präsentation zeigen</span></button></div>
+      <figure class="praes-qr">${PRAES_QR}<figcaption>Mit dem eigenen Handy scannen</figcaption></figure></section>`;
+  }
+
+  // Ecran întreg peste VOLTHERM Home. Iframe-ul stă în afara redesenării (vezi _render), deci nu se reîncarcă la fiecare valoare nouă.
+  _praesentation(auf) {
+    this._praes = auf;
+    this.shadowRoot.querySelector(".praes-ebene")?.remove();
+    if (!auf) { this._render(); return; }
+    const ebene = document.createElement("div");
+    ebene.className = "praes-ebene";
+    ebene.setAttribute("role", "dialog");
+    ebene.setAttribute("aria-label", "Was ist VOLTHERM?");
+    ebene.innerHTML = `<div class="praes-leiste"><span>Was ist <b>VOLTHERM</b>?</span>
+        <button data-akt="praes|zu">✕ Schließen</button></div>
+      <iframe src="${PRAES_URL}" title="Was ist VOLTHERM?" allow="autoplay; fullscreen"></iframe>`;
+    this.shadowRoot.append(ebene);
+  }
+
+  _seiteEnergie() {
+    return `<div class="raster-energie"><section class="karte fluss">${this._fluss()}</section>
+      <aside>${this._jetzt()}${this._heute()}</aside>${this._preise()}</div>`;
+  }
+
+  // ---------- Bausteine ----------
+  _kopfModul(farbe, icon, titel, unter) {
+    return `<div class="modulkopf" style="--f:${farbe}">${ico(icon, farbe, 34)}<div><h1>${esc(titel)}</h1>${unter ? `<p>${unter}</p>` : ""}</div></div>`;
+  }
+
+  _warum(farbe, titel, text) {
+    if (!text) return "";
+    return `<div class="karte warum-karte" style="--f:${farbe}"><div class="kopf"><span class="etikett">VOLTHERM jetzt</span>${this._sim() ? '<span class="sim">Simulation</span>' : ""}</div>
+      <b>${esc(titel)}</b><p>${esc(text)}</p></div>`;
+  }
+
+  _wahl(pfad, aktuell, optionen, farbe) {
+    return `<div class="wahl" role="group" style="--f:${farbe}">${optionen.map(([w, t]) => `<button data-akt="setze|${pfad}" data-wert="${w}" aria-pressed="${String(aktuell) === String(w)}">${t}</button>`).join("")}</div>`;
+  }
+
+  _stepper(pfad, wert, einheit, schritt, min, max, z = 0) {
+    const attr = `data-min="${min}" data-max="${max}" data-start="${wert ?? min}"`;
+    return `<div class="stepper"><button data-akt="schritt|${pfad}|${-schritt}" ${attr} aria-label="weniger">−</button>
+      <b>${wert == null ? "–" : zahl(wert, z)}<small>${einheit}</small></b>
+      <button data-akt="schritt|${pfad}|${schritt}" ${attr} aria-label="mehr">+</button></div>`;
+  }
+
+  // Schieberegler; mit `leer` bedeutet ganz rechts „keine Grenze“ (null).
+  _regler(pfad, wert, min, max, schritt, einheit, farbe, leer) {
+    const v = wert == null ? max : wert;
+    return `<div class="regler" style="--f:${farbe}"><input type="range" min="${min}" max="${max}" step="${schritt}" value="${v}" data-pfad="${pfad}" data-einheit="${einheit}" ${leer ? `data-leer="${leer}"` : ""} aria-label="${einheit}">
+      <b data-anzeige="${pfad}">${leer && wert == null ? leer : `${zahl(v, 0)} ${einheit}`}</b></div>`;
+  }
+
+  _feld(titel, inhalt, hilfe = "") {
+    return `<div class="feld"><span class="etikett">${titel}</span>${inhalt}${hilfe ? `<small class="hilfe">${hilfe}</small>` : ""}</div>`;
+  }
+
+  // Großer Ladestand-Ring mit Strich für Ziel bzw. Reserve.
+  _ring(prozent, farbe, mitte, unter, strich = null) {
+    const r = 92, u = 2 * Math.PI * r, p = Math.max(0, Math.min(100, prozent ?? 0));
+    let s = "";
+    if (strich != null) {
+      const a = (strich / 100) * 2 * Math.PI - Math.PI / 2;
+      s = `<line x1="${110 + 80 * Math.cos(a)}" y1="${110 + 80 * Math.sin(a)}" x2="${110 + 104 * Math.cos(a)}" y2="${110 + 104 * Math.sin(a)}" class="zielstrich"/>`;
+    }
+    return `<svg viewBox="0 0 220 220" class="ring-gross" style="--f:${farbe}" role="img" aria-label="${esc(mitte)}">
+      <circle cx="110" cy="110" r="${r}" class="ring-bahn"/>
+      <circle cx="110" cy="110" r="${r}" class="ring-wert" stroke-dasharray="${u * p / 100} ${u}" transform="rotate(-90 110 110)"/>
+      ${s}<text x="110" y="112" class="ring-zahl">${esc(mitte)}</text><text x="110" y="142" class="ring-unter">${esc(unter)}</text></svg>`;
+  }
+
+  // Siguranța: din sensor.vt_sicherheit (live); în previzualizare din datele Home.
+  _sicherheit() {
+    const s = this._s("vt_sicherheit");
+    if (s && !["unknown", "unavailable"].includes(s.state)) {
+      const a = s.attributes || {};
+      const cauze = [...(a.cauze || [])].sort((x, y) => ["start", "pauza", "test"].includes(x.cheie) - ["start", "pauza", "test"].includes(y.cheie));
+      return { stare: s.state, pauza_pana: a.pauza_pana, cauze };
+    }
+    const c = this._cfg.sicherheit;
+    return c ? { stare: c.stare, pauza_pana: c.pauza_pana, cauze: c.text ? [{ cheie: c.stare === "pausiert" ? "pauza" : "x", text: c.text }] : [] } : null;
+  }
+
+  async _pausieren(an) {
+    this._pauseFrage = false;
+    const r = await this._senden({ type: "voltherm/home_pause", an });
+    if (r) this._hinweis = { zeit: Date.now(), text: an ? "VOLTHERM pausiert: Alle Geräte laufen normal." : "VOLTHERM steuert wieder." };
+    if (this._extern) { this._cfg.sicherheit = an ? { stare: "pausiert", pauza_pana: new Date(Date.now() + 864e5).toISOString(), text: "Vom Kunden pausiert." } : { stare: "normal" }; }
+    else await this._laden();
+    this._render();
+  }
+
+  // Band unten: sicherer Betrieb (bleibt, bis die Störung vorbei ist) oder Pause; plus die Rückfrage vor dem Pausieren.
+  _sicherHtml() {
+    if (this._pauseFrage) {
+      return `<div class="sicher frage" role="dialog" aria-label="VOLTHERM pausieren"><span class="sym">${ico("pause", "#1a1200", 20)}</span>
+        <div><b>VOLTHERM pausieren?</b><small>Alle Geräte laufen dann nach ihren eigenen Einstellungen, ohne Optimierung, bis Sie fortsetzen (höchstens 24 Stunden).</small></div>
+        <div class="knoepfe"><button data-akt="pause|an" class="voll">Pausieren</button><button data-akt="pause|nein">Abbrechen</button></div></div>`;
+    }
+    const st = this._sicherheit();
+    if (!st || st.stare === "normal") return "";
+    if (st.stare === "pausiert") {
+      const bis = st.pauza_pana ? new Date(st.pauza_pana) : null;
+      return `<div class="sicher" role="status"><span class="sym">${ico("pause", "#1a1200", 20)}</span>
+        <div><b>VOLTHERM pausiert${bis ? ` bis ${bis.toLocaleString("de-DE", { weekday: "short", hour: "2-digit", minute: "2-digit" })} Uhr` : ""}</b><small>Alle Geräte laufen normal, ohne Optimierung.</small></div>
+        <div class="knoepfe"><button data-akt="pause|aus" class="voll">Fortsetzen</button></div></div>`;
+    }
+    const c = st.cauze.find((x) => x.cheie !== "start");
+    if (!c || this._sicherZu === c.text) return "";  // Neustart: still; „Verstanden“ blendet bis zur nächsten Störung aus
+    return `<div class="sicher" role="status"><span class="sym">!</span>
+      <div><b>Sicherer Betrieb</b><small>${esc(c.text)} Ihre Anlage läuft normal weiter, nur ohne Optimierung.</small></div>
+      <div class="knoepfe"><button data-akt="sicherzu|${esc(c.text)}">Verstanden</button></div></div>`;
+  }
+
+  _mehrHtml(seiten) {
+    if (!this._mehr) return "";
+    const rest = seiten.filter(([id]) => !HANDY_HAUPT.includes(id));
+    return `<div class="mehrblatt" role="menu">${rest.map(([id, t, f]) => `<button role="menuitem" data-akt="seite|${id}" aria-current="${id === this._seite}" style="--f:${f}">${ico(id, f, 24)}<span>${t}</span></button>`).join("")}</div>`;
+  }
+
+  // Banda de sus: ultimul mesaj VOLTHERM (sensor.vt_ansage), vizibil 60 s; atingerea o închide.
+  _ansageHtml() {
+    const s = this._s("vt_ansage"), a = s?.attributes;
+    if (!a?.zeit || !s.state || ["unknown", "unavailable"].includes(s.state)) return "";
+    const zeit = new Date(a.zeit);
+    if (Date.now() - zeit > 60000 || this._ansageZu === a.zeit) return "";
+    const f = { auto_laedt: C.wallbox, auto_wartet: C.wallbox, auto_voll: C.netz_einsp, wasser: C.heizstab, speicher: C.batterie,
+      guenstig: C.pv, bilanz: C.netz_einsp, stoerung: C.netz_bezug }[a.eveniment] || "#19C3E6";
+    return `<button class="ansage" data-akt="ansagezu|${esc(a.zeit)}" style="--f:${f}" role="status">
+      <b>${esc(a.titlu || "VOLTHERM")}</b><span>${esc(s.state)}</span><small>${zeit.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })}</small></button>`;
+  }
+
+  _hinweisHtml() {
+    const h = this._hinweis;
+    if (!h || Date.now() - h.zeit > (h.fehler ? 6000 : 2500)) return "";
+    return `<div class="toast ${h.fehler ? "fehler" : ""}" role="status">${esc(h.text)}</div>`;
+  }
+
+  // ---------- PV (nur Info) ----------
+  _seitePv() {
+    const pv = this._n("vt_pv_putere"), d = this._cfg.pv || {};
+    const prog = d.prognoza || [];
+    let kurve = "";
+    if (prog.length) {
+      const max = Math.max(...prog.map((p) => p.w), pv || 0) * 1.1 || 1, n = prog.length - 1;
+      const x = (i) => 50 + (910 * i) / n, y = (w) => 250 - (220 * w) / max;
+      const pfad = prog.map((p, i) => `${i ? "L" : "M"}${x(i).toFixed(1)} ${y(p.w).toFixed(1)}`).join(" ");
+      const jetztI = prog.findIndex((p) => p.ora.slice(0, 13) === cheie(new Date()).slice(0, 13));
+      const ticks = prog.map((p, i) => (i % 2 ? "" : `<text x="${x(i)}" y="278" class="achse">${p.ora.slice(11, 13)}</text>`)).join("");
+      const stufen = [2, 4, 6, 8, 10, 12, 15, 20].map((k) => k * 1000).filter((k) => k < max);
+      const gitter = stufen.map((k) => `<line x1="50" x2="960" y1="${y(k)}" y2="${y(k)}" class="gitter"/><text x="42" y="${y(k) + 4}" class="achse rechtsb">${k / 1000}</text>`).join("");
+      const punkt = jetztI >= 0 && pv != null ? `<line x1="${x(jetztI)}" x2="${x(jetztI)}" y1="20" y2="250" class="jetztlinie"/><circle cx="${x(jetztI)}" cy="${y(pv)}" r="7" class="jetztpunkt"/>` : "";
+      kurve = `<svg viewBox="0 0 1000 290" class="kurve" role="img" aria-label="PV-Prognose heute">
+        <defs><linearGradient id="pvg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${C.pv}" stop-opacity=".45"/><stop offset="1" stop-color="${C.pv}" stop-opacity="0"/></linearGradient></defs>
+        ${gitter}<line x1="50" x2="960" y1="250" y2="250" class="gitter"/>
+        <path d="${pfad} L${x(n)} 250 L50 250 Z" fill="url(#pvg)"/><path d="${pfad}" fill="none" stroke="${C.pv}" stroke-width="3"/>${punkt}${ticks}
+        <text x="12" y="16" class="achse links">kW</text></svg>`;
+    }
+    const kacheln = [["Jetzt", kw(pv)], ["Heute erzeugt", d.heute_kwh != null ? `${zahl(d.heute_kwh)} kWh` : "–"],
+      ["Prognose heute", d.prognose_heute_kwh != null ? `${zahl(d.prognose_heute_kwh)} kWh` : "–"], ["Prognose morgen", d.morgen_kwh != null ? `${zahl(d.morgen_kwh)} kWh` : "–"]];
+    return `${this._kopfModul(C.pv, "pv", "Photovoltaik", "Nur Anzeige: Die Anlage läuft von selbst.")}
+      <div class="raster-modul pv-raster">
+        <div class="karte kachelreihe">${kacheln.map(([t, v], i) => `<div><span class="etikett">${t}</span><b style="${i === 0 ? `color:${C.pv}` : ""}">${v}</b></div>`).join("")}</div>
+        <div class="karte"><div class="kopf"><span class="etikett">Sonnenstrom heute · Prognose</span><span class="mini">Punkt: jetzt</span></div>${kurve || '<div class="leerhinweis">Keine Prognose eingerichtet.</div>'}</div>
+      </div>`;
+  }
+
+  // ---------- Speicher ----------
+  _seiteBatterie() {
+    const soc = this._n("vt_baterie_soc"), p = this._n("vt_baterie_putere"), cfg = this._cfg.baterie || {};
+    const dec = this._s("vt_baterie_decizie")?.attributes || {};
+    const plan = this._s("vt_plan_baterie")?.attributes || {};
+    const cap = cfg.capacitate || 30;
+    const geplant = new Set((plan.ore || []).map((o) => o.slice(0, 13)));
+    const ore = this._preisliste().slice(0, 24);
+    const lad = cfg.prag_incarcare_ct, ent = cfg.prag_descarcare_ct;
+    const zustand = p == null ? "" : Math.abs(p) < 20 ? "Ruhe" : p > 0 ? `entlädt ${kw(p)}` : `lädt ${kw(p)}`;
+    const f = C.batterie;
+    return `${this._kopfModul(f, "batterie", "Speicher", `${soc == null ? "–" : zahl(soc / 100 * cap)} von ${zahl(cap, 0)} kWh gespeichert`)}
+      <div class="raster-modul">
+        <div class="karte mitte">${this._ring(soc, f, soc == null ? "–" : `${Math.round(soc)} %`, zustand, cfg.soc_minim)}
+          <small class="hilfe">Weißer Strich: Reserve ${cfg.soc_minim ?? "–"} %</small></div>
+        <div class="karte einstellungen">
+          ${this._feld("Reserve für Stromausfall", this._stepper("baterie.soc_minim", cfg.soc_minim, "%", 5, 5, 50))}
+          ${this._feld("Aus dem Netz laden bis max.", this._regler("baterie.prag_incarcare_ct", lad, 10, 40, 1, "ct", f), "Nur nachts in den günstigsten Stunden und nur so viel, wie morgen die Sonne nicht liefert.")}
+          ${this._feld("Entladen erst ab", this._regler("baterie.prag_descarcare_ct", ent, 15, 50, 1, "ct", f), "Darunter spart der Speicher seine Energie für die teuren Stunden.")}
+        </div>
+        <div class="karte breit" style="--f:${f}"><div class="kopf"><span class="etikett">Nachtladung · geplante Stunden</span>
+          <span class="mini"><b class="lg geplant" style="background:${f}"></b>geplant <b class="lg jetzt"></b>jetzt</span></div>
+          ${this._balken(ore, (x, i) => (geplant.has(x.ora.slice(0, 13)) ? "geplant" : i === 0 ? "jetzt" : ""), lad != null ? lad / 100 : null)}
+          <p class="planzeile">${geplant.size ? `${geplant.size} Stunden geplant (${[...geplant].sort().map((o) => o.slice(11, 13)).join(", ")} Uhr), höchstens ${zahl((plan.pret_max || 0) * 100)} ct.` : esc(plan.motiv || "Heute Nacht ist keine Netzladung nötig.")}</p></div>
+        ${this._warum(f, dec.actiune, dec.motiv)}
+      </div>`;
+  }
+
+  // ---------- Wallbox ----------
+  _ladeplan(p, c) {
+    const preturi = this._preisliste();
+    if (!p?.conectat || p.soc == null || !preturi.length) return null;
+    const cap = p.capacitate || 50, leistung = (p.putere_max || 11040) / 1000, ziel = Number(c.soc_tinta) || 80;
+    const nevoie = Math.max(0, (ziel - p.soc) / 100 * cap / 0.9);
+    const [hh, mm] = (c.plecare || "07:00").split(":").map(Number);
+    const acum = new Date(), plecare = new Date(acum); plecare.setHours(hh, mm, 0, 0);
+    if (plecare <= acum) plecare.setDate(plecare.getDate() + 1);
+    const ore = preturi.filter((x) => x.ora.slice(0, 13) >= cheie(acum).slice(0, 13) && x.ora.slice(0, 13) < cheie(plecare).slice(0, 13));
+    const prag = c.pret_max == null ? null : Number(c.pret_max) / 100;
+    const nOre = Math.ceil(nevoie / leistung);
+    const unter = ore.filter((x) => prag == null || x.pret <= prag).sort((a, b) => a.pret - b.pret);
+    const ueber = ore.filter((x) => prag != null && x.pret > prag).sort((a, b) => a.pret - b.pret);
+    let alese = unter.slice(0, nOre);
+    const fortate = nOre - alese.length > 0 && c.peste_prag !== "asteapta" ? ueber.slice(0, nOre - alese.length) : [];
+    alese = [...alese, ...fortate];
+    let rest = nevoie, kosten = 0;
+    for (const x of alese) { const e = Math.min(leistung, rest); kosten += e * x.pret; rest -= e; }
+    return { ore, prag, alese: new Set(alese.map((x) => x.ora)), fortate: new Set(fortate.map((x) => x.ora)), nevoie, kosten,
+      socFinal: Math.min(ziel, p.soc + (nevoie - rest) * 0.9 / cap * 100), ziel };
+  }
+
+  _seiteWallbox() {
+    const attr = this._s("vt_wallbox_decizie")?.attributes || {};
+    const p = attr.puncte?.[0], id = p?.id || "1";
+    this._cfg.wallbox ??= {}; this._cfg.wallbox.puncte ??= {};
+    const c = this._cfg.wallbox.puncte[id] = { mod: "auto", plecare: "07:00", soc_tinta: 80, pret_max: null, peste_prag: "incarca", ...(this._cfg.wallbox.puncte[id] || {}) };
+    const leistung = this._n("vt_wallbox_putere");
+    const pl = c.mod === "auto" ? this._ladeplan(p, c) : null;
+    const pfad = `wallbox.puncte.${id}`, f = C.wallbox;
+    let zeile = "";
+    if (c.mod !== "auto") zeile = `Im Modus „${{ pv: "Nur Sonne", now: "Sofort", off: "Aus" }[c.mod] || c.mod}“ gilt kein Zeitplan.`;
+    else if (pl) {
+      const ore = [...pl.alese].sort().map((o) => o.slice(11, 16)).join(", ");
+      zeile = pl.nevoie <= 0 ? `Das Auto ist schon über ${pl.ziel} %: geladen wird nur mit Sonnenstrom.`
+        : pl.socFinal >= pl.ziel - 0.5 ? `Ich lade ${zahl(pl.nevoie)} kWh um ${ore} Uhr. Kosten etwa <b>${zahl(pl.kosten, 2)} €</b>. Fertig um ${c.plecare} ✓${pl.fortate.size ? `<br><small>${pl.fortate.size} Std. über der Preisgrenze (orange), damit das Auto rechtzeitig fertig ist.</small>` : ""}`
+          : `<span class="warn">⚠ Unter ${zahl(pl.prag * 100, 0)} ct schafft das Auto bis ${c.plecare} nur etwa ${Math.round(pl.socFinal)} % statt ${pl.ziel} %. Den Rest lädt die Sonne.</span>`;
+    }
+    return `${this._kopfModul(f, "wallbox", "Wallbox", this._cfg.wallbox?.demo ? "Demo-Wallbox (Testgerät): Werte sind nicht echt" : p?.conectat ? `${esc(p.masina || "Auto")} angesteckt` : "Kein Auto angesteckt")}
+      <div class="raster-modul">
+        <div class="karte mitte">${this._ring(p?.soc, f, p?.soc == null ? "–" : `${Math.round(p.soc)} %`, (leistung || 0) > 20 ? `lädt ${kw(leistung)}` : "lädt gerade nicht", c.soc_tinta)}
+          <small class="hilfe">Weißer Strich: Ladeziel ${c.soc_tinta} %</small></div>
+        <div class="karte einstellungen">
+          ${this._feld("Laden", this._wahl(`${pfad}.mod`, c.mod, [["off", "Aus"], ["pv", "Nur Sonne"], ["auto", "Automatisch"], ["now", "Sofort"]], f),
+            c.mod === "auto" ? "Mit Sonne und in den günstigsten Stunden, damit das Auto rechtzeitig fertig ist." : "")}
+          <div class="zwei">${this._feld("Fertig bis", `<div class="stepper"><button data-akt="zeit|${pfad}.plecare|-30" aria-label="früher">−</button><b>${esc(c.plecare)}</b><button data-akt="zeit|${pfad}.plecare|30" aria-label="später">+</button></div>`)}
+            ${this._feld("Ladeziel", this._stepper(`${pfad}.soc_tinta`, c.soc_tinta, "%", 5, 20, 100))}</div>
+          ${this._feld("Max. Preis aus dem Netz", this._regler(`${pfad}.pret_max`, c.pret_max, 15, 45, 1, "ct", f, "keine Grenze"))}
+        </div>
+        <div class="karte breit" style="--f:${f}"><div class="kopf"><span class="etikett">Strompreis bis ${esc(c.plecare)} · gewählte Stunden</span>
+          <span class="mini"><b class="lg geplant" style="background:${f}"></b>laden <b class="lg fortat"></b>über Grenze, nötig</span></div>
+          ${pl ? this._balken(pl.ore, (x) => (pl.fortate.has(x.ora) ? "fortat" : pl.alese.has(x.ora) ? "geplant" : pl.prag != null && x.pret > pl.prag ? "ueber" : ""), pl.prag)
+            : `<div class="leerhinweis">${c.mod !== "auto" ? "" : "Der Plan erscheint, wenn ein Auto angesteckt ist."}</div>`}
+          ${zeile ? `<p class="planzeile">${zeile}</p>` : ""}</div>
+        ${p?.decizie ? this._warum(f, this._wallboxTitel(p.decizie), p.decizie.motiv) : ""}
+      </div>`;
+  }
+
+  // ---------- Warmwasser ----------
+  _seiteHeizstab() {
+    const t = this._hzTemp(), p = this._n("vt_heizstab_putere"), cfg = this._cfg.heizstab || {};
+    const dec = this._s("vt_heizstab_decizie")?.attributes || {};
+    const min = cfg.temp_min ?? 45, max = cfg.temp_max ?? 65, skala = [20, 80], f = C.heizstab;
+    const y = (v) => 300 - (260 * (Math.min(skala[1], Math.max(skala[0], v)) - skala[0])) / (skala[1] - skala[0]);
+    const tank = `<svg viewBox="0 0 270 330" class="tank" role="img" aria-label="Speichertemperatur">
+      <defs><linearGradient id="wg" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#4D8DFF"/><stop offset=".55" stop-color="${f}"/><stop offset="1" stop-color="#FF3B3B"/></linearGradient>
+      <clipPath id="tk"><rect x="60" y="40" width="100" height="260" rx="40"/></clipPath></defs>
+      <rect x="60" y="40" width="100" height="260" rx="40" class="tankhuelle"/>
+      ${t != null ? `<rect x="60" y="${y(t)}" width="100" height="${300 - y(t)}" fill="url(#wg)" clip-path="url(#tk)" opacity=".9"/>` : ""}
+      <line x1="48" x2="172" y1="${y(min)}" y2="${y(min)}" class="marke"/><text x="178" y="${y(min) + 5}" class="markentext">min ${zahl(min, 0)}°</text>
+      <line x1="48" x2="172" y1="${y(max)}" y2="${y(max)}" class="marke"/><text x="178" y="${y(max) + 5}" class="markentext">max ${zahl(max, 0)}°</text>
+      </svg>`;
+    // Aus dem Netz nach Preis heizt der Heizstab nur mit Temperaturfühler im Speicher (siehe heizstab.py).
+    const netz = cfg.temp_sigura !== false, prag = cfg.prag_pret_ct ?? null, ore = this._preisliste().slice(0, 24);
+    const boostBis = this._boostAktiv(), boost = !!boostBis;
+    const bis = boost ? boostBis.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" }) : "";
+    return `${this._kopfModul(f, "heizstab", "Warmwasser", (p || 0) > 20 ? `Heizstab heizt mit ${kw(p)}` : "Heizstab aus")}
+      <div class="raster-modul">
+        <div class="karte mitte"><div class="tankreihe">${tank}<div class="tankwert"><b>${t == null ? "–" : `${zahl(t)}<small>°C</small>`}</b><span>${t == null ? "Temperatur unbekannt" : "im Speicher"}</span></div></div>
+          ${cfg.temp_sigura === false ? '<small class="hilfe">Im Speicher ist noch kein Temperaturfühler gewählt.</small>' : ""}${cfg.legionella_letzt ? `<small class="hilfe">Legionellenschutz zuletzt: ${esc(cfg.legionella_letzt)}</small>` : ""}</div>
+        <div class="karte einstellungen">
+          ${cfg.boost_moeglich === false ? "" : this._feld("Warmes Wasser sofort", `<button class="gross ${boost ? "an" : ""}" data-akt="boost" style="--f:${f}">${boost ? `Heizt bis ${bis} · Stopp` : "Jetzt 1 Stunde heizen"}</button>`,
+            "Auch aus dem Netz, wenn keine Sonne da ist. Danach übernimmt VOLTHERM wieder.")}
+          <div class="zwei">${this._feld("Mindesttemperatur", this._stepper("heizstab.temp_min", min, "°C", 1, 35, 60))}
+            ${this._feld("Mit Sonnenstrom bis", this._stepper("heizstab.temp_max", max, "°C", 1, 50, 80))}</div>
+          ${netz ? `${this._feld("Bei günstigem Strom aus dem Netz heizen", this._wahl("heizstab.prag_pret_ct", prag != null ? prag : "null", [[prag != null ? prag : 15, "Ja"], ["null", "Nein"]], f))}
+            ${prag != null ? this._feld("Nur bis max.", this._regler("heizstab.prag_pret_ct", prag, 5, 40, 1, "ct", f), `Dann heizt der Heizstab bis ${zahl(max, 0)} °C, auch ohne Sonne.`) : ""}` : ""}
+        </div>
+        ${netz ? `<div class="karte breit" style="--f:${f}"><div class="kopf"><span class="etikett">Strompreis · nächste 24 Stunden</span>
+          <span class="mini"><b class="lg geplant" style="background:${f}"></b>günstig genug <b class="lg jetzt"></b>jetzt</span></div>
+          ${prag != null ? this._balken(ore, (x, i) => (x.pret <= prag / 100 ? "geplant" : i === 0 ? "jetzt" : ""), prag / 100) : this._balken(ore, (x, i) => (i === 0 ? "jetzt" : ""))}
+          <p class="planzeile">${this._hzPlanzeile(ore, prag, max, t)}</p></div>` : ""}
+        ${this._warum(f, MOD_HEIZSTAB[dec.mod] || dec.mod, dec.motiv)}
+      </div>`;
+  }
+
+  _hzPlanzeile(ore, prag, max, t) {
+    if (prag == null) return "Warmwasser nur mit Sonnenstrom und wenn der Speicher unter die Mindesttemperatur fällt.";
+    if (!ore.length) return "Noch keine Strompreise.";
+    const guenstig = ore.filter((x) => x.pret <= prag / 100);
+    if (!guenstig.length) return `In den nächsten 24 Stunden kostet der Strom immer mehr als ${zahl(prag, 0)} ct: Warmwasser nur mit Sonnenstrom.`;
+    if (t != null && t >= max) return `Der Speicher hat schon ${zahl(t)} °C. In ${guenstig.length} günstigen Stunden würde ich bis ${zahl(max, 0)} °C nachheizen.`;
+    const stunden = guenstig.map((x) => x.ora.slice(11, 13)).join(", ");
+    return `In ${guenstig.length} ${guenstig.length === 1 ? "Stunde" : "Stunden"} kostet der Strom höchstens ${zahl(prag, 0)} ct (${stunden} Uhr). Dann heize ich bis ${zahl(max, 0)} °C, auch ohne Sonne.`;
+  }
+
+  // ---------- Klima ----------
+  _seiteKlima() {
+    const kl = this._s("vt_clima_decizie")?.attributes || {};
+    const camere = this._cfg.clima?.camere || {};
+    const winter = (kl.temp_ext ?? 10) < 15, f = C.klima;
+    const karten = (kl.camere || []).map((r) => {
+      const ent = this._s(r.entitate), st = ent?.attributes || {}, c = camere[r.entitate] || {}, pf = `clima.camere.${r.entitate}`;
+      const zielKey = winter ? "confort_iarna" : "confort_vara", ziel = c[zielKey] ?? (winter ? 21 : 25);
+      const hvac = ent?.state || "off", an = !["off", "unavailable", "unknown"].includes(hvac);
+      return `<div class="karte raum" style="--z:${an ? (hvac === "cool" ? "#4D8DFF" : C.heizstab) : "var(--linie)"}">
+        <div class="kopf"><b class="raumname">${esc(r.nume || st.friendly_name || "Klima")}</b><span class="pille ${an ? "an" : ""}">${HVAC[hvac] || esc(hvac)}</span></div>
+        <div class="raumtemp"><b>${st.current_temperature == null ? "–" : `${zahl(st.current_temperature)}°`}</b><span>jetzt im Raum</span></div>
+        ${this._feld(`Wunschtemperatur (${winter ? "Winter" : "Sommer"})`, this._stepper(`${pf}.${zielKey}`, ziel, "°C", 0.5, 16, 30, 1))}
+        ${this._wahl(`${pf}.mod`, c.mod || "auto", [["auto", "Auto"], ["confort", "Komfort"], ["manual", "Selbst"]], f)}
+        ${r.decizie ? `<p class="raumwarum">${esc(r.decizie.motiv)}</p>` : ""}
+      </div>`;
+    }).join("");
+    return `${this._kopfModul(f, "klima", "Klima", `Draußen ${kl.temp_ext == null ? "–" : `${zahl(kl.temp_ext)} °C`} · ${winter ? "Heizsaison" : "Kühlsaison"}`)}
+      <div class="raster-raeume">${karten}</div>
+      <p class="fuss"><b>Auto:</b> nutzt Sonnenstrom zum Vorheizen oder Vorkühlen und pausiert bei teurem Strom. <b>Komfort:</b> hält die Wunschtemperatur, egal was der Strom kostet. <b>Selbst:</b> nur Fernbedienung, VOLTHERM greift nicht ein. Nach der Fernbedienung wartet VOLTHERM 2 Stunden.</p>`;
+  }
+
+  // ---------- Wärmepumpe ----------
+  _seiteWp() {
+    const a = this._s("vt_pompa_decizie")?.attributes || {}, stufe = this._n("vt_pompa_decizie"), cfg = this._cfg.pompa || {};
+    const f = C.wp, sperreMin = (cfg.blocare_max_h ?? 2) * 60;
+    const p14a = cfg.semnal_14a ? this._s(cfg.semnal_14a)?.state === "on" : null;
+    const leiter = SG.map(([n, t, txt]) => `<div class="stufe ${n === stufe ? "aktiv" : ""}" style="--f:${n === 1 ? C.netz_bezug : n === 4 ? C.pv : f}">
+      <span class="nr">${n}</span><b>${t}</b><small>${txt}</small></div>`).join("");
+    const sonne = cfg.surplus_recomandat != null, pause = cfg.blocare_ct != null;
+    return `${this._kopfModul(f, "wp", "Wärmepumpe", `SG-Ready · ${a.putere != null ? `nimmt ${kw(a.putere)}` : "Leistung unbekannt"}`)}
+      <div class="raster-modul">
+        <div class="karte"><div class="kopf"><span class="etikett">Betriebsart jetzt</span></div><div class="leiter">${leiter}</div>
+          ${p14a == null ? "" : `<p class="p14a"><i style="background:${p14a ? C.netz_bezug : C.netz_einsp}"></i>${p14a ? "Der Netzbetreiber drosselt (§14a). VOLTHERM greift nicht ein." : "Keine Drosselung durch den Netzbetreiber (§14a)."}</p>`}</div>
+        <div class="karte einstellungen">
+          ${this._feld("Sonnenstrom nutzen", this._wahl("pompa.surplus_recomandat", sonne ? cfg.surplus_recomandat : "null", [[sonne ? cfg.surplus_recomandat : 1500, "Ja"], ["null", "Nein"]], f),
+            "Bei Überschuss heizt die Wärmepumpe etwas wärmer und speichert die Sonne als Wärme.")}
+          ${this._feld("Bei teurem Strom pausieren", this._wahl("pompa.blocare_ct", pause ? cfg.blocare_ct : "null", [[pause ? cfg.blocare_ct : 40, "Ja"], ["null", "Nein"]], f))}
+          ${pause ? this._feld("Pause ab", this._regler("pompa.blocare_ct", cfg.blocare_ct, 25, 60, 1, "ct", f)) : ""}
+          ${pause ? this._feld("Höchstens pro Tag", this._stepper("pompa.blocare_max_h", cfg.blocare_max_h ?? 2, "h", 0.5, 0.5, 4, 1),
+            `Heute ${a.blocat_azi_min ?? 0} von ${sperreMin} min genutzt.`) : ""}
+        </div>
+        ${this._warum(f, a.titlu, a.motiv)}
+      </div>`;
+  }
+
+  // ---------- Bilanz (Tag / Woche / Monat / Jahr) ----------
+  async _bzLaden() {
+    const { zeit, datum } = this._bz;
+    try {
+      this._bz.daten = this._extern ? window.VOLTHERM_BILANZ?.(zeit, datum, this._cfg.bilant) : await this._hass.callWS({ type: "voltherm/bilanz", zeit, datum });
+      this._bz.fehler = null;
+    } catch (err) {
+      this._bz.fehler = err.message || "Bilanz nicht verfügbar.";
+    }
+    this._bz.tip = null;
+    if (Date.now() > (this._ruhe || 0)) this._render();
+  }
+
+  _bzSchieben(r) {
+    const d = new Date(`${this._bz.datum}T12:00:00`), z = this._bz.zeit;
+    if (z === "tag") d.setDate(d.getDate() + r);
+    else if (z === "woche") d.setDate(d.getDate() + 7 * r);
+    else if (z === "monat") { d.setDate(1); d.setMonth(d.getMonth() + r); }
+    else { d.setDate(1); d.setFullYear(d.getFullYear() + r); }
+    this._bz.datum = isoTag(d);
+    this._bzLaden();
+  }
+
+  _bzTitel(p) {
+    const s = new Date(`${p.start}T12:00:00`), e = new Date(`${p.end}T12:00:00`);
+    if (p.zeit === "tag") return s.toLocaleDateString("de-DE", { weekday: "short", day: "numeric", month: "long", year: "numeric" });
+    if (p.zeit === "woche") return `${s.getDate()}.${s.getMonth() + 1}. – ${e.getDate()}.${e.getMonth() + 1}.${e.getFullYear()}`;
+    if (p.zeit === "monat") return `${MONATE[s.getMonth()]} ${s.getFullYear()}`;
+    return String(s.getFullYear());
+  }
+
+  _bzName(p, t, lang = false) {
+    if (p.zeit === "tag") return lang ? `${t.name}:00 Uhr` : t.name;
+    if (p.zeit === "jahr") return lang ? MONATE[Number(t.name) - 1] : MONATE[Number(t.name) - 1].slice(0, 3);
+    const d = new Date(`${t.name}T12:00:00`);
+    if (p.zeit === "woche") return lang ? d.toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "numeric" }) : WOCHENTAG[(d.getDay() + 6) % 7];
+    return lang ? d.toLocaleDateString("de-DE", { weekday: "short", day: "numeric", month: "long" }) : String(d.getDate());
+  }
+
+  _bzDiagramm(p) {
+    const teile = p.teile || [], n = teile.length;
+    const ohne = (t) => t.ohne_solar ?? t.ohne_pv ?? 0, bez = (t) => t.bezahlt ?? t.kosten ?? 0;
+    if (!n || !teile.some((t) => ohne(t) || bez(t) || t.erloes)) return `<div class="leerhinweis">Für diesen Zeitraum gibt es noch keine Daten. VOLTHERM zählt ab dem Tag der Einrichtung.</div>`;
+    const W = 1000, T = 14, unten = 220, L = 54, R = 8;
+    const maxV = Math.max(...teile.map((t) => Math.max(ohne(t), bez(t))), 0.01) * 1.1;
+    const maxE = Math.max(...teile.map((t) => t.erloes || 0), 0.01);
+    const y = (v) => unten - ((unten - T) * v) / maxV, eh = (v) => (34 * v) / maxE;
+    const breite = (W - L - R) / n, bw = Math.max(4, breite * 0.64);
+    const ticks = [0, maxV / 3, (2 * maxV) / 3].map((v) => `<line class="gitter" x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}"/><text x="${L - 8}" y="${y(v) + 4}" class="achse rechtsb">${zahl(v, v < 10 ? 1 : 0)} €</text>`).join("");
+    const jede = n > 24 ? 3 : n > 12 ? 2 : 1;
+    const saeulen = teile.map((t, i) => {
+      const x = L + i * breite + (breite - bw) / 2, aktiv = this._bz.tip === i;
+      return `<g data-akt="bztip|${i}" class="bzsaeule${aktiv ? " aktiv" : ""}">
+        <rect x="${L + i * breite}" y="${T}" width="${breite}" height="${unten + 50 - T}" fill="transparent"/>
+        <rect x="${x}" y="${y(ohne(t))}" width="${bw}" height="${unten - y(ohne(t))}" rx="3" fill="#2a3a5c"/>
+        <rect x="${x + bw * 0.18}" y="${y(bez(t))}" width="${bw * 0.64}" height="${unten - y(bez(t))}" rx="2" fill="${C.netz_bezug}"/>
+        ${t.erloes ? `<rect x="${x + bw * 0.18}" y="${unten + 2}" width="${bw * 0.64}" height="${eh(t.erloes)}" rx="2" fill="${C.netz_einsp}" opacity=".85"/>` : ""}
+        ${i % jede === 0 ? `<text x="${x + bw / 2}" y="${unten + 52}" class="achse">${this._bzName(p, t)}</text>` : ""}</g>`;
+    }).join("");
+    return `<svg viewBox="0 0 ${W} ${unten + 58}" class="bzdiagramm" role="img" aria-label="Stromkosten je Zeitabschnitt">${ticks}<line class="gitter" x1="${L}" x2="${W - R}" y1="${unten}" y2="${unten}"/>${saeulen}</svg>`;
+  }
+
+  _seiteBilanz() {
+    const p = this._bz.daten, z = this._bz.zeit, g = C.netz_einsp;
+    const kopf = `<div class="bzkopf">${this._kopfModul(g, "bilanz", "Bilanz", p ? this._bzTitel(p) : "")}
+      <div class="bzsteuer"><div class="wahl bzzeit" role="group" style="--f:#19C3E6">${[["tag", "Tag"], ["woche", "Woche"], ["monat", "Monat"], ["jahr", "Jahr"]].map(([w, t]) => `<button data-akt="bzzeit|${w}" aria-pressed="${z === w}">${t}</button>`).join("")}</div>
+        <div class="blaettern"><button data-akt="bzweiter|-1" aria-label="früher" ${p && !p.frueher ? "disabled" : ""}>‹</button><button data-akt="bzweiter|1" aria-label="später" ${p && !p.spaeter ? "disabled" : ""}>›</button></div></div></div>`;
+    if (!p) return `${kopf}<div class="leerhinweis">${esc(this._bz.fehler || "Lade …")}</div>`;
+    const s = p.summe || {}, cfg = this._cfg.bilant || {};
+    const verg = cfg.verguetung_ct ?? p.verguetung_ct, grund = cfg.grundgebuehr ?? p.grundgebuehr;
+    const kpis = [["Gespart", eur(s.ersparnis), "gegenüber ohne Solaranlage", g, "haupt"], ["Bezahlt", eur(s.bezahlt), grund ? "Netzstrom + Grundgebühr" : "Netzstrom", C.netz_bezug],
+      ["Ohne Solaranlage", eur(s.ohne_solar), "gleicher Verbrauch, alles aus dem Netz", "var(--mut)"],
+      ["Einspeisung", eur(s.erloes), `${kwhT(s.einspeisung)} ins Netz`, g], ["Autarkie", s.autarkie == null ? "–" : `${s.autarkie} %`, "vom Verbrauch selbst erzeugt", C.pv]];
+    const tipT = this._bz.tip != null ? p.teile?.[this._bz.tip] : null;
+    const tip = tipT ? `<b>${esc(this._bzName(p, tipT, true))}</b> · bezahlt <b>${eur(tipT.bezahlt ?? tipT.kosten)}</b> · ohne Solaranlage ${eur(tipT.ohne_solar ?? tipT.ohne_pv)} · Einspeisung ${eur(tipT.erloes)}`
+      : "Tippen Sie auf einen Balken für Details.";
+    const proKwh = s.verbraucht > 0.1 ? `${zahl((s.netto / s.verbraucht) * 100, 1)} ct je verbrauchter kWh` : "";
+    const rechnung = `<div class="zeilen">
+        <div><span>Netzstrom (${kwhT(s.bezug)})</span><b>${eur(s.kosten)}</b></div>
+        ${grund ? `<div><span>Grundgebühr</span><b>${eur(s.grund)}</b></div>` : ""}
+        <div><span>Abzüglich Einspeisevergütung</span><b style="color:${g}">− ${eur(s.erloes)}</b></div>
+        <div class="summe"><span><b>Unterm Strich</b></span><b class="gross-zahl">${eur(s.netto)}</b></div></div>
+      <p class="bzschnitt">${s.tage > 1 ? `Durchschnitt <b>${eur(s.netto / s.tage)}</b> pro Tag` : ""}${s.tage > 1 && proKwh ? " · " : ""}${proKwh}</p>
+      <div class="zwei bzsatz">
+        ${this._feld("Einspeisevergütung", this._stepper("bilant.verguetung_ct", verg, "ct/kWh", 0.1, 0, 50, 1))}
+        ${this._feld("Grundgebühr", this._stepper("bilant.grundgebuehr", grund, "€/Monat", 0.5, 0, 100, 2))}</div>`;
+    const andere = (s.wallbox || 0) + (s.pompa || 0) + (s.heizstab || 0);
+    const verbr = [["Haus", Math.max(0, (s.verbraucht || 0) - andere), C.haus], ["Wallbox", s.wallbox, C.wallbox], ["Wärmepumpe", s.pompa, C.wp], ["Warmwasser", s.heizstab, C.heizstab]].filter((v) => (v[1] || 0) > 0.05);
+    const vmax = Math.max(...verbr.map((v) => v[1]), 0.01), jeKwh = s.verbraucht > 0.1 ? (s.bezahlt || 0) / s.verbraucht : 0;
+    const verbraucher = verbr.length ? verbr.map(([t, k, f]) => `<div class="vz" style="--f:${f}"><span>${t}</span><div class="spur2"><i style="width:${(k / vmax) * 100}%"></i></div><em>${kwhT(k)} · ${eur(k * jeKwh)}</em></div>`).join("") : '<div class="leerhinweis">Noch keine Daten.</div>';
+    const energie = `<div class="zeilen">
+        <div><span>Erzeugt (Photovoltaik)</span><b style="color:${C.pv}">${kwhT(s.erzeugt)}</b></div>
+        <div><span>Verbraucht</span><b>${kwhT(s.verbraucht)}</b></div>
+        <div><span>Aus dem Netz</span><b style="color:${C.netz_bezug}">${kwhT(s.bezug)}</b></div>
+        <div><span>Ins Netz eingespeist</span><b style="color:${g}">${kwhT(s.einspeisung)}</b></div>
+        <div class="summe"><span>Eigenverbrauch der Sonnenenergie</span><b>${s.eigenverbrauch == null ? "–" : `${s.eigenverbrauch} %`}</b></div>
+        <div><span>CO₂ vermieden</span><b>${zahl(s.co2_kg || 0, 0)} kg</b></div></div>`;
+    const taten = [];
+    if (s.wallbox > 0.5) taten.push([C.wallbox, kwhT(s.wallbox), `Das Auto ${s.wb_tage > 1 ? `an ${s.wb_tage} Tagen ` : ""}geladen, davon ${Math.round((100 * (s.wb_sonne || 0)) / s.wallbox)} % mit eigenem Strom.`]);
+    if (s.bat_entladen > 0.5) taten.push([C.batterie, eur(s.bat_wert), `Der Speicher hat ${kwhT(s.bat_entladen)} Netzstrom ersetzt.`]);
+    if (s.hz_sonne > 0.5) taten.push([C.heizstab, kwhT(s.hz_sonne), `Warmwasser mit Sonnenstrom statt Einspeisung${verg ? ` für ${zahl(verg, 1)} ct` : ""}.`]);
+    taten.push([g, eur(s.ersparnis), "Insgesamt gespart in diesem Zeitraum."]);
+    return `${kopf}
+      <div class="bzseite">
+        <section class="bzkpis">${kpis.map(([t, v, u, f, k]) => `<div class="karte kpi ${k || ""}" style="--f:${f}"><span>${t}</span><b>${v}</b><span>${u}</span></div>`).join("")}</section>
+        <div class="bzraster">
+          <section class="karte"><div class="kopf"><span class="etikett">${z === "tag" ? "Stromkosten je Stunde" : z === "jahr" ? "Stromkosten je Monat" : "Stromkosten je Tag"}</span>
+            <span class="mini"><i class="lg" style="background:#2a3a5c"></i>ohne Solaranlage<i class="lg" style="background:${C.netz_bezug}"></i>bezahlt<i class="lg" style="background:${g}"></i>Einspeisung</span></div>
+            ${this._bzDiagramm(p)}<div class="bztip">${tip}</div></section>
+          <section class="karte"><div class="kopf"><span class="etikett">Ihre Stromrechnung</span></div>${rechnung}</section>
+        </div>
+        <div class="bzraster">
+          <section class="karte"><div class="kopf"><span class="etikett">Wofür der Strom gebraucht wurde</span><span class="mini">kWh · anteilige Kosten</span></div><div class="verbraucher">${verbraucher}</div></section>
+          <section class="karte"><div class="kopf"><span class="etikett">Energie</span></div>${energie}</section>
+        </div>
+        <section class="karte"><div class="kopf"><span class="etikett">Was VOLTHERM für Sie getan hat</span></div>
+          <div class="taten">${taten.map(([f, v, t]) => `<div class="tat" style="--f:${f}"><b>${v}</b><span>${t}</span></div>`).join("")}</div></section>
+        ${this._praesKarte()}
+        ${this._fernKarte()}
+      </div>`;
+  }
+
+  _render() {
+    if (!this._hass || this._praes) return;  // prezentarea e deschisă: nu redesenăm, altfel iframe-ul ar porni de la capăt
+    const seiten = this._seiten();
+    if (!seiten.some(([id]) => id === this._seite)) this._seite = "energie";
+    const preis = this._n("vt_pret_curent");
+    const jetzt = new Date();
+    const inhalt = { energie: () => this._seiteEnergie(), pv: () => this._seitePv(), batterie: () => this._seiteBatterie(),
+      wallbox: () => this._seiteWallbox(), heizstab: () => this._seiteHeizstab(), klima: () => this._seiteKlima(), wp: () => this._seiteWp(),
+      bilanz: () => this._seiteBilanz() }[this._seite]();
+    const handy = istHandy();
+    const navSeiten = handy ? seiten.filter(([id]) => HANDY_HAUPT.includes(id)) : seiten;
+    const mehr = handy ? seiten.filter(([id]) => !HANDY_HAUPT.includes(id)) : [];
+    const sich = this._sicherheit();
+    const pauseKnopf = sich && sich.stare !== "pausiert" && !this._pauseFrage
+      ? `<button class="pauseknopf" data-akt="pause|frage" title="Alle Geräte normal laufen lassen">${ico("pause", "currentColor", 16)}<span>Pausieren</span></button>` : "";
+    const alt = this.shadowRoot.querySelector("main");
+    const scroll = alt?.dataset.seite === this._seite ? alt.scrollTop : 0;
+    this.shadowRoot.innerHTML = `<style>${CSS}</style>
+      <div class="seite">
+        <header>
+          ${this._schmal ? `<button class="menue" data-akt="menue" aria-label="Menü">☰</button>` : ""}
+          ${this._fehler ? `<span class="fehlerzeile">${esc(this._fehler)}</span>` : ""}
+          <div class="marke"><svg viewBox="0 0 300 300" class="logo" aria-hidden="true"><polygon points="22,20 86,20 166,232 150,272" fill="#8FA3C8"/><polygon points="74,20 112,20 168,200 154,226" fill="#FFFFFF"/><polygon points="200,20 290,20 214,118 276,118 126,286 176,170 128,170" fill="#19C3E6"/></svg>
+            <span>VOLT<b>HERM</b></span></div>
+          <div class="datum">${jetzt.toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "long" })}</div>
+          <div class="rechts">
+            ${preis != null ? `<span class="preis"><small>Preis jetzt</small>${zahl(preis * 100)} ct</span>` : ""}
+            ${pauseKnopf}
+            <span class="uhr">${jetzt.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })}</span></div>
+        </header>
+        <main data-seite="${this._seite}">${inhalt}</main>
+        ${this._sicherHtml()}
+        ${handy ? this._mehrHtml(seiten) : ""}
+        <nav aria-label="Bereiche">${navSeiten.map(([id, t, f]) => `<button data-akt="seite|${id}" aria-current="${id === this._seite}" style="--f:${f}">${ico(id, "currentColor", 22)}<span>${t}</span></button>`).join("")}
+          ${handy ? (mehr.length ? `<button data-akt="mehr" aria-expanded="${!!this._mehr}" aria-current="${mehr.some(([id]) => id === this._seite)}" style="--f:#19C3E6">${ico("mehr", "currentColor", 22)}<span>Mehr</span></button>` : "")
+          : `<button class="rund" data-akt="rundlauf" aria-pressed="${this._rundlauf}" title="Seiten automatisch wechseln, z. B. am Fernseher">${ico("rund", "currentColor", 22)}<span>${this._rundlauf ? "Rundlauf an" : "Rundlauf"}</span></button>`}</nav>
+        ${this._rundlauf && !handy ? `<div class="rundbalken" style="--d:${RUNDLAUF_S}s" aria-hidden="true"><i></i></div>` : ""}
+        ${this._ansageHtml()}
+        ${this._hinweisHtml()}
+      </div>`;
+    const m = this.shadowRoot.querySelector("main");
+    if (m) m.scrollTop = scroll;
+  }
+}
+
+const CSS = `
+:host{display:block;height:100%;--bg:#070c16;--karte:#0e1626;--linie:#1c2a44;--text:#e6ebf5;--mut:#8fa3c8;
+  background:radial-gradient(1200px 600px at 30% -10%,#12203a 0%,var(--bg) 60%);color:var(--text);
+  font-family:"Inter","Roboto",system-ui,sans-serif}
+button{font:inherit;color:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
+button:focus-visible,input:focus-visible{outline:2px solid #19C3E6;outline-offset:2px}
+.seite{box-sizing:border-box;height:100vh;padding:18px 24px 0;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);grid-auto-rows:auto;gap:14px;position:relative}
+header{display:flex;align-items:center;gap:20px;min-width:0}
+.marke{display:flex;align-items:center;gap:10px;font-size:26px;font-weight:800;letter-spacing:.08em}
+.marke b{color:#19C3E6;font-weight:800}.logo{width:40px;height:40px}
+.datum{color:var(--mut);font-size:18px}
+.rechts{margin-left:auto;display:flex;align-items:center;gap:22px}
+.preis{white-space:nowrap;display:flex;flex-direction:column;align-items:flex-end;font-size:26px;font-weight:700;color:#FFC531;line-height:1}
+.preis small{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mut);font-weight:500;margin-bottom:4px}
+.uhr{font-size:44px;font-weight:300;font-variant-numeric:tabular-nums}
+main{min-height:0;overflow:auto;scrollbar-width:thin}
+.fern-zeile{display:flex;justify-content:space-between;align-items:center;gap:14px}.fern-zeile div{display:grid;gap:3px}
+.fern-zeile small{color:var(--mut);font-size:13px;line-height:1.4}
+.sw{all:unset;cursor:pointer;width:52px;height:30px;border-radius:99px;background:#24324f;position:relative;flex:none}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;transition:left .2s}
+.sw[aria-checked="true"]{background:#3DDC97}.sw[aria-checked="true"]::after{left:25px}
+.sw:focus-visible{outline:2px solid #19C3E6;outline-offset:2px}
+.karte.fern{display:grid;gap:12px}
+.karte.praes{display:flex;align-items:center;gap:20px}
+.praes-text{display:grid;gap:6px;flex:1;min-width:0;justify-items:start}.praes-text b{font-size:19px}
+.praes-text small{color:var(--mut);font-size:14px;line-height:1.45;max-width:560px}
+.praes-knopf{margin-top:8px;display:inline-flex;align-items:center;gap:8px;border:0;border-radius:999px;padding:11px 20px;background:#19C3E6;color:#04121c;font-weight:700;font-size:15px}
+.praes-qr{margin:0;display:grid;justify-items:center;gap:6px;flex:none}.praes-qr svg{width:132px;height:132px;border-radius:10px;display:block}
+.praes-qr figcaption{color:var(--mut);font-size:12px;text-align:center;max-width:140px}
+@media (max-width:600px){.karte.praes{flex-direction:column;align-items:stretch}.praes-qr svg{width:160px;height:160px}}
+.praes-ebene{position:fixed;inset:0;z-index:20;display:grid;grid-template-rows:auto minmax(0,1fr);background:var(--bg)}
+.praes-leiste{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 16px;border-bottom:1px solid var(--linie);font-size:17px;letter-spacing:.04em}
+.praes-leiste b{color:#19C3E6}
+.praes-leiste button{border:1px solid var(--linie);background:rgba(255,255,255,.06);border-radius:999px;padding:9px 18px;font-size:15px;font-weight:600}
+.praes-ebene iframe{border:0;width:100%;height:100%;display:block;background:#0b1220}
+@media (prefers-reduced-motion:reduce){.sw::after{transition:none}}
+nav{display:flex;justify-content:center;gap:4px;padding:8px 0 12px;border-top:1px solid var(--linie)}
+nav button{display:flex;align-items:center;gap:8px;background:none;border:0;padding:10px 14px;border-radius:12px;color:var(--mut);font-size:15px;white-space:nowrap}
+nav button[aria-current="true"]{color:var(--f);background:rgba(255,255,255,.05);box-shadow:inset 0 -2px 0 var(--f)}
+nav .rund{margin-left:12px;border-left:1px solid var(--linie);border-radius:0 12px 12px 0}
+nav .rund[aria-pressed="true"]{color:#19C3E6}
+.rundbalken{position:absolute;left:0;right:0;bottom:0;height:3px}
+.rundbalken i{display:block;height:100%;background:#19C3E6;animation:fuell var(--d) linear infinite;transform-origin:left}
+@keyframes fuell{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.karte{background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.01));border:1px solid var(--linie);border-radius:18px;padding:16px 18px;box-sizing:border-box;min-width:0}
+.etikett{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--mut)}
+.kopf{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.sim{font-size:11px;padding:2px 10px;border-radius:99px;background:rgba(255,197,49,.12);color:#FFC531;letter-spacing:.06em}
+.mini{font-size:12px;color:var(--mut);white-space:nowrap}.lg{display:inline-block;width:10px;height:10px;border-radius:2px;margin:0 4px 0 10px;vertical-align:-1px}
+.lg.billig{background:#3DDC97}.lg.teuer{background:#FF5A5F}.lg.geplant{background:#19C3E6}.lg.jetzt{background:#FFC531}.lg.fortat{background:#FF9F43}
+.leerhinweis{color:var(--mut);padding:18px 0;text-align:center}
+.leerhinweis:empty{display:none}
+.hilfe{display:block;color:var(--mut);font-size:13px;line-height:1.4;margin-top:4px}
+/* Energie */
+.raster-energie{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);grid-template-rows:minmax(0,1fr) auto;gap:14px;min-height:100%}
+.fluss{display:flex;align-items:center;justify-content:center;padding:6px}
+.fluss-svg{width:100%;height:100%;max-height:56vh}
+.knoten .ring{fill:#0b1324;stroke:var(--f);stroke-width:3}
+.knoten .glow{fill:none;stroke:var(--f);stroke-width:14;opacity:.12;filter:blur(6px)}
+.knoten.aus .ring{stroke-opacity:.35}.knoten.aus .glow{opacity:0}
+.knoten .wert{fill:var(--f);font-size:27px;font-weight:700;text-anchor:middle;font-variant-numeric:tabular-nums;filter:drop-shadow(0 0 8px var(--f))}
+.knoten.aus .wert{filter:none;opacity:.65}
+.knoten .titel{fill:var(--mut);font-size:14px;text-anchor:middle;letter-spacing:.06em}
+.knoten .unter{fill:var(--text);font-size:17px;text-anchor:middle;opacity:.85}
+.leer{stroke:var(--linie);stroke-width:2;stroke-dasharray:4 8}
+.spur{opacity:.18;stroke-linecap:round}
+.fluss-svg .fluss{stroke-dasharray:2 22;stroke-linecap:round;animation:lauf linear infinite;filter:drop-shadow(0 0 6px currentColor)}
+@keyframes lauf{to{stroke-dashoffset:-24}}
+aside{display:grid;gap:14px;align-content:start;min-width:0}
+.jetzt .zeile{display:grid;grid-template-columns:auto 1fr;column-gap:12px;row-gap:2px;padding:9px 6px 9px 14px;border:0;border-left:3px solid var(--f);margin-bottom:6px;background:none;text-align:left;width:100%;border-radius:0}
+.jetzt .zeile:hover{background:rgba(255,255,255,.03)}
+.jetzt .zeile b{font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--f);align-self:center}
+.jetzt .was{font-size:20px;font-weight:600;justify-self:end;text-align:right}
+.jetzt .warum{grid-column:1/-1;color:var(--mut);font-size:14px;line-height:1.4}
+.heute .kacheln{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:10px}
+.heute .kacheln div{display:flex;flex-direction:column;gap:2px}
+.heute span{color:var(--mut);font-size:13px}.heute b{font-size:28px;font-weight:700;font-variant-numeric:tabular-nums}
+.preise{grid-column:1/-1}
+.balken{position:relative;display:flex;align-items:flex-end;gap:4px;height:130px}
+.pb{flex:1;min-width:0;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:4px}
+.pb i{display:block;width:100%;border-radius:4px 4px 0 0;background:#2a3a5c}
+.pb.billig i{background:#3DDC97}.pb.teuer i{background:#FF5A5F;opacity:.8}
+.pb.jetzt i{background:#FFC531;box-shadow:0 0 12px #FFC531}
+.pb.geplant i{background:var(--f,#19C3E6);box-shadow:0 0 10px var(--f,#19C3E6)}.pb.fortat i{background:#FF9F43}.pb.ueber i{opacity:.35}
+.pb span{font-size:11px;color:var(--mut);font-variant-numeric:tabular-nums;height:14px}
+.grenze{position:absolute;left:0;right:0;border-top:2px dashed #FFC531;pointer-events:none}
+.grenze span{position:absolute;right:0;top:-21px;font-size:12px;color:#FFC531}
+.spanne{margin-top:6px;color:var(--mut);font-size:13px;text-align:right}
+/* Module */
+.modulkopf{display:flex;align-items:center;gap:14px;margin:2px 0 14px}
+.modulkopf h1{margin:0;font-size:30px;font-weight:700;color:var(--f);letter-spacing:.02em}
+.modulkopf p{margin:2px 0 0;color:var(--mut);font-size:16px}
+.raster-modul{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:14px}
+.raster-modul .breit,.raster-modul .warum-karte{grid-column:1/-1}
+.mitte{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.ring-gross{width:min(260px,100%);height:auto}
+.ring-bahn{fill:none;stroke:#1a2740;stroke-width:16}
+.ring-wert{fill:none;stroke:var(--f);stroke-width:16;stroke-linecap:round;filter:drop-shadow(0 0 10px var(--f))}
+.zielstrich{stroke:#fff;stroke-width:4;stroke-linecap:round}
+.ring-zahl{fill:var(--f);font-size:46px;font-weight:700;text-anchor:middle;font-variant-numeric:tabular-nums}
+.ring-unter{fill:var(--mut);font-size:16px;text-anchor:middle}
+.einstellungen{display:grid;gap:18px;align-content:start}
+.feld{display:grid;gap:8px;min-width:0}
+.zwei{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.wahl{display:flex;flex-wrap:wrap;gap:6px}
+.wahl button{flex:1 1 auto;min-height:48px;padding:8px 14px;border-radius:12px;border:1px solid var(--linie);background:#0b1324;color:var(--mut);font-size:16px}
+.wahl button[aria-pressed="true"]{background:var(--f);border-color:var(--f);color:#04121a;font-weight:700}
+.stepper{display:flex;align-items:center;gap:10px}
+.stepper button{width:52px;height:52px;flex:none;border-radius:14px;border:1px solid var(--linie);background:#0b1324;font-size:26px;line-height:1}
+.stepper button:active{background:#16223a}
+.stepper b{flex:0 0 auto;min-width:120px;text-align:center;font-size:30px;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+.stepper small{font-size:15px;color:var(--mut);font-weight:500;margin-left:4px}
+.regler{display:flex;align-items:center;gap:14px}
+.regler input{flex:1;min-width:0;accent-color:var(--f);height:32px}
+.regler b{min-width:110px;text-align:right;font-size:22px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.gross{min-height:56px;width:100%;border-radius:14px;border:1px solid var(--f);background:rgba(255,107,44,.1);color:#ffd2bf;font-size:17px;font-weight:600}
+.gross.an{background:var(--f);color:#1a0800}
+.planzeile{margin:10px 0 0;font-size:17px;line-height:1.45}
+.planzeile small{color:var(--mut);font-size:14px}.warn{color:#FFC531}
+.warum-karte{border-left:4px solid var(--f)}
+.warum-karte b{font-size:20px;color:var(--f)}.warum-karte p{margin:4px 0 0;color:var(--text);opacity:.85;font-size:16px;line-height:1.45}
+.kachelreihe{grid-column:1/-1;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.kachelreihe div{display:grid;gap:4px}.kachelreihe b{font-size:34px;font-weight:700;font-variant-numeric:tabular-nums}
+.pv-raster{grid-template-columns:minmax(0,1fr)}
+.kurve{width:100%;height:auto;max-height:52vh}
+.gitter{stroke:#1a2740;stroke-width:1}.achse{fill:var(--mut);font-size:11px;text-anchor:middle}.achse.rechtsb{text-anchor:end}.achse.links{text-anchor:start}
+.jetztlinie{stroke:#fff;stroke-opacity:.35;stroke-dasharray:3 5}.jetztpunkt{fill:${C.pv};stroke:#fff;stroke-width:2}
+.tank{width:min(220px,60%);height:auto}
+.tankhuelle{fill:#0b1324;stroke:#2a3a5c;stroke-width:3}
+.marke{stroke:#fff;stroke-opacity:.55;stroke-width:2;stroke-dasharray:6 4}.markentext{fill:var(--mut);font-size:14px}
+.tankreihe{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}.tankwert{display:grid;gap:4px;text-align:left}.tankwert b{font-size:64px;font-weight:700;color:${C.heizstab};line-height:1;font-variant-numeric:tabular-nums}.tankwert small{font-size:24px;color:var(--mut);font-weight:400;margin-left:4px}.tankwert span{color:var(--mut)}
+.raster-raeume{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:14px}
+.raum{display:grid;gap:14px;align-content:start;border-top:3px solid var(--z)}
+.raumname{font-size:20px}
+.pille{font-size:13px;padding:3px 12px;border-radius:99px;border:1px solid var(--linie);color:var(--mut)}
+.pille.an{border-color:var(--z);color:var(--z);background:rgba(255,255,255,.05)}
+.raumtemp{display:flex;align-items:baseline;gap:10px}.raumtemp b{font-size:52px;font-weight:700;color:${C.klima};font-variant-numeric:tabular-nums}.raumtemp span{color:var(--mut)}
+.raum .wahl button{font-size:15px;min-height:44px;padding:6px 10px}
+.raumwarum{margin:0;color:var(--mut);font-size:14px;line-height:1.4}
+.fuss{color:var(--mut);font-size:14px;line-height:1.5;margin:14px 2px;max-width:110ch}.fuss b{color:var(--text)}
+.leiter{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.stufe{display:grid;gap:6px;justify-items:start;padding:12px;border-radius:14px;border:1px solid var(--linie);opacity:.45}
+.stufe.aktiv{opacity:1;border-color:var(--f);background:rgba(255,255,255,.05);box-shadow:0 0 22px -8px var(--f)}
+.stufe .nr{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-weight:700;border:2px solid var(--f);color:var(--f)}
+.stufe b{font-size:19px}.stufe small{color:var(--mut);font-size:13px;line-height:1.3}
+.p14a{display:flex;align-items:center;gap:8px;color:var(--mut);font-size:14px;margin:14px 0 0}.p14a i{width:10px;height:10px;border-radius:50%;flex:none}
+/* Bilanz */
+.bzkopf{display:flex;align-items:center;gap:16px;flex-wrap:wrap;justify-content:space-between}.bzkopf .modulkopf{margin-bottom:8px}
+.bzsteuer{display:flex;align-items:center;gap:12px}.bzzeit button{min-height:42px;padding:6px 16px}
+.blaettern{display:flex;gap:8px}.blaettern button{width:44px;height:44px;border-radius:12px;border:1px solid var(--linie);background:#0b1324;font-size:22px}
+.blaettern button:disabled{opacity:.3;cursor:default}
+.bzseite{display:grid;gap:14px;padding-bottom:14px}
+.bzkpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+.kpi{display:flex;flex-direction:column;gap:4px}.kpi span{font-size:13px;color:var(--mut)}
+.kpi b{font-size:32px;font-weight:700;line-height:1.05;font-variant-numeric:tabular-nums;color:var(--f)}
+.kpi.haupt{border-color:rgba(61,220,151,.45);background:linear-gradient(160deg,rgba(61,220,151,.14),rgba(255,255,255,.01))}
+.bzraster{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:14px}
+.bzdiagramm{width:100%;height:auto;max-height:42vh;display:block}
+.bzsaeule{cursor:pointer}.bzsaeule.aktiv rect:nth-child(2){stroke:#fff;stroke-width:2}
+.bztip{min-height:22px;font-size:14px;color:var(--mut);margin-top:6px}.bztip b{color:var(--text)}
+.zeilen{display:grid;gap:9px;font-size:15px}.zeilen div{display:flex;justify-content:space-between;gap:10px}
+.zeilen span{color:var(--mut)}.zeilen b{font-variant-numeric:tabular-nums}.zeilen .summe{border-top:1px solid var(--linie);padding-top:9px}
+.gross-zahl{font-size:22px}.bzschnitt{color:var(--mut);font-size:14px;margin:10px 0 14px}.bzschnitt b{color:var(--text)}
+.bzsatz .stepper b{min-width:0;font-size:22px}.bzsatz .stepper button{width:44px;height:44px}
+.verbraucher{display:grid;gap:12px}
+.vz{display:grid;grid-template-columns:110px minmax(0,1fr) auto;gap:10px;align-items:center;font-size:15px}
+.spur2{height:12px;border-radius:6px;background:rgba(255,255,255,.05);overflow:hidden}.spur2 i{display:block;height:100%;border-radius:6px;background:var(--f)}
+.vz em{font-style:normal;color:var(--mut);font-variant-numeric:tabular-nums;white-space:nowrap}
+.taten{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+.tat{border-left:3px solid var(--f);padding:4px 0 4px 14px;display:grid;gap:2px}.tat b{font-size:22px;color:var(--f);font-variant-numeric:tabular-nums}.tat span{font-size:14px;color:var(--mut);line-height:1.4}
+.ansage{position:absolute;left:50%;top:14px;transform:translateX(-50%);width:min(760px,calc(100% - 28px));box-sizing:border-box;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:14px;align-items:center;text-align:left;
+  padding:14px 18px;border-radius:16px;border:1px solid var(--f);background:rgba(14,22,38,.97);box-shadow:0 0 34px -8px var(--f);animation:einblenden .35s ease;z-index:5}
+.ansage b{color:var(--f);font-size:14px;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}.ansage span{font-size:19px;line-height:1.35}.ansage small{color:var(--mut);font-size:14px}
+@keyframes einblenden{from{transform:translate(-50%,-20px);opacity:0}}
+@media (max-width:900px){.ansage{grid-template-columns:minmax(0,1fr)}.ansage span{font-size:16px}}
+.toast.fehler{background:#FF5A5F;color:#1a0000}
+.pauseknopf{display:flex;align-items:center;gap:6px;border:1px solid var(--linie);background:rgba(14,22,38,.7);border-radius:99px;padding:6px 12px;font-size:13px;color:var(--mut)}
+.sicher{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:14px;align-items:center;padding:12px 16px;border-radius:14px;
+  border:1px solid #FFC531;background:rgba(40,30,6,.95);box-shadow:0 0 30px -12px #FFC531}
+.sicher .sym{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;background:#FFC531;color:#1a1200;font-weight:800;font-size:20px}
+.sicher b{display:block;font-size:17px}.sicher small{display:block;color:#e2d3a4;font-size:14px;line-height:1.4;margin-top:2px}
+.sicher .knoepfe{display:flex;gap:8px}
+.sicher button{border:1px solid #FFC531;background:transparent;color:#FFC531;border-radius:10px;padding:8px 14px;font-size:14px;min-height:40px}
+.sicher button.voll{background:#FFC531;color:#1a1200;font-weight:600}
+.mehrblatt{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:10px;border:1px solid var(--linie);border-radius:16px;background:#0e1626}
+.mehrblatt button{display:flex;align-items:center;gap:10px;min-height:52px;padding:8px 12px;border-radius:12px;border:1px solid var(--linie);background:#0b1324;font-size:16px;text-align:left}
+.mehrblatt button[aria-current="true"]{border-color:var(--f);color:var(--f)}
+.menue{background:none;border:0;color:var(--text);font-size:24px;padding:4px 8px}
+.fehlerzeile{position:absolute;top:4px;left:50%;transform:translateX(-50%);font-size:12px;color:#FF5A5F}
+.toast{position:absolute;left:50%;bottom:84px;transform:translateX(-50%);background:#19C3E6;color:#04121a;padding:10px 18px;border-radius:12px;font-weight:600;box-shadow:0 8px 30px rgba(0,0,0,.5);white-space:nowrap}
+@media (prefers-reduced-motion:reduce){.fluss-svg .fluss,.rundbalken i,.ansage{animation:none}}
+@media (max-width:900px){
+  .seite{padding:12px 14px 0;gap:10px}
+  .raster-energie,.raster-modul{grid-template-columns:minmax(0,1fr)}
+  .uhr{font-size:24px}.datum{display:none}.marke{font-size:17px;gap:6px}.logo{width:30px;height:30px}.rechts{gap:10px}.preis{font-size:18px}.preis small{font-size:9px}
+  .fluss-svg{max-height:none}
+  .knoten .wert{font-size:30px}.knoten .titel{font-size:18px}.knoten .unter{font-size:24px}
+  .pb span.klein{visibility:hidden}
+  .kachelreihe{grid-template-columns:repeat(2,minmax(0,1fr))}.kachelreihe b{font-size:26px}
+  .leiter{grid-template-columns:repeat(2,minmax(0,1fr))}
+  nav{justify-content:flex-start;overflow-x:auto;padding-bottom:calc(10px + env(safe-area-inset-bottom,0px))}
+  nav button{flex-direction:column;gap:2px;font-size:11px;padding:6px 10px;flex:none}
+  nav .rund{margin-left:0}
+  .zwei{grid-template-columns:minmax(0,1fr)}.stepper b{min-width:90px;font-size:26px}
+  .bzraster{grid-template-columns:minmax(0,1fr)}.kpi b{font-size:24px}.bzzeit{flex-wrap:nowrap;flex:1}.bzzeit button{padding:6px 8px;font-size:14px;min-width:0}.bzkpis{grid-template-columns:repeat(2,minmax(0,1fr))}.bzkpis .haupt{grid-column:1/-1}.vz{grid-template-columns:90px minmax(0,1fr) auto}.bzsteuer{width:100%;justify-content:space-between}
+  .modulkopf h1{font-size:24px}.toast{white-space:normal;width:80%;text-align:center}
+  .sicher{grid-template-columns:auto minmax(0,1fr)}.sicher .knoepfe{grid-column:1/-1}.sicher .knoepfe button{flex:1}
+  .pauseknopf span{display:none}.pauseknopf{padding:8px}
+}
+@media (max-width:600px){
+  nav{justify-content:space-around;overflow:visible;gap:0}
+  nav button{flex:1;min-width:0;padding:6px 2px;font-size:11px}
+  .stepper button,.wahl button{min-height:48px}
+}
+`;
+
+if (!customElements.get("voltherm-home")) customElements.define("voltherm-home", VolthermHome);
+
+</script>
+<script type="module">
+
+const p2 = (n) => String(n).padStart(2, "0");
+const isoOra = (d) => d.getFullYear() + "-" + p2(d.getMonth() + 1) + "-" + p2(d.getDate()) + "T" + p2(d.getHours()) + ":00";
+const isoTag = (d) => d.getFullYear() + "-" + p2(d.getMonth() + 1) + "-" + p2(d.getDate());
+const rund = (v, n) => Math.round(v * Math.pow(10, n)) / Math.pow(10, n);
+const zufall = (s) => { const x = Math.sin(s * 12.9898) * 43758.5453; return x - Math.floor(x); };
+
+// Preț pe oră (EUR/kWh): noaptea ieftin, dimineața și seara scump, plus o abatere mică pe zi.
+const PREIS_STUNDE = [0.19, 0.18, 0.17, 0.17, 0.18, 0.21, 0.26, 0.31, 0.33, 0.29, 0.25, 0.22,
+  0.20, 0.19, 0.20, 0.23, 0.28, 0.34, 0.38, 0.36, 0.31, 0.27, 0.23, 0.21];
+const preis = (d) => rund(PREIS_STUNDE[d.getHours()] * (0.92 + 0.16 * zufall(d.getDate() * 24 + d.getHours())), 4);
+
+function preisliste(n) {
+  const l = [], a = new Date();
+  a.setMinutes(0, 0, 0);
+  for (let i = 0; i < n; i++) { const d = new Date(a.getTime() + i * 3600000); l.push({ ora: isoOra(d), pret: preis(d) }); }
+  return l;
+}
+
+// Prognoza PV de azi, pe oră (W): clopot peste zi, normalizat la kWh-ul prognozat.
+const PROGNOSE_HEUTE = 35.2, PROGNOSE_MORGEN = 28.6;
+function prognoza() {
+  const forma = [], ore = [], a = new Date();
+  for (let h = 5; h <= 21; h++) { const x = (h - 13) / 3; forma.push(Math.exp(-x * x)); ore.push(h); }
+  const summe = forma.reduce((x, y) => x + y, 0);
+  return ore.map((h, i) => ({ ora: isoOra(new Date(a.getFullYear(), a.getMonth(), a.getDate(), h)),
+    w: Math.round((forma[i] / summe) * PROGNOSE_HEUTE * 1000) }));
+}
+
+// ---------- Bilanț: zile inventate, de la instalare (acum 420 de zile) până azi ----------
+const CAMPURI = ["erzeugt", "verbraucht", "bezug", "einspeisung", "wallbox", "wb_sonne", "heizstab", "hz_sonne", "pompa",
+  "bat_entladen", "kosten", "ohne_pv", "erloes", "bat_wert"];
+const INSTALLIERT = new Date(Date.now() - 420 * 86400000);
+const VERGUETUNG_CT = 8.2, GRUNDGEBUEHR = 12.9;
+
+const zileLuna = (j, m) => new Date(j, m + 1, 0).getDate();
+
+// Ziua de azi e o zi însorită de arătat: valori fixe, ca restul ecranului să se potrivească.
+const TAG_HEUTE = { erzeugt: 33.8, verbraucht: 28.2, bezug: 4.0, einspeisung: 9.6, wallbox: 11.4, wb_sonne: 8.0,
+  heizstab: 4.2, hz_sonne: 3.6, pompa: 3.6, bat_entladen: 6.4, kosten: 1.06, ohne_pv: 8.52, erloes: 0.79, bat_wert: 1.86 };
+
+function zi(d) {
+  if (isoTag(d) === isoTag(new Date())) return { ...TAG_HEUTE };
+  const n = Math.round(d.getTime() / 86400000);
+  const r = (k) => zufall(n + k * 0.137);
+  const tag = (d - new Date(d.getFullYear(), 0, 0)) / 86400000;
+  const sonne = 0.32 + 0.68 * (0.5 + 0.5 * Math.cos(((tag - 172) / 365) * 2 * Math.PI));  // maxim la solstițiu
+  const winter = sonne < 0.6;
+  const erzeugt = 30 * sonne * (0.5 + 0.7 * r(1));
+  const haus = 7.5 + 3.5 * r(2);
+  const wallbox = r(3) > 0.45 ? 9 + 12 * r(4) : 0;
+  const heizstab = (winter ? 3.2 : 1.8) + 2.5 * r(5);
+  const pompa = (winter ? 7 : 1.5) + 4 * r(6);
+  const verbraucht = haus + wallbox + heizstab + pompa;
+  const eigen = Math.min(erzeugt * 0.72, verbraucht * 0.86);  // cu acumulatorul, mare parte din soare rămâne în casă
+  const z = {
+    erzeugt: erzeugt, verbraucht: verbraucht, bezug: verbraucht - eigen, einspeisung: erzeugt - eigen,
+    wallbox: wallbox, wb_sonne: wallbox * (0.45 + 0.4 * r(7)), heizstab: heizstab, hz_sonne: heizstab * 0.85,
+    pompa: pompa, bat_entladen: 3.4 + 3.6 * r(8),
+  };
+  z.kosten = z.bezug * 0.265;
+  z.ohne_pv = z.verbraucht * 0.302;
+  z.erloes = z.einspeisung * (VERGUETUNG_CT / 100);
+  z.bat_wert = z.bat_entladen * 0.29;
+  return z;
+}
+
+// Profilul zilei pe ore: consumul casei și soarele.
+const FORMA = [0.5, 0.5, 0.6, 0.6, 0.5, 0.7, 1.4, 1.6, 1.2, 0.8, 0.5, 0.4, 0.4, 0.4, 0.5, 0.8, 1.4, 1.8, 1.9, 1.6, 1.2, 0.9, 0.7, 0.6];
+const SOLAR = [0, 0, 0, 0, 0, .1, .4, .9, 1.4, 1.8, 2.1, 2.3, 2.4, 2.3, 2.1, 1.7, 1.2, .7, .3, .05, 0, 0, 0, 0];
+
+// Cât din ziua de azi s-a scurs, după profilul dat (0…1).
+function anteil(shape) {
+  const a = new Date(), ganz = shape.reduce((x, y) => x + y, 0);
+  let s = 0;
+  for (let h = 0; h < a.getHours(); h++) s += shape[h];
+  return Math.min(1, (s + shape[a.getHours()] * (a.getMinutes() / 60)) / ganz);
+}
+
+// Costurile pe oră ale unei zile (ecranul „Tag”): profilul consumului peste suma zilei.
+function oreZi(d, pana) {
+  const z = zi(d), teil = [], forma = FORMA, solar = SOLAR;
+  const sf = forma.reduce((a, b) => a + b, 0), ss = solar.reduce((a, b) => a + b, 0);
+  for (let h = 0; h < 24; h++) {
+    if (pana != null && h > pana) { teil.push({ name: p2(h), kosten: 0, ohne_pv: 0, erloes: 0 }); continue; }
+    teil.push({ name: p2(h), kosten: rund((z.kosten * forma[h]) / sf, 3), ohne_pv: rund((z.ohne_pv * forma[h]) / sf, 3),
+      erloes: rund((z.erloes * solar[h]) / ss, 3) });
+  }
+  return teil;
+}
+
+function rotunjeste(z, grund) {
+  const r = {};
+  for (const k of CAMPURI) r[k] = rund(z[k] || 0, ["kosten", "ohne_pv", "erloes", "bat_wert"].includes(k) ? 3 : 2);
+  r.grund = rund(grund, 3);
+  r.bezahlt = rund((z.kosten || 0) + grund, 2);
+  r.ohne_solar = rund((z.ohne_pv || 0) + grund, 2);
+  r.netto = rund(r.bezahlt - (z.erloes || 0), 2);
+  r.ersparnis = rund((z.ohne_pv || 0) - (z.kosten || 0) + (z.erloes || 0), 2);
+  r.autarkie = (z.verbraucht || 0) > 0.05 ? Math.round(Math.max(0, 1 - z.bezug / z.verbraucht) * 100) : null;
+  r.eigenverbrauch = (z.erzeugt || 0) > 0.05 ? Math.round(Math.max(0, 1 - z.einspeisung / z.erzeugt) * 100) : null;
+  r.co2_kg = Math.round(Math.max(0, (z.verbraucht || 0) - (z.bezug || 0)) * 0.38);
+  return r;
+}
+
+function aduna(zile) {
+  const t = {};
+  for (const k of CAMPURI) t[k] = 0;
+  for (const z of zile) for (const k of CAMPURI) t[k] += z[k] || 0;
+  return t;
+}
+
+// Ziua de azi, cât s-a adunat până acum: soarele după profilul PV, restul după profilul consumului.
+const SOLARE = ["erzeugt", "einspeisung", "erloes", "wb_sonne", "hz_sonne"];
+const heute = () => {
+  const a = new Date(), fs = anteil(SOLAR), fv = anteil(FORMA), z = {};
+  for (const k of CAMPURI) z[k] = (TAG_HEUTE[k] || 0) * (SOLARE.includes(k) ? fs : fv);
+  return { datum: isoTag(a), ...rotunjeste(z, GRUNDGEBUEHR / zileLuna(a.getFullYear(), a.getMonth())) };
+};
+
+function bilanz(zeit, datum) {
+  const azi = new Date(); azi.setHours(12, 0, 0, 0);
+  const ref = new Date((datum || isoTag(azi)) + "T12:00:00");
+  let start = new Date(ref), end = new Date(ref);
+  if (zeit === "woche") { start.setDate(ref.getDate() - ((ref.getDay() + 6) % 7)); end = new Date(start); end.setDate(start.getDate() + 6); }
+  else if (zeit === "monat") { start = new Date(ref.getFullYear(), ref.getMonth(), 1, 12); end = new Date(ref.getFullYear(), ref.getMonth(), zileLuna(ref.getFullYear(), ref.getMonth()), 12); }
+  else if (zeit === "jahr") { start = new Date(ref.getFullYear(), 0, 1, 12); end = new Date(ref.getFullYear(), 11, 31, 12); }
+
+  const hat = (d) => d >= INSTALLIERT && d <= azi;
+  const grundZi = (d) => GRUNDGEBUEHR / zileLuna(d.getFullYear(), d.getMonth());
+  const zile = [];
+  let grund = 0;
+  for (const d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+    if (!hat(d)) continue;
+    const istAzi = isoTag(d) === isoTag(azi);
+    zile.push([new Date(d), istAzi ? heute() : zi(d)]);
+    grund += grundZi(d);
+  }
+  const summe = rotunjeste(aduna(zile.map((x) => x[1])), grund);
+  summe.tage = zile.length;
+  summe.wb_tage = zile.filter((x) => (x[1].wallbox || 0) > 0.5).length;
+
+  let teile = [];
+  if (zeit === "tag") {
+    teile = hat(ref) ? oreZi(ref, isoTag(ref) === isoTag(azi) ? new Date().getHours() : null) : [];
+  } else if (zeit === "jahr") {
+    for (let m = 0; m < 12; m++) {
+      const dinLuna = zile.filter((x) => x[0].getMonth() === m);
+      teile.push(dinLuna.length
+        ? { name: String(m + 1), ...rotunjeste(aduna(dinLuna.map((x) => x[1])), dinLuna.reduce((s, x) => s + grundZi(x[0]), 0)) }
+        : { name: String(m + 1) });
+    }
+  } else {
+    const peZi = new Map(zile.map((x) => [isoTag(x[0]), x[1]]));
+    for (const d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+      const z = peZi.get(isoTag(d));
+      teile.push(z ? { name: isoTag(d), ...rotunjeste(z, grundZi(d)) } : { name: isoTag(d) });
+    }
+  }
+  return { zeit: zeit, start: isoTag(start), end: isoTag(end), summe: summe, teile: teile,
+    frueher: INSTALLIERT < start, spaeter: end < azi,
+    verguetung_ct: cfg.bilant.verguetung_ct, grundgebuehr: cfg.bilant.grundgebuehr };
+}
+
+// Data ultimei protecții anti-legionela, ca în backend: „zz.ll., hh:mm”.
+function legionellaText() {
+  const d = new Date(Date.now() - 2 * 86400000);
+  return p2(d.getDate()) + "." + p2(d.getMonth() + 1) + "., 13:20";
+}
+
+// ---------- Setările modulelor (răspunsul la voltherm/home) ----------
+const cfg = {
+  baterie: { capacitate: 10.24, soc_minim: 15, prag_incarcare_ct: 19, prag_descarcare_ct: 24 },
+  wallbox: { puncte: { "1": { mod: "auto", plecare: "07:00", soc_tinta: 80, pret_max: 26, peste_prag: "incarca" } }, demo: false },
+  heizstab: { temp_min: 45, temp_max: 62, prag_pret_ct: 18, boost_pana: null, boost_moeglich: true, temp_sigura: true, legionella_letzt: legionellaText() },
+  clima: { camere: {
+    "climate.wohnzimmer": { nume: "Wohnzimmer", mod: "auto", confort_iarna: 21.5, confort_vara: 25 },
+    "climate.schlafzimmer": { nume: "Schlafzimmer", mod: "confort", confort_iarna: 19, confort_vara: 24 } } },
+  pompa: { blocare_ct: 40, blocare_max_h: 2, surplus_recomandat: 1500, semnal_14a: "binary_sensor.vt_demo_14a" },
+  fern: { erlaubt: true, installiert: true, verbindungen: [{ t: new Date(Date.now() - 3 * 86400000 - 7200000).toISOString(), wer: "VOLTHERM Service" }] },
+  pv: { prognose_heute_kwh: PROGNOSE_HEUTE, morgen_kwh: PROGNOSE_MORGEN, quelle: "Forecast.Solar", prognoza: prognoza(), heute_kwh: 0 },
+  sicherheit: { stare: "normal", pauza_pana: null, text: null, module: [] },
+  bilant: { verguetung_ct: VERGUETUNG_CT, grundgebuehr: GRUNDGEBUEHR },
+  heute: heute(),
+};
+cfg.pv.heute_kwh = cfg.heute.erzeugt;
+
+// ---------- Senzorii vt_* ----------
+const boostAktiv = () => !!cfg.heizstab.boost_pana && new Date(cfg.heizstab.boost_pana) > new Date();
+const ansageZeit = new Date(Date.now() - 45000).toISOString();  // banda de sus se stinge singură după 60 s
+const basis = { pv: 6400, consum: 5400, wallbox: 2900, heizstab: 1200, pompa: 480, soc: 70.4, temp: 52.4, bat: -500 };
+const jetzt = { ...basis };
+
+const st = (id, wert, attr) => [id.includes(".") ? id : "sensor." + id,
+  { entity_id: id.includes(".") ? id : "sensor." + id, state: wert == null ? "unknown" : String(wert),
+    attributes: attr || {}, last_changed: new Date().toISOString() }];
+
+function states() {
+  const j = jetzt, netz = j.consum - j.pv - j.bat;  // minus = Einspeisung
+  const preiseJetzt = preisliste(48), pJetzt = preiseJetzt[0].pret;
+  const planOre = [...preiseJetzt.slice(0, 24)].sort((a, b) => a.pret - b.pret).slice(0, 3).map((x) => x.ora).sort();
+  const soc = Math.round(j.soc * 10) / 10;
+  const kamer = (eid, temp, hvac, titlu, motiv) => ({ nume: cfg.clima.camere[eid].nume, entitate: eid, temp_ext: 8.4,
+    temp_ext_ok: true, hold_pana: null, decizie: { hvac: hvac, temp: temp + 1.5, titlu: titlu, motiv: motiv } });
+  return Object.fromEntries([
+    st("vt_pv_putere", Math.round(j.pv), { unit_of_measurement: "W", friendly_name: "vt_pv_putere" }),
+    st("vt_retea_putere", Math.round(netz), { unit_of_measurement: "W" }),
+    st("vt_baterie_putere", Math.round(j.bat), { unit_of_measurement: "W" }),
+    st("vt_baterie_soc", soc, { unit_of_measurement: "%" }),
+    st("vt_baterie_energie", rund((soc / 100) * cfg.baterie.capacitate, 2), { unit_of_measurement: "kWh" }),
+    st("vt_consum_casa", Math.round(j.consum), { unit_of_measurement: "W" }),
+    st("vt_pret_curent", pJetzt, { unit_of_measurement: "EUR/kWh", furnizor: "Tibber", preturi: preiseJetzt, eroare: null }),
+    st("vt_wallbox_putere", Math.round(j.wallbox), { unit_of_measurement: "W" }),
+    st("vt_wallbox_decizie", "pv", { comanda: "activ", puncte: [{ id: "1", titlu: "Garage", conectat: true, incarca: true,
+      putere: Math.round(j.wallbox), mod_evcc: "pv", masina: "VW ID.4", soc: 62, capacitate: 77, putere_max: 11040,
+      decizie: { mod: "pv", motiv: "Das Auto hat 62 %, Ziel 80 %: Ich lade mit dem PV-Überschuss und nachts in den günstigsten Stunden." } }] }),
+    st("vt_heizstab_putere", Math.round(j.heizstab), { unit_of_measurement: "W" }),
+    st("vt_heizstab_temperatura", rund(j.temp, 1), { unit_of_measurement: "°C" }),
+    st("vt_heizstab_decizie", Math.round(j.heizstab), boostAktiv()
+      ? { mod: "boost", comanda: "activ", motiv: "Sie haben „Warmes Wasser sofort“ gewählt: Der Heizstab heizt, bis die Stunde um ist." }
+      : { mod: "surplus", comanda: "activ",
+        motiv: "PV-Überschuss 1400 W, Speicher " + rund(j.temp, 1).toLocaleString("de-DE") + " °C unter 62 °C." }),
+    st("vt_plan_baterie", planOre.length, { ore: planOre, pret_max: 0.183, pret_absolut_max: 0.25, soc: soc,
+      ore_necesare: planOre.length, energie: 4.6, motiv: "Morgen reicht die Sonne nicht ganz: " + planOre.length + " günstige Nachtstunden eingeplant.",
+      planificat_la: new Date().toISOString() }),
+    st("vt_baterie_decizie", "SOLAR_SMALL", { prioritate: "P5", comanda: "activ", pret: pJetzt, soc: soc, surplus: 1400,
+      actiune: "aus PV laden", motiv: "PV-Überschuss 1,4 kW: Batterie und Heizstab laufen mit Sonnenstrom." }),
+    st("vt_pompa_decizie", 3, { titlu: "Empfohlen", comanda: "activ", putere: Math.round(j.pompa), stare_relee: [false, true],
+      blocat_azi_min: 25, motiv: "PV-Überschuss 1,4 kW: Die Wärmepumpe speichert die Sonne als Wärme und heizt etwas wärmer." }),
+    st("vt_clima_decizie", 1, { temp_ext: 8.4, surplus: 1400, comanda: "activ", camere: [
+      kamer("climate.wohnzimmer", 21.5, "heat", "Heizen 23 °C", "PV-Überschuss 1,4 kW: Komfort 21,5 °C + 1,5 °C, um Energie im Raum zu speichern."),
+      kamer("climate.schlafzimmer", 19, "off", "Aus", "Im Schlafzimmer sind 19,4 °C: Heizen ist gerade nicht nötig.")] }),
+    st("vt_heute", cfg.heute.erzeugt, cfg.heute),
+    st("vt_pv_prognose", cfg.pv.prognose_heute_kwh, { heute_kwh: cfg.pv.prognose_heute_kwh, morgen_kwh: cfg.pv.morgen_kwh, quelle: cfg.pv.quelle }),
+    st("vt_sicherheit", cfg.sicherheit.stare, { module: {}, cauze: cfg.sicherheit.text ? [{ cheie: "pauza", text: cfg.sicherheit.text, module: [] }] : [],
+      pauza_pana: cfg.sicherheit.pauza_pana, protokoll: [] }),
+    st("vt_ansage", "Das Auto lädt mit Sonnenstrom: 62 %, fertig bis 07:00 Uhr.", { zeit: ansageZeit,
+      eveniment: "auto_laedt", titlu: "Wallbox", stoerung: false, kanaele: ["handy"], still: false }),
+    st("climate.wohnzimmer", "heat", { friendly_name: "Wohnzimmer", current_temperature: 21.8, temperature: 23 }),
+    st("climate.schlafzimmer", "off", { friendly_name: "Schlafzimmer", current_temperature: 19.4, temperature: 19 }),
+    st("binary_sensor.vt_demo_14a", "off", { friendly_name: "§14a-Signal" }),
+  ]);
+}
+
+// ---------- hass fals ----------
+function setze(pfad, wert) {
+  const teile = pfad.split("."), letzt = teile.pop();
+  let o = cfg;
+  for (const k of teile) { if (o[k] == null) o[k] = {}; o = o[k]; }
+  o[letzt] = wert;
+}
+
+// După o comandă, senzorii trebuie să arate imediat noua stare (ca la HA, prin state_changed).
+const frisch = () => setTimeout(() => zeigen(), 30);
+
+async function callWS(m) {
+  await new Promise((ok) => setTimeout(ok, 90));  // o mică întârziere, ca la o instalație adevărată
+  if (m.type === "voltherm/home") return JSON.parse(JSON.stringify({ ...cfg, heute: heute() }));
+  if (m.type === "voltherm/bilanz") return bilanz(m.zeit, m.datum);
+  if (m.type === "voltherm/home_seteaza") { setze(m.pfad, m.wert); frisch(); return { ok: true }; }
+  if (m.type === "voltherm/home_boost") {
+    cfg.heizstab.boost_pana = m.minute ? new Date(Date.now() + m.minute * 60000).toISOString() : null;
+    jetzt.heizstab = m.minute ? 3000 : basis.heizstab;
+    frisch();
+    return { boost_pana: cfg.heizstab.boost_pana };
+  }
+  if (m.type === "voltherm/home_pause") {
+    cfg.sicherheit = m.an ? { stare: "pausiert", pauza_pana: new Date(Date.now() + 86400000).toISOString(),
+      text: "In der Demo pausiert.", module: [] } : { stare: "normal", pauza_pana: null, text: null, module: [] };
+    frisch();
+    return { pauza_pana: cfg.sicherheit.pauza_pana };
+  }
+  if (m.type === "voltherm/home_fern") { cfg.fern = { ...cfg.fern, erlaubt: m.erlaubt }; return cfg.fern; }
+  throw new Error("In der Demo nicht verfügbar.");
+}
+
+const el = document.querySelector("voltherm-home");
+// Ecranul își desenează „.seite” cu height:100vh; sub banda demo ar ieși bara de jos din imagine.
+// La fiecare redesenare punem înapoi stilul nostru în shadow root.
+const stil = () => {
+  if (el.shadowRoot.querySelector("#demostil")) return;
+  const s = document.createElement("style");
+  s.id = "demostil";
+  s.textContent = ".seite{height:calc(100vh - 40px - env(safe-area-inset-top))}";
+  el.shadowRoot.appendChild(s);
+};
+new MutationObserver(stil).observe(el.shadowRoot, { childList: true });
+
+const zeigen = () => { el.hass = { states: states(), callWS: callWS, language: "de" }; stil(); };
+zeigen();
+document.getElementById("status").classList.add("weg");
+
+// Valorile se mișcă puțin la fiecare 4 secunde, ca să arate viu.
+setInterval(() => {
+  const w = (b, a) => Math.max(0, b + (Math.random() - 0.5) * a);
+  jetzt.pv = w(basis.pv, 900);
+  jetzt.consum = w(basis.consum, 500);
+  jetzt.wallbox = w(basis.wallbox, 400);
+  jetzt.pompa = w(basis.pompa, 160);
+  jetzt.bat = -Math.max(50, 500 + (Math.random() - 0.5) * 400);
+  jetzt.soc = Math.min(99.5, jetzt.soc + 0.1);
+  if (!boostAktiv()) jetzt.heizstab = w(basis.heizstab, 300);  // ora de „Jetzt heizen“ s-a terminat
+  jetzt.temp = Math.min(62, jetzt.temp + 0.05);
+  cfg.heute = heute();
+  cfg.pv.heute_kwh = cfg.heute.erzeugt;
+  zeigen();
+}, 4000);
+
+const nativ = window.ReactNativeWebView;
+document.getElementById("ende").addEventListener("click", () => {
+  if (nativ) nativ.postMessage(JSON.stringify({ typ: "demo_ende" }));
+});
+
+</script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VOLTHERM Flyer (A6)</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="data:,">
+<style>
+  /* Flyer A6 pentru tipar: o pagină, culori păstrate la tipărire, fără resurse externe. */
+  @page { size: 105mm 148mm; margin: 0; }  /* A6; cuvântul „A6” nu e suportat de toate browserele */
+  * { box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  html, body { margin: 0; background: #d8dde6; font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; }
+  .blatt { width: 105mm; height: 148mm; margin: 10mm auto; background: #0B1220; color: #fff; position: relative; overflow: hidden;
+    display: flex; flex-direction: column; align-items: center; text-align: center; padding: 9mm 8mm 7mm; box-shadow: 0 6px 30px rgba(0,0,0,.25); }
+  .blatt::before { content: ""; position: absolute; inset: 0;
+    background: radial-gradient(60% 40% at 80% 10%, rgba(25,195,230,.25), transparent 70%), radial-gradient(50% 35% at 10% 95%, rgba(143,163,200,.18), transparent 70%); }
+  .blatt > * { position: relative; }
+  .logo { width: 20mm; height: 20mm; }
+  .wm { font-weight: 800; letter-spacing: .14em; font-size: 17pt; margin-top: 2mm; }
+  .wm span { color: #19C3E6; }
+  .tag { color: #8FA3C8; font-size: 5.6pt; letter-spacing: .2em; margin-top: .8mm; }
+  h1 { font-size: 15pt; line-height: 1.2; margin: 6mm 0 1.5mm; }
+  h1 span { color: #19C3E6; }
+  .sub { font-size: 8pt; color: #c5d0e6; margin: 0 0 5mm; line-height: 1.4; }
+  .qr { background: #fff; border-radius: 4mm; padding: 2.5mm; width: 50mm; height: 50mm; box-shadow: 0 0 0 .6mm #19C3E6; }
+  .qr img { width: 100%; height: 100%; display: block; }
+  .url { font-size: 7pt; color: #8FA3C8; margin-top: 3mm; letter-spacing: .02em; }
+  .punkte { margin-top: auto; display: flex; gap: 3mm; justify-content: center; font-size: 6.6pt; color: #dfe6f3; flex-wrap: wrap; }
+  .punkte b { color: #19C3E6; }
+  .hinweis { text-align: center; color: #44506a; font-size: 13px; margin: 0 0 20px; }
+  @media print {
+    html, body { background: #0B1220; }
+    .blatt { margin: 0; box-shadow: none; }
+    .hinweis { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="blatt">
+  <svg class="logo" viewBox="0 0 300 300" aria-label="VOLTHERM Logo">
+    <polygon points="22,20 86,20 166,232 150,272" fill="#8FA3C8"/>
+    <polygon points="74,20 112,20 168,200 154,226" fill="#FFFFFF"/>
+    <polygon points="200,20 290,20 214,118 276,118 126,286 176,170 128,170" fill="#19C3E6"/>
+  </svg>
+  <div class="wm">VOLT<span>HERM</span></div>
+  <div class="tag">INTEGRATED SOLUTIONS · MEISTERBETRIEB</div>
+  <h1>Scannen und<br><span>VOLTHERM erleben</span></h1>
+  <p class="sub">Ihre Energie. Intelligent verteilt.<br>Mit Live-Demo der App und Spar-Rechner.</p>
+  <div class="qr"><img src="qr-voltherm.svg" alt="QR-Code zu exdjvaly.github.io/voltherm"></div>
+  <div class="url">exdjvaly.github.io/voltherm</div>
+  <div class="punkte"><span>Sonnenstrom nutzen</span><b>·</b><span>Günstig laden</span><b>·</b><span>Warmwasser aus Sonne</span></div>
+</div>
+<p class="hinweis">Druckvorlage A6 (105 × 148 mm). Drucken mit „Hintergrundgrafiken“ eingeschaltet, Ränder: keine.</p>
+</body>
+</html>
