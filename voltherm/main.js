@@ -364,7 +364,7 @@ const KONTAKT = {
     // Ce element „vorbește” pentru ce clip. În capitolul 3 introducerea și fiecare fază a zilei au clipul lor.
     const ziele = [[$(".hero"), "frage"], [$("#frage"), "frage"], [$("#kapitel-1"), "kapitel-1"], [$("#kapitel-2"), "kapitel-2"],
       [$("#kapitel-3 > .wrap"), "kapitel-3"], ...$$(".step").map((s) => [s, s.dataset.phase]),
-      [$("#kapitel-4"), "kapitel-4"], [$("#demo"), "demo"], [$("#apps"), "apps"], [$("#vorteile"), "vorteile"], [$("#kontakt"), "kontakt"]]
+      [$("#kapitel-4"), "kapitel-4"], [$("#demo"), "demo"], [$("#apps"), "apps"], [$("#vorteile"), "vorteile"], [$("#ki"), "ki"], [$("#kontakt"), "kontakt"]]
       .filter(([el]) => el);
     const zielId = new Map(ziele);
     if ("IntersectionObserver" in window) {
