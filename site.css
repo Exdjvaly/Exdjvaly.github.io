@@ -217,3 +217,12 @@ a { color: inherit; }
 .sys .card p { margin-bottom: 16px; }
 .sys .ticks li { font-size: 16px; }
 .badge { display: inline-block; vertical-align: middle; margin-left: 8px; padding: 3px 10px; border-radius: 999px; background: #e3f7fc; color: #0b7d97; font-size: 12px; font-weight: 700; letter-spacing: .04em; }
+
+/* VOLTHERM Hub */
+.hub-grid { display: grid; gap: 40px; align-items: center; }
+@media (min-width: 900px) { .hub-grid { grid-template-columns: 1.1fr .9fr; } }
+.hub-grid p { color: var(--ink2); }
+.hub-pic, .hub-room { margin: 0; }
+.hub-pic img, .hub-room img { display: block; width: 100%; height: auto; border-radius: 18px; box-shadow: 0 24px 50px rgba(11,18,32,.18); }
+.hub-room { margin-top: 44px; }
+.hub-room figcaption { margin-top: 10px; font-size: 13px; color: var(--ink2); text-align: center; }
