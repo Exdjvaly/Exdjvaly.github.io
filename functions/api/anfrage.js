@@ -80,12 +80,19 @@ export async function onRequestPost({ request, env }) {
   const kopf = { 'Content-Type': 'application/json' };
   if (env.NTFY_TOKEN) kopf.Authorization = 'Bearer ' + env.NTFY_TOKEN;
 
-  let res;
-  try {
-    res = await fetch(server + '/', { method: 'POST', headers: kopf, body: JSON.stringify(nachricht) });
-  } catch {
-    return antwort(502, { ok: false, grund: 'ntfy nicht erreichbar' });
+  // ntfy lehnt gelegentlich ab (Last, Limits); bis zu drei Versuche, damit keine Anfrage verloren geht.
+  const body = JSON.stringify(nachricht);
+  let grund = '';
+  for (let versuch = 0; versuch < 3; versuch++) {
+    if (versuch) await new Promise((r) => setTimeout(r, versuch * 800));
+    try {
+      const res = await fetch(server + '/', { method: 'POST', headers: kopf, body });
+      if (res.ok) return antwort(200, { ok: true });
+      grund = 'ntfy antwortet ' + res.status;
+      if (res.status === 401 || res.status === 403) break;
+    } catch {
+      grund = 'ntfy nicht erreichbar';
+    }
   }
-  if (!res.ok) return antwort(502, { ok: false, grund: 'ntfy antwortet ' + res.status });
-  return antwort(200, { ok: true });
+  return antwort(502, { ok: false, grund });
 }
