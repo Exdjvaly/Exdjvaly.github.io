@@ -81,7 +81,7 @@ async function zustellen(env, warten, wege) {
 }
 
 // Selbsttest im Browser: https://voltherm.de/api/anfrage zeigt, was eingerichtet ist.
-// Mit ?test=<ntfy-Kanalname> geht eine Probe-Nachricht über jeden Weg raus. Ist nur der
+// Mit ?test=<ntfy-Kanalname oder Telegram-Chat-ID> geht eine Probe-Nachricht über jeden Weg raus. Ist nur der
 // Telegram-Token gesetzt, zeigt der Test die Chat-IDs, die dem Bot geschrieben haben.
 export async function onRequestGet({ request, env }) {
   const info = {
@@ -91,7 +91,8 @@ export async function onRequestGet({ request, env }) {
     tokenGesetzt: Boolean(env.NTFY_TOKEN),
   };
   const test = new URL(request.url).searchParams.get('test');
-  if (!env.NTFY_TOPIC || !test || test !== env.NTFY_TOPIC) return antwort(200, info);
+  const schluessel = [env.NTFY_TOPIC, env.TELEGRAM_CHAT].filter(Boolean).map((k) => String(k).trim());
+  if (!test || !schluessel.includes(test.trim())) return antwort(200, info);
 
   if (env.TELEGRAM_TOKEN && !env.TELEGRAM_CHAT) {
     try {
@@ -114,13 +115,22 @@ export async function onRequestGet({ request, env }) {
     const r = await telegram(env, 'Test VOLTHERM', 'Probe von voltherm.de');
     ergebnis.telegramTest = (r.ok ? 'ok' : r.grund) + ' (' + (Date.now() - t0) + ' ms)';
   }
+  if (!env.NTFY_TOPIC) return antwort(200, { ...info, ...ergebnis });
   const t0 = Date.now();
   const r = await ntfy(env, { title: 'Test VOLTHERM', message: 'Probe von voltherm.de', priority: 3 });
   ergebnis.ntfyTest = (r.ok ? 'ok' : r.grund) + ' (' + (Date.now() - t0) + ' ms)';
   return antwort(200, { ...info, ...ergebnis });
 }
 
-export async function onRequestPost({ request, env, waitUntil }) {
+export async function onRequestPost(kontext) {
+  try {
+    return await anfrage(kontext);
+  } catch (e) {
+    return antwort(500, { ok: false, grund: 'Fehler in der Funktion: ' + (e && e.message ? e.message : String(e)) });
+  }
+}
+
+async function anfrage({ request, env, waitUntil }) {
   if (!env.NTFY_TOPIC && !telegramBereit(env)) return antwort(503, { ok: false, grund: 'nicht eingerichtet' });
 
   const herkunft = request.headers.get('Origin');
@@ -177,6 +187,6 @@ export async function onRequestPost({ request, env, waitUntil }) {
     wege.push(() => ntfy(env, nachricht));
   }
 
-  const r = await zustellen(env, waitUntil, wege);
+  const r = await zustellen(env, waitUntil ? (p) => waitUntil(p) : null, wege);
   return r.ok ? antwort(200, { ok: true }) : antwort(502, { ok: false, grund: r.grund });
 }
