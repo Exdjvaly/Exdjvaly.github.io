@@ -409,3 +409,10 @@ figcaption { font-size: 12.5px; color: var(--ink2); margin-top: 12px; font-style
   .fl { stroke-dasharray: none; }
   .apps-stage .tile { opacity: 1; }
 }
+
+/* ---------- VOLTHERM KI (Premium) ---------- */
+.ki-tag { display: inline-block; margin: 0 0 10px; padding: 3px 12px; border: 2px solid var(--ink); border-radius: 999px; background: var(--yellow); font-size: 13px; font-weight: 700; letter-spacing: .04em; }
+.ki-chat { max-width: 560px; margin: 24px auto 0; padding: 18px; display: flex; flex-direction: column; gap: 10px; }
+.ki-msg { margin: 0; padding: 10px 14px; max-width: 85%; font-size: 15.5px; line-height: 1.45; border: 2px solid var(--ink); border-radius: 16px; }
+.ki-user { align-self: flex-end; background: var(--cyan); font-weight: 600; border-bottom-right-radius: 4px; }
+.ki-bot { align-self: flex-start; background: var(--paper); color: var(--ink2); border-bottom-left-radius: 4px; }
