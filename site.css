@@ -238,3 +238,4 @@ a { color: inherit; }
 .card-wide { grid-column: 1 / -1; }
 @media (min-width: 620px) { .card-wide { display: grid; grid-template-columns: auto 1fr; gap: 22px; align-items: center; } .card-wide h3 { margin-top: 0; } }
 @media (min-width: 620px) { .card-wide .hexi { width: 72px; height: 72px; margin-bottom: 0; } }
+.hub-pic { max-width: 440px; justify-self: center; width: 100%; }
