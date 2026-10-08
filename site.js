@@ -64,7 +64,10 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: name, kontakt: kontakt, ort: ort, text: text, interesse: interessen.join(', '), website: form.elements['website'].value })
       }).then(function (r) {
-        if (!r.ok) return r.json().catch(function () { return {}; }).then(function (d) { throw new Error(r.status + (d.grund ? ' ' + d.grund : '')); });
+        if (!r.ok) return r.text().catch(function () { return ''; }).then(function (t) {
+          var d = {}; try { d = JSON.parse(t); } catch (e) { d = { grund: 'Server ' + (t.match(/<title>([^<]*)/i) || [, t.slice(0, 60)])[1] }; }
+          throw new Error(r.status + (d.grund ? ' ' + d.grund : ''));
+        });
         form.reset(); okText.hidden = false;
       }).catch(function (err) {
         zeigeFehler('Das Senden hat leider nicht geklappt. Bitte nutzen Sie WhatsApp, E-Mail oder rufen Sie uns an: 01556 8656548. (Fehler ' + err.message + ')');
