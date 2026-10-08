@@ -19,9 +19,37 @@ function antwort(status, body) {
   });
 }
 
-// Kurzer Selbsttest im Browser: https://voltherm.de/api/anfrage zeigt, ob der Kanal eingerichtet ist.
-export function onRequestGet({ env }) {
-  return antwort(200, { eingerichtet: Boolean(env.NTFY_TOPIC) });
+// Ein Versuch bei ntfy, höchstens 6 Sekunden. Ohne Grenze wartet Cloudflare zu lange und
+// liefert dann selbst einen 502 ohne Begründung.
+async function sende(server, kopf, body) {
+  try {
+    const res = await fetch(server + '/', { method: 'POST', headers: kopf, body, signal: AbortSignal.timeout(6000) });
+    if (res.ok) return { ok: true, status: res.status };
+    const text = (await res.text().catch(() => '')).replace(/\s+/g, ' ').trim().slice(0, 160);
+    return { ok: false, status: res.status, grund: 'ntfy antwortet ' + res.status + (text ? ' ' + text : '') };
+  } catch (e) {
+    const zeit = e && (e.name === 'TimeoutError' || e.name === 'AbortError');
+    return { ok: false, status: 0, grund: zeit ? 'ntfy antwortet nicht (Zeitüberschreitung)' : 'ntfy nicht erreichbar' };
+  }
+}
+
+function zugang(env) {
+  const server = (env.NTFY_SERVER || 'https://ntfy.sh').replace(/\/+$/, '');
+  const kopf = { 'Content-Type': 'application/json' };
+  if (env.NTFY_TOKEN) kopf.Authorization = 'Bearer ' + env.NTFY_TOKEN.trim();
+  return { server, kopf };
+}
+
+// Selbsttest im Browser: https://voltherm.de/api/anfrage zeigt, ob der Kanal eingerichtet ist.
+// Mit ?test=<Kanalname> wird zusätzlich eine Probe-Nachricht geschickt und die Antwort von ntfy gezeigt.
+export async function onRequestGet({ request, env }) {
+  const info = { eingerichtet: Boolean(env.NTFY_TOPIC), tokenGesetzt: Boolean(env.NTFY_TOKEN) };
+  const test = new URL(request.url).searchParams.get('test');
+  if (!env.NTFY_TOPIC || !test || test !== env.NTFY_TOPIC) return antwort(200, info);
+  const { server, kopf } = zugang(env);
+  const start = Date.now();
+  const r = await sende(server, kopf, JSON.stringify({ topic: env.NTFY_TOPIC, title: 'Test VOLTHERM', message: 'Probe von voltherm.de', priority: 3 }));
+  return antwort(200, { ...info, ntfy: r.ok ? 'ok ' + r.status : r.grund, dauerMs: Date.now() - start });
 }
 
 export async function onRequestPost({ request, env }) {
@@ -76,23 +104,17 @@ export async function onRequestPost({ request, env }) {
   }
   if (aktionen.length) nachricht.actions = aktionen;
 
-  const server = (env.NTFY_SERVER || 'https://ntfy.sh').replace(/\/+$/, '');
-  const kopf = { 'Content-Type': 'application/json' };
-  if (env.NTFY_TOKEN) kopf.Authorization = 'Bearer ' + env.NTFY_TOKEN;
+  const { server, kopf } = zugang(env);
 
   // ntfy lehnt gelegentlich ab (Last, Limits); bis zu drei Versuche, damit keine Anfrage verloren geht.
   const body = JSON.stringify(nachricht);
   let grund = '';
   for (let versuch = 0; versuch < 3; versuch++) {
     if (versuch) await new Promise((r) => setTimeout(r, versuch * 800));
-    try {
-      const res = await fetch(server + '/', { method: 'POST', headers: kopf, body });
-      if (res.ok) return antwort(200, { ok: true });
-      grund = 'ntfy antwortet ' + res.status;
-      if (res.status === 401 || res.status === 403) break;
-    } catch {
-      grund = 'ntfy nicht erreichbar';
-    }
+    const r = await sende(server, kopf, body);
+    if (r.ok) return antwort(200, { ok: true });
+    grund = r.grund;
+    if (r.status === 401 || r.status === 403) break;
   }
   return antwort(502, { ok: false, grund });
 }
