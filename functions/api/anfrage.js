@@ -1,9 +1,11 @@
 // Cloudflare Pages Function: nimmt eine Anfrage vom Formular an und schickt sie sofort als
-// Push-Nachricht über ntfy aufs Telefon. Nichts wird gespeichert.
+// Push-Nachricht aufs Telefon, über Telegram und/oder ntfy. Nichts wird gespeichert.
 // Einstellungen (Pages → Settings → Variables and Secrets):
-//   NTFY_TOPIC  geheimer Kanalname, nur Valentin kennt ihn (Pflicht)
-//   NTFY_SERVER optional, Standard https://ntfy.sh
-//   NTFY_TOKEN  optional, Zugangstoken für einen geschützten Kanal
+//   TELEGRAM_TOKEN  Token des eigenen Bots von @BotFather
+//   TELEGRAM_CHAT   Chat-ID, an die der Bot schreibt (zeigt der Testlink an)
+//   NTFY_TOPIC      geheimer ntfy-Kanalname; dient auch als Schlüssel für den Testlink
+//   NTFY_SERVER     optional, Standard https://ntfy.sh
+//   NTFY_TOKEN      optional, Zugangstoken für einen geschützten Kanal
 
 const MAX = { name: 80, kontakt: 120, ort: 80, text: 2000, interesse: 300 };
 
@@ -19,41 +21,107 @@ function antwort(status, body) {
   });
 }
 
-// Ein Versuch bei ntfy, höchstens 6 Sekunden. Ohne Grenze wartet Cloudflare zu lange und
+// Höchstens 6 Sekunden pro Versuch. Ohne Grenze wartet Cloudflare zu lange und
 // liefert dann selbst einen 502 ohne Begründung.
-async function sende(server, kopf, body) {
+async function post(dienst, url, kopf, body) {
   try {
-    const res = await fetch(server + '/', { method: 'POST', headers: kopf, body, signal: AbortSignal.timeout(6000) });
+    const res = await fetch(url, { method: 'POST', headers: kopf, body, signal: AbortSignal.timeout(6000) });
     if (res.ok) return { ok: true, status: res.status };
     const text = (await res.text().catch(() => '')).replace(/\s+/g, ' ').trim().slice(0, 160);
-    return { ok: false, status: res.status, grund: 'ntfy antwortet ' + res.status + (text ? ' ' + text : '') };
+    return { ok: false, status: res.status, grund: dienst + ' antwortet ' + res.status + (text ? ' ' + text : '') };
   } catch (e) {
     const zeit = e && (e.name === 'TimeoutError' || e.name === 'AbortError');
-    return { ok: false, status: 0, grund: zeit ? 'ntfy antwortet nicht (Zeitüberschreitung)' : 'ntfy nicht erreichbar' };
+    return { ok: false, status: 0, grund: dienst + (zeit ? ' antwortet nicht (Zeitüberschreitung)' : ' nicht erreichbar') };
   }
 }
 
-function zugang(env) {
+// Bis zu drei Versuche, damit keine Anfrage verloren geht; 401/403 lohnt keinen weiteren Versuch.
+async function mitVersuchen(senden) {
+  let r;
+  for (let versuch = 0; versuch < 3; versuch++) {
+    if (versuch) await new Promise((w) => setTimeout(w, versuch * 800));
+    r = await senden();
+    if (r.ok || r.status === 401 || r.status === 403) break;
+  }
+  return r;
+}
+
+function telegramBereit(env) {
+  return Boolean(env.TELEGRAM_TOKEN && env.TELEGRAM_CHAT);
+}
+
+function telegram(env, titel, text, knoepfe) {
+  const nachricht = { chat_id: String(env.TELEGRAM_CHAT).trim(), text: titel + '\n\n' + text, disable_web_page_preview: true };
+  if (knoepfe && knoepfe.length) nachricht.reply_markup = { inline_keyboard: [knoepfe] };
+  return post('Telegram', 'https://api.telegram.org/bot' + env.TELEGRAM_TOKEN.trim() + '/sendMessage',
+    { 'Content-Type': 'application/json' }, JSON.stringify(nachricht));
+}
+
+function ntfy(env, nachricht) {
   const server = (env.NTFY_SERVER || 'https://ntfy.sh').replace(/\/+$/, '');
   const kopf = { 'Content-Type': 'application/json' };
   if (env.NTFY_TOKEN) kopf.Authorization = 'Bearer ' + env.NTFY_TOKEN.trim();
-  return { server, kopf };
+  return post('ntfy', server + '/', kopf, JSON.stringify({ topic: env.NTFY_TOPIC, ...nachricht }));
 }
 
-// Selbsttest im Browser: https://voltherm.de/api/anfrage zeigt, ob der Kanal eingerichtet ist.
-// Mit ?test=<Kanalname> wird zusätzlich eine Probe-Nachricht geschickt und die Antwort von ntfy gezeigt.
+// Schickt über alle eingerichteten Wege gleichzeitig; Erfolg, sobald einer ankommt.
+// Die übrigen laufen über waitUntil im Hintergrund zu Ende.
+async function zustellen(env, warten, wege) {
+  if (!wege.length) return { ok: false, grund: 'nicht eingerichtet' };
+  const laeufe = wege.map((weg) => mitVersuchen(weg));
+  const erster = Promise.any(laeufe.map((l) => l.then((r) => (r.ok ? r : Promise.reject(r)))));
+  try {
+    await erster;
+    if (warten) warten(Promise.allSettled(laeufe));
+    return { ok: true };
+  } catch {
+    const alle = await Promise.all(laeufe);
+    return { ok: false, grund: alle.map((r) => r.grund).join('; ') };
+  }
+}
+
+// Selbsttest im Browser: https://voltherm.de/api/anfrage zeigt, was eingerichtet ist.
+// Mit ?test=<ntfy-Kanalname> geht eine Probe-Nachricht über jeden Weg raus. Ist nur der
+// Telegram-Token gesetzt, zeigt der Test die Chat-IDs, die dem Bot geschrieben haben.
 export async function onRequestGet({ request, env }) {
-  const info = { eingerichtet: Boolean(env.NTFY_TOPIC), tokenGesetzt: Boolean(env.NTFY_TOKEN) };
+  const info = {
+    eingerichtet: Boolean(env.NTFY_TOPIC) || telegramBereit(env),
+    telegram: telegramBereit(env) ? 'bereit' : env.TELEGRAM_TOKEN ? 'TELEGRAM_CHAT fehlt' : 'aus',
+    ntfy: env.NTFY_TOPIC ? 'bereit' : 'aus',
+    tokenGesetzt: Boolean(env.NTFY_TOKEN),
+  };
   const test = new URL(request.url).searchParams.get('test');
   if (!env.NTFY_TOPIC || !test || test !== env.NTFY_TOPIC) return antwort(200, info);
-  const { server, kopf } = zugang(env);
-  const start = Date.now();
-  const r = await sende(server, kopf, JSON.stringify({ topic: env.NTFY_TOPIC, title: 'Test VOLTHERM', message: 'Probe von voltherm.de', priority: 3 }));
-  return antwort(200, { ...info, ntfy: r.ok ? 'ok ' + r.status : r.grund, dauerMs: Date.now() - start });
+
+  if (env.TELEGRAM_TOKEN && !env.TELEGRAM_CHAT) {
+    try {
+      const res = await fetch('https://api.telegram.org/bot' + env.TELEGRAM_TOKEN.trim() + '/getUpdates', { signal: AbortSignal.timeout(6000) });
+      const d = await res.json();
+      const chats = {};
+      for (const u of d.result || []) {
+        const c = (u.message || u.my_chat_member || {}).chat;
+        if (c) chats[c.id] = [c.first_name, c.last_name, c.title].filter(Boolean).join(' ');
+      }
+      return antwort(200, { ...info, telegramAntwort: d.ok ? 'ok' : d.description, chats });
+    } catch {
+      return antwort(200, { ...info, telegramAntwort: 'Telegram nicht erreichbar' });
+    }
+  }
+
+  const ergebnis = {};
+  if (telegramBereit(env)) {
+    const t0 = Date.now();
+    const r = await telegram(env, 'Test VOLTHERM', 'Probe von voltherm.de');
+    ergebnis.telegramTest = (r.ok ? 'ok' : r.grund) + ' (' + (Date.now() - t0) + ' ms)';
+  }
+  const t0 = Date.now();
+  const r = await ntfy(env, { title: 'Test VOLTHERM', message: 'Probe von voltherm.de', priority: 3 });
+  ergebnis.ntfyTest = (r.ok ? 'ok' : r.grund) + ' (' + (Date.now() - t0) + ' ms)';
+  return antwort(200, { ...info, ...ergebnis });
 }
 
-export async function onRequestPost({ request, env }) {
-  if (!env.NTFY_TOPIC) return antwort(503, { ok: false, grund: 'nicht eingerichtet' });
+export async function onRequestPost({ request, env, waitUntil }) {
+  if (!env.NTFY_TOPIC && !telegramBereit(env)) return antwort(503, { ok: false, grund: 'nicht eingerichtet' });
 
   const herkunft = request.headers.get('Origin');
   if (herkunft && new URL(herkunft).host !== new URL(request.url).host) {
@@ -84,37 +152,31 @@ export async function onRequestPost({ request, env }) {
   if (ort) zeilen.push('Ort: ' + ort);
   if (text) zeilen.push('', text);
 
-  const nachricht = {
-    topic: env.NTFY_TOPIC,
-    title: 'Neue Anfrage: ' + name,
-    message: zeilen.join('\n'),
-    tags: ['incoming_envelope'],
-    priority: 4,
-  };
+  const titel = 'Neue Anfrage: ' + name;
+  const inhalt = zeilen.join('\n');
 
   // Knöpfe in der Benachrichtigung: direkt anrufen, WhatsApp oder E-Mail.
+  // Telegram erlaubt nur https-Links; Telefonnummern im Text sind dort ohnehin antippbar.
   const nummer = kontakt.replace(/[^\d+]/g, '');
   const aktionen = [];
+  const knoepfe = [];
   if (kontakt.includes('@')) {
     aktionen.push({ action: 'view', label: 'E-Mail', url: 'mailto:' + kontakt });
   } else if (nummer.replace('+', '').length >= 6) {
     const intl = nummer.startsWith('+') ? nummer.slice(1) : nummer.startsWith('00') ? nummer.slice(2) : '49' + nummer.replace(/^0/, '');
     aktionen.push({ action: 'view', label: 'Anrufen', url: 'tel:+' + intl });
     aktionen.push({ action: 'view', label: 'WhatsApp', url: 'https://wa.me/' + intl });
+    knoepfe.push({ text: 'WhatsApp', url: 'https://wa.me/' + intl });
   }
-  if (aktionen.length) nachricht.actions = aktionen;
 
-  const { server, kopf } = zugang(env);
-
-  // ntfy lehnt gelegentlich ab (Last, Limits); bis zu drei Versuche, damit keine Anfrage verloren geht.
-  const body = JSON.stringify(nachricht);
-  let grund = '';
-  for (let versuch = 0; versuch < 3; versuch++) {
-    if (versuch) await new Promise((r) => setTimeout(r, versuch * 800));
-    const r = await sende(server, kopf, body);
-    if (r.ok) return antwort(200, { ok: true });
-    grund = r.grund;
-    if (r.status === 401 || r.status === 403) break;
+  const wege = [];
+  if (telegramBereit(env)) wege.push(() => telegram(env, titel, inhalt, knoepfe));
+  if (env.NTFY_TOPIC) {
+    const nachricht = { title: titel, message: inhalt, tags: ['incoming_envelope'], priority: 4 };
+    if (aktionen.length) nachricht.actions = aktionen;
+    wege.push(() => ntfy(env, nachricht));
   }
-  return antwort(502, { ok: false, grund });
+
+  const r = await zustellen(env, waitUntil, wege);
+  return r.ok ? antwort(200, { ok: true }) : antwort(502, { ok: false, grund: r.grund });
 }
