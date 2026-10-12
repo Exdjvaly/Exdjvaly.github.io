@@ -53,6 +53,8 @@
     <symbol id="i-v2h" viewBox="0 0 24 24"><path d="M4 8.5h14 M15 5.5l3 3-3 3 M20 15.5H6 M9 12.5l-3 3 3 3"/></symbol>
     <symbol id="i-puls" viewBox="0 0 24 24"><path d="M2 12h4.5l2-5 4 10 2.5-6 1.5 1H22"/></symbol>
     <symbol id="i-lock" viewBox="0 0 24 24"><path d="M5.5 11h13v10h-13Z M8.5 11V8a3.5 3.5 0 0 1 7 0v3 M12 14.5v3"/></symbol>
+    <symbol id="i-ww" viewBox="0 0 24 24"><path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11Z"/></symbol>
+    <symbol id="i-mic" viewBox="0 0 24 24"><path d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3Z M5 11a7 7 0 0 0 14 0 M12 18v3"/></symbol>
     <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21Z M12 7a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5Z"/></symbol>
   </defs>
 </svg>
@@ -98,6 +100,7 @@
     </div>
     <div class="hero-art" aria-hidden="true">
       <div class="orbit">
+        <svg class="flow" viewBox="-200 -200 400 400"><circle class="ring" r="199"/><path class="rail" d="M0.0 -116.0L0.0 -72.0"/><path class="rail" d="M62.4 -36.0L100.5 -58.0"/><path class="rail" d="M62.4 36.0L100.5 58.0"/><path class="rail" d="M0.0 72.0L0.0 116.0"/><path class="rail" d="M-62.4 36.0L-100.5 58.0"/><path class="rail" d="M-62.4 -36.0L-100.5 -58.0"/><path class="dot" d="M0.0 -116.0L0.0 -72.0"/><path class="dot" d="M62.4 -36.0L100.5 -58.0"/><path class="dot" d="M62.4 36.0L100.5 58.0"/><path class="dot w" d="M0.0 72.0L0.0 116.0"/><path class="dot w" d="M-62.4 36.0L-100.5 58.0"/><path class="dot w" d="M-62.4 -36.0L-100.5 -58.0"/></svg>
         <div class="core"><svg viewBox="0 0 300 300"><use href="#logo"/></svg></div>
         <span class="node n1"><svg><use href="#i-pv"/></svg></span>
         <span class="node n2"><svg><use href="#i-bat"/></svg></span>
@@ -116,39 +119,39 @@
     <h2>Alles, was Ihr Haus unabhängiger macht</h2>
     <p class="intro">Ein Ansprechpartner von der ersten Beratung bis zur Inbetriebnahme. Wir montieren selbst und kennen jede Anlage, die wir übergeben.</p>
     <div class="cards">
-      <article class="card card-wide">
+      <article class="card card-wide" data-galerie="elektro">
         <svg class="hexi" viewBox="0 0 64 64" aria-hidden="true"><use href="#hex"/><use href="#i-el" x="17" y="17" width="30" height="30"/></svg>
         <div>
           <h3>Elektroinstallation</h3>
           <p>Unser Handwerk ist die Elektrotechnik. Neubau, Sanierung und Erweiterung: Zählerschrank und Unterverteilung, Leitungen, Steckdosen und Beleuchtung, Überspannungsschutz und Anmeldung beim Netzbetreiber. Fachgerecht nach VDE, mit Prüfprotokoll.</p>
         </div>
       </article>
-      <article class="card">
+      <article class="card" data-galerie="photovoltaik">
         <svg class="hexi" viewBox="0 0 64 64" aria-hidden="true"><use href="#hex"/><use href="#i-pv" x="17" y="17" width="30" height="30"/></svg>
         <h3>Photovoltaik</h3>
         <p>Solaranlagen für Einfamilienhaus, Hof und Gewerbe. Planung nach Ihrem Dach und Ihrem Verbrauch, Montage und Anmeldung beim Netzbetreiber.</p>
       </article>
-      <article class="card">
+      <article class="card" data-galerie="speicher">
         <svg class="hexi" viewBox="0 0 64 64" aria-hidden="true"><use href="#hex"/><use href="#i-bat" x="17" y="17" width="30" height="30"/></svg>
         <h3>Stromspeicher</h3>
         <p>Sonnenstrom vom Mittag für den Abend. Auch als Nachrüstung zu einer bestehenden Anlage, passend zu Ihrem Wechselrichter.</p>
       </article>
-      <article class="card">
+      <article class="card" data-galerie="wallbox">
         <svg class="hexi" viewBox="0 0 64 64" aria-hidden="true"><use href="#hex"/><use href="#i-wb" x="17" y="17" width="30" height="30"/></svg>
         <h3>Wallbox</h3>
         <p>Laden zu Hause, bevorzugt mit Überschuss vom Dach oder in den günstigsten Stunden eines dynamischen Tarifs.</p>
       </article>
-      <article class="card warm">
+      <article class="card warm" data-galerie="waermepumpe">
         <svg class="hexi" viewBox="0 0 64 64" aria-hidden="true"><use href="#hex"/><use href="#i-wp" x="17" y="17" width="30" height="30"/></svg>
         <h3>Wärmepumpe</h3>
         <p>Heizen mit Strom statt Öl oder Gas. Mit SG-Ready nutzt die Wärmepumpe gezielt Ihren eigenen Sonnenstrom.</p>
       </article>
-      <article class="card warm">
+      <article class="card warm" data-galerie="klima">
         <svg class="hexi" viewBox="0 0 64 64" aria-hidden="true"><use href="#hex"/><use href="#i-kl" x="17" y="17" width="30" height="30"/></svg>
         <h3>Klimaanlagen</h3>
         <p>Split-Klimageräte von Vivax zum Kühlen im Sommer und Heizen in der Übergangszeit. Beratung, Verkauf und Montage.</p>
       </article>
-      <article class="card warm">
+      <article class="card warm" data-galerie="smarthome">
         <svg class="hexi" viewBox="0 0 64 64" aria-hidden="true"><use href="#hex"/><use href="#i-sh" x="17" y="17" width="30" height="30"/></svg>
         <h3>Smart Home</h3>
         <p>Licht, Beschattung, Heizung und Sicherheit automatisiert, mit Loxone oder Home Assistant. Planung, Verkabelung und Programmierung.</p>
@@ -171,11 +174,40 @@
       <a class="btn" href="#kontakt" data-interesse="Klimaanlage">Klimaanlage anfragen</a>
     </div>
     <div class="band-art" aria-hidden="true">
-      <div class="ac">
-        <div class="ac-unit"><i></i></div>
-        <div class="ac-air"><span></span><span></span><span></span></div>
-      </div>
-      <div class="sun"></div>
+      <svg class="klima" viewBox="0 0 480 300">
+        <defs>
+          <linearGradient id="kSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2b6f9f"/><stop offset="1" stop-color="#86c9dc"/></linearGradient>
+          <linearGradient id="kSkyW" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1a2944"/><stop offset="1" stop-color="#40597b"/></linearGradient>
+          <linearGradient id="kBody" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fdfdff"/><stop offset=".55" stop-color="#eef2f7"/><stop offset="1" stop-color="#cbd4e1"/></linearGradient>
+          <linearGradient id="kCool" gradientUnits="userSpaceOnUse" x1="0" y1="122" x2="0" y2="290"><stop offset="0" stop-color="#b5f3ff"/><stop offset="1" stop-color="#19C3E6" stop-opacity="0"/></linearGradient>
+          <linearGradient id="kWarm" gradientUnits="userSpaceOnUse" x1="0" y1="122" x2="0" y2="290"><stop offset="0" stop-color="#ffcf9a"/><stop offset="1" stop-color="#FF6B2C" stop-opacity="0"/></linearGradient>
+          <radialGradient id="kSun"><stop offset="0" stop-color="#fff4c8"/><stop offset=".4" stop-color="#ffc24d" stop-opacity=".9"/><stop offset="1" stop-color="#ff9a3c" stop-opacity="0"/></radialGradient>
+          <clipPath id="kFenster"><rect x="338" y="26" width="112" height="96" rx="8"/></clipPath>
+          <filter id="kWeich" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="7"/></filter>
+        </defs>
+        <g clip-path="url(#kFenster)">
+          <g class="k-sum"><rect x="338" y="26" width="112" height="96" fill="url(#kSky)"/><circle class="k-glow" cx="410" cy="62" r="46" fill="url(#kSun)"/><g class="k-rays"><path d="M429.0 62.0L437.0 62.0"/><path d="M423.4 75.4L429.1 81.1"/><path d="M410.0 81.0L410.0 89.0"/><path d="M396.6 75.4L390.9 81.1"/><path d="M391.0 62.0L383.0 62.0"/><path d="M396.6 48.6L390.9 42.9"/><path d="M410.0 43.0L410.0 35.0"/><path d="M423.4 48.6L429.1 42.9"/></g><circle cx="410" cy="62" r="13" fill="#ffd27a"/></g>
+          <g class="k-win"><rect x="338" y="26" width="112" height="96" fill="url(#kSkyW)"/><circle class="k-sn" cx="348" cy="20" r="1.6" style="--d:0s;--t:4.2s"/><circle class="k-sn" cx="362" cy="20" r="1.2" style="--d:-1.5s;--t:5s"/><circle class="k-sn" cx="377" cy="20" r="2" style="--d:-3s;--t:4.6s"/><circle class="k-sn" cx="391" cy="20" r="1.4" style="--d:-0.7s;--t:3.8s"/><circle class="k-sn" cx="404" cy="20" r="1.8" style="--d:-2.4s;--t:5.2s"/><circle class="k-sn" cx="418" cy="20" r="1.3" style="--d:-3.6s;--t:4.4s"/><circle class="k-sn" cx="431" cy="20" r="2" style="--d:-1.1s;--t:4.9s"/><circle class="k-sn" cx="444" cy="20" r="1.5" style="--d:-2.9s;--t:4.1s"/><circle class="k-sn" cx="370" cy="20" r="1.1" style="--d:-4s;--t:5.5s"/><circle class="k-sn" cx="425" cy="20" r="1.2" style="--d:-0.3s;--t:5.8s"/></g>
+        </g>
+        <rect x="338" y="26" width="112" height="96" rx="8" fill="none" stroke="#5d6f8f" stroke-width="3"/>
+        <path d="M394 26v96M338 74h112" stroke="#5d6f8f" stroke-width="2"/>
+        <g class="k-air k-sum"><g class="k-sway"><path class="b" d="M112 124C96 160 128 196 104 232S118 270 96 292" stroke="url(#kCool)"/><path class="b" d="M150 124C138 166 168 200 148 238S160 274 146 294" stroke="url(#kCool)"/><path class="b" d="M190 124C182 168 208 204 192 242S204 276 196 296" stroke="url(#kCool)"/><path class="b" d="M230 124C228 166 252 200 240 238S258 272 256 294" stroke="url(#kCool)"/><path class="b" d="M266 124C276 162 300 196 292 232S314 266 322 288" stroke="url(#kCool)"/><path class="s" d="M112 124C96 160 128 196 104 232S118 270 96 292" stroke="url(#kCool)" style="--d:-0.00s"/><path class="s" d="M150 124C138 166 168 200 148 238S160 274 146 294" stroke="url(#kCool)" style="--d:-0.37s"/><path class="s" d="M190 124C182 168 208 204 192 242S204 276 196 296" stroke="url(#kCool)" style="--d:-0.74s"/><path class="s" d="M230 124C228 166 252 200 240 238S258 272 256 294" stroke="url(#kCool)" style="--d:-1.11s"/><path class="s" d="M266 124C276 162 300 196 292 232S314 266 322 288" stroke="url(#kCool)" style="--d:-1.48s"/></g><circle class="k-p" cx="100" cy="122" r="1.8" fill="#d6f9ff" style="--dx:-26px;--d:-0s"/><circle class="k-p" cx="128" cy="122" r="1.4" fill="#d6f9ff" style="--dx:-14px;--d:-1.1s"/><circle class="k-p" cx="156" cy="122" r="2" fill="#d6f9ff" style="--dx:-6px;--d:-0.5s"/><circle class="k-p" cx="184" cy="122" r="1.5" fill="#d6f9ff" style="--dx:4px;--d:-1.7s"/><circle class="k-p" cx="212" cy="122" r="1.9" fill="#d6f9ff" style="--dx:14px;--d:-0.2s"/><circle class="k-p" cx="240" cy="122" r="1.4" fill="#d6f9ff" style="--dx:26px;--d:-1.3s"/><circle class="k-p" cx="268" cy="122" r="1.8" fill="#d6f9ff" style="--dx:40px;--d:-0.8s"/><circle class="k-p" cx="292" cy="122" r="1.3" fill="#d6f9ff" style="--dx:52px;--d:-2s"/></g>
+        <g class="k-air k-win"><g class="k-sway"><path class="b" d="M112 124C96 160 128 196 104 232S118 270 96 292" stroke="url(#kWarm)"/><path class="b" d="M150 124C138 166 168 200 148 238S160 274 146 294" stroke="url(#kWarm)"/><path class="b" d="M190 124C182 168 208 204 192 242S204 276 196 296" stroke="url(#kWarm)"/><path class="b" d="M230 124C228 166 252 200 240 238S258 272 256 294" stroke="url(#kWarm)"/><path class="b" d="M266 124C276 162 300 196 292 232S314 266 322 288" stroke="url(#kWarm)"/><path class="s" d="M112 124C96 160 128 196 104 232S118 270 96 292" stroke="url(#kWarm)" style="--d:-0.00s"/><path class="s" d="M150 124C138 166 168 200 148 238S160 274 146 294" stroke="url(#kWarm)" style="--d:-0.37s"/><path class="s" d="M190 124C182 168 208 204 192 242S204 276 196 296" stroke="url(#kWarm)" style="--d:-0.74s"/><path class="s" d="M230 124C228 166 252 200 240 238S258 272 256 294" stroke="url(#kWarm)" style="--d:-1.11s"/><path class="s" d="M266 124C276 162 300 196 292 232S314 266 322 288" stroke="url(#kWarm)" style="--d:-1.48s"/></g><circle class="k-p" cx="100" cy="122" r="1.8" fill="#ffd9b0" style="--dx:-26px;--d:-0s"/><circle class="k-p" cx="128" cy="122" r="1.4" fill="#ffd9b0" style="--dx:-14px;--d:-1.1s"/><circle class="k-p" cx="156" cy="122" r="2" fill="#ffd9b0" style="--dx:-6px;--d:-0.5s"/><circle class="k-p" cx="184" cy="122" r="1.5" fill="#ffd9b0" style="--dx:4px;--d:-1.7s"/><circle class="k-p" cx="212" cy="122" r="1.9" fill="#ffd9b0" style="--dx:14px;--d:-0.2s"/><circle class="k-p" cx="240" cy="122" r="1.4" fill="#ffd9b0" style="--dx:26px;--d:-1.3s"/><circle class="k-p" cx="268" cy="122" r="1.8" fill="#ffd9b0" style="--dx:40px;--d:-0.8s"/><circle class="k-p" cx="292" cy="122" r="1.3" fill="#ffd9b0" style="--dx:52px;--d:-2s"/></g>
+        <g class="k-pflanze"><g class="k-blatt"><path d="M430 262C414 236 398 222 384 216C402 214 420 228 430 262Z"/><path d="M430 262C420 226 418 200 426 178C436 200 436 232 430 262Z"/><path d="M430 262C440 230 456 210 474 204C466 224 448 244 430 262Z"/><path d="M430 262C426 240 408 196 394 186C414 190 432 226 430 262Z" opacity=".8"/><path d="M430 262C436 236 450 198 462 188C462 210 446 240 430 262Z" opacity=".8"/></g>
+          <path d="M412 260h36l-5 40h-26Z" fill="#22314f"/><path d="M410 258h40v6h-40Z" fill="#2c3d60"/></g>
+        <ellipse cx="180" cy="130" rx="128" ry="9" fill="#000" opacity=".4" filter="url(#kWeich)"/>
+        <rect x="60" y="46" width="240" height="78" rx="17" fill="url(#kBody)"/>
+        <rect x="72" y="49" width="216" height="3" rx="1.5" fill="#fff"/>
+        <path d="M63 100Q180 108 297 100" fill="none" stroke="#c2cbd8" stroke-width="1.2"/>
+        <rect x="74" y="107" width="212" height="12" rx="6" fill="#1a2436"/>
+        <rect class="k-flap" x="77" y="109" width="206" height="7" rx="3.5" fill="#e4e9f1"/>
+        <text class="k-t k-sum" x="276" y="86" text-anchor="end" fill="#0ea5c8">22°</text>
+        <text class="k-t k-win" x="276" y="86" text-anchor="end" fill="#f26a2a">22°</text>
+        <circle class="k-led" cx="282" cy="77" r="2.2"/>
+        <g class="k-chip"><rect x="18" y="258" width="214" height="28" rx="14" fill="rgba(11,18,32,.7)" stroke="rgba(143,163,200,.35)"/>
+          <g class="k-sum"><circle cx="34" cy="272" r="4.5" fill="#19C3E6"/><text x="46" y="276.5">Kühlen mit Sonnenstrom</text></g>
+          <g class="k-win"><circle cx="34" cy="272" r="4.5" fill="#FF6B2C"/><text x="46" y="276.5">Heizen in der Übergangszeit</text></g></g>
+      </svg>
     </div>
   </div>
 </section>
@@ -311,7 +343,32 @@
   </div>
   <div class="wrap">
     <figure class="ki-pic">
-      <img src="assets/ki-tablet.webp" width="1400" height="910" alt="Wandtablet mit VOLTHERM KI: Der Kunde sagt „Mach bitte warmes Wasser“, VOLTHERM antwortet und fragt vor dem Start nach" loading="lazy">
+      <div class="kt" id="ki-demo" aria-hidden="true">
+        <div class="kt-dev"><i class="kt-cam"></i>
+          <div class="kt-scr">
+            <div class="kt-top"><svg class="kt-logo" viewBox="0 0 300 300"><use href="#logo"/></svg><span class="kt-wm">VOLT<span>HERM</span></span><span class="kt-wx">☀ 19 °C · Mockersdorf</span><span class="kt-time">17:42</span></div>
+            <div class="kt-body">
+              <div class="kt-tiles">
+                <div class="kt-t"><span class="kt-ic"><svg><use href="#i-pv"/></svg></span><div><span class="kt-l">Sonne vom Dach</span><b class="kt-v"><span data-k="pv">6,8</span><small>kW</small></b></div></div>
+                <div class="kt-t"><span class="kt-ic"><svg><use href="#i-bat"/></svg></span><div><span class="kt-l">Batterie</span><b class="kt-v"><span data-k="bat">78</span><small>%</small></b><i class="kt-bar"><i data-k="batbar" style="width:78%"></i></i></div></div>
+                <div class="kt-t" data-k="wwt"><span class="kt-ic o"><svg><use href="#i-ww"/></svg></span><div><span class="kt-l">Warmwasser</span><b class="kt-v"><span data-k="ww">42</span><small>°C</small><small class="kt-heat"> · heizt mit Sonne</small></b></div></div>
+                <div class="kt-t"><span class="kt-ic"><svg><use href="#i-wb"/></svg></span><div><span class="kt-l">Auto</span><b class="kt-v"><span data-k="car">64</span><small>% · lädt mit Sonne</small></b></div></div>
+              </div>
+              <div class="kt-chat">
+                <div class="kt-ch"><b>●</b> VOLTHERM KI</div>
+                <div class="kt-msgs">
+                  <div class="m u">Wie war der Tag bisher?</div>
+                  <div class="m b">Sehr gut. 82 % Ihres Stroms kam heute von der Sonne, das Auto lädt gerade mit Überschuss.</div>
+                  <div class="m u">Mach bitte warmes Wasser.</div>
+                  <div class="m b">Gern. Der Speicher hat 42 °C. Ich heize mit Sonne vom Dach auf 60 °C, das kostet nichts. Soll ich starten?<span class="act"><span class="kb">Ja, starten</span><span class="kb g">Nein</span></span></div>
+                </div>
+                <div class="kt-listen"><span class="kt-mic"><svg><use href="#i-mic"/></svg></span><span class="kt-wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span><span class="kt-lt"><span data-k="said">„Ja, bitte …“</span><small data-k="hint">Ich höre zu</small></span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="sr">Beispiel am Wandtablet: Der Kunde fragt „Wie war der Tag bisher?“. VOLTHERM antwortet, dass heute 82 Prozent des Stroms von der Sonne kamen. Dann sagt der Kunde „Mach bitte warmes Wasser.“ VOLTHERM nennt die Speichertemperatur, schlägt vor, mit Sonnenstrom auf 60 °C zu heizen, und fragt vor dem Start nach.</p>
       <figcaption>Visualisierung, Beispielwerte.</figcaption>
     </figure>
   </div>
@@ -406,6 +463,16 @@
   <p class="wrap copy">© <span id="jahr">2026</span> VOLTHERM Integrated Solutions · Kulmblick 2, Mockersdorf, 95514 Neustadt am Kulm</p>
 </footer>
 
+<dialog class="galerie" id="galerie" aria-labelledby="g-titel">
+  <div class="g-kopf"><b class="g-titel" id="g-titel"></b><span class="g-zahl"></span><button type="button" class="g-zu" aria-label="Schließen">✕</button></div>
+  <div class="g-buehne">
+    <figure class="g-bild"><img alt=""><figcaption></figcaption></figure>
+    <button type="button" class="g-vor" aria-label="Vorheriges Foto">‹</button><button type="button" class="g-nach" aria-label="Nächstes Foto">›</button>
+  </div>
+  <div class="g-leiste"></div>
+</dialog>
+<!-- Fotos aus echten Projekten je Leistung: {"photovoltaik": [{"src": "...", "t": "Vorschaubild", "text": "Bildunterschrift"}], ...} -->
+<script type="application/json" id="galerie-daten">{}</script>
 <script src="site.js" defer></script>
 </body>
 </html>
