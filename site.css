@@ -397,7 +397,7 @@ a { color: inherit; }
   .kt-wave i:nth-child(n+11) { display: none; }
   .kt-lt { font-size: 1.05em; }
 }
-.ki-pic .kt { max-width: 1100px; margin: 0 auto; filter: drop-shadow(0 0 3em rgba(25,195,230,.12)); }
+.ki-pic .kt { max-width: 960px; margin: 0 auto; filter: drop-shadow(0 0 3em rgba(25,195,230,.12)); }
 
 /* Galerie: Fotos aus echten Projekten je Leistung */
 .card.hat-galerie { cursor: pointer; }
