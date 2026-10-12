@@ -229,3 +229,42 @@ a { color: inherit; }
 .card-wide { grid-column: 1 / -1; }
 @media (min-width: 620px) { .card-wide { display: grid; grid-template-columns: auto 1fr; gap: 22px; align-items: center; } .card-wide h3 { margin-top: 0; } }
 @media (min-width: 620px) { .card-wide .hexi { width: 72px; height: 72px; margin-bottom: 0; } }
+
+/* VOLTHERM Hub: Core und Pro */
+.hub-pic { margin: 34px 0 0; }
+.hub-pic img { display: block; width: 100%; height: auto; border-radius: 22px; box-shadow: 0 30px 60px rgba(11,18,32,.18); }
+.hub-pic figcaption { margin-top: 10px; font-size: 13px; color: var(--ink2); text-align: center; }
+.hub-duo { display: grid; gap: 16px; margin-top: 34px; }
+@media (min-width: 760px) { .hub-duo { grid-template-columns: 1fr 1fr; } }
+.hub-card { padding: 28px 26px 22px; }
+.hub-card p { margin-bottom: 16px; }
+.hub-card .ticks li { font-size: 16px; }
+.hub-card .tag { display: inline-block; margin: 0 0 12px; padding: 4px 12px; border-radius: 999px; background: #e3f7fc; color: #0b7d97; font-size: 12px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+.hub-card.pro { background: var(--navy); border-color: var(--navy); color: var(--white); }
+.hub-card.pro p { color: #c5d0e6; }
+.hub-card.pro .ticks li { color: #dbe3f1; }
+.hub-card.pro .tag { background: rgba(25,195,230,.16); color: var(--cyan); }
+.hub-cmp { margin-top: 16px; background: var(--white); border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; }
+.hub-cmp table { width: 100%; border-collapse: collapse; font-size: 15px; }
+.hub-cmp caption { text-align: left; font-weight: 800; font-size: 19px; padding: 20px 16px 8px; }
+.hub-cmp th, .hub-cmp td { padding: 12px 8px; border-top: 1px solid var(--line); text-align: left; }
+.hub-cmp th:first-child { padding-left: 16px; }
+.hub-cmp tr > :last-child { padding-right: 14px; }
+.hub-cmp thead th { border-top: 0; font-size: 12px; text-transform: uppercase; letter-spacing: .14em; color: #0e9fc0; font-weight: 800; text-align: center; }
+.hub-cmp tbody th { font-weight: 600; }
+.hub-cmp td { width: 27%; color: var(--ink2); text-align: center; line-height: 1.35; font-size: 14px; }
+.hub-cmp td.y::before { content: ""; display: inline-block; width: 14px; height: 8px; border-left: 2.5px solid var(--cyan); border-bottom: 2.5px solid var(--cyan); transform: translateY(-3px) rotate(-45deg); }
+.hub-cmp td.n::before { content: "–"; color: #a3adbf; }
+@media (min-width: 760px) { .hub-cmp table, .hub-cmp td { font-size: 16px; } .hub-cmp caption { padding: 22px 24px 10px; } .hub-cmp th, .hub-cmp td { padding: 14px 20px; } .hub-cmp th:first-child { padding-left: 24px; } }
+.hub-sub { margin: 56px 0 0; font-size: clamp(22px, 4vw, 28px); }
+.hub-why { display: grid; gap: 14px; margin-top: 22px; }
+@media (min-width: 620px) { .hub-why { grid-template-columns: 1fr 1fr; } }
+@media (min-width: 980px) { .hub-why { grid-template-columns: repeat(3, 1fr); } }
+.hub-why .card { padding: 22px 22px 18px; }
+@media (max-width: 619px) { .hub-why .card { display: grid; grid-template-columns: 46px 1fr; column-gap: 16px; padding: 20px 18px 16px; } .hub-why .hexi { grid-row: span 2; margin: 0; } }
+.hub-why .hexi { width: 46px; height: 46px; margin-bottom: 10px; }
+.hub-why b { display: block; font-size: 17px; margin-bottom: 4px; }
+.hub-why p { font-size: 15px; }
+.hub-end { margin-top: 34px; display: flex; flex-wrap: wrap; align-items: center; gap: 16px 28px; }
+.hub-end p { margin: 0; color: var(--ink2); max-width: 640px; }
+.ki-note a { color: var(--cyan); }

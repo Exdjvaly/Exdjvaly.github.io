@@ -48,6 +48,11 @@
     <symbol id="i-send" viewBox="0 0 24 24"><path d="M3 11.5 21 3l-6.5 18-3.5-7.5Z M11 13.5 21 3"/></symbol>
     <symbol id="i-mail" viewBox="0 0 24 24"><path d="M3 5h18v14H3Z M3 6l9 7 9-7"/></symbol>
     <symbol id="i-wa" viewBox="0 0 24 24"><path d="M4 20l1.3-4A8 8 0 1 1 8 18.7Z M9 8.5c0 3.5 3 6.5 6.5 6.5l1-1.5-2-1-1 .8a5 5 0 0 1-2.3-2.3l.8-1-1-2Z"/></symbol>
+    <symbol id="i-uhr" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Z M12 7v5l3.5 2"/></symbol>
+    <symbol id="i-netz" viewBox="0 0 24 24"><path d="M10 2h4 M12 2 7 22 M12 2l5 20 M4 7h16 M8.4 15h7.2 M7.6 19l8.6-4 M7.8 15l8.6 4"/></symbol>
+    <symbol id="i-v2h" viewBox="0 0 24 24"><path d="M4 8.5h14 M15 5.5l3 3-3 3 M20 15.5H6 M9 12.5l-3 3 3 3"/></symbol>
+    <symbol id="i-puls" viewBox="0 0 24 24"><path d="M2 12h4.5l2-5 4 10 2.5-6 1.5 1H22"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><path d="M5.5 11h13v10h-13Z M8.5 11V8a3.5 3.5 0 0 1 7 0v3 M12 14.5v3"/></symbol>
     <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21Z M12 7a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5Z"/></symbol>
   </defs>
 </svg>
@@ -66,6 +71,7 @@
       <a href="#klima">Klima</a>
       <a href="#smarthome">Smart Home</a>
       <a href="#smart">Smart Energy</a>
+      <a href="#hub">Hub</a>
       <a href="#ki">KI</a>
       <a href="#ablauf">Ablauf</a>
       <a href="#kontakt" class="btn btn-sm">Anfrage</a>
@@ -224,6 +230,70 @@
   </div>
 </section>
 
+<section class="sec soft" id="hub">
+  <div class="wrap">
+    <p class="kicker">VOLTHERM Hub · In Entwicklung</p>
+    <h2>Zwei Geräte.<br><span class="grad-dark">Ein System.</span></h2>
+    <p class="intro">Der VOLTHERM Hub ist das Herz Ihrer Anlage. Er muss nicht im Keller verschwinden: Das Gehäuse im eigenen Design passt ins Wohnzimmer, steuert Ihre Energie und zeigt Ihnen, was im Haus passiert.</p>
+    <figure class="hub-pic">
+      <img src="assets/hub-core-pro.webp" srcset="assets/hub-core-pro-900.webp 900w, assets/hub-core-pro.webp 1600w" sizes="(min-width: 1140px) 1100px, 100vw" width="1600" height="893" alt="VOLTHERM Hub Core mit Drehknopf und rundem Display sowie Hub Pro mit großem Touch-Display auf einem Sideboard im Wohnzimmer" loading="lazy">
+      <figcaption>Visualisierung, Beispielwerte. Links Hub Core, rechts Hub Pro. Das Seriengerät kann im Detail abweichen.</figcaption>
+    </figure>
+    <div class="hub-duo">
+      <article class="card hub-card">
+        <p class="tag">Hub Core</p>
+        <h3>Der leise Regler</h3>
+        <p>Ein lüfterloser Rechner im VOLTHERM Gehäuse steuert Solaranlage, Speicher, Wallbox, Warmwasser, Wärmepumpe und Klimaanlage. Vorne sitzt ein Drehknopf mit rundem Display.</p>
+        <ul class="ticks">
+          <li>Drehen und drücken: Raumtemperatur, Sonnenstrom und Akku auf einen Blick</li>
+          <li>Schalter AUTO / HAND: Automatik mit einem Griff aus und wieder an</li>
+          <li>Lüfterlos und lautlos, sparsam im Dauerbetrieb</li>
+          <li>Funk für Sensoren und Thermostate im ganzen Haus (Zigbee)</li>
+          <li>Arbeitet lokal und läuft auch ohne Internet weiter</li>
+        </ul>
+      </article>
+      <article class="card hub-card pro">
+        <p class="tag">Hub Pro</p>
+        <h3>Großes Display. Mit KI.</h3>
+        <p>Alles, was Hub Core kann, dazu ein 10-Zoll-Touch-Display und die VOLTHERM KI. Gerechnet wird auf einem leistungsstarken Rechner im Technikraum, im Wohnzimmer bleibt es still.</p>
+        <ul class="ticks">
+          <li>Energiefluss, Tagesbilanz und alle Geräte auf dem Touch-Display</li>
+          <li>Fragen per Sprache: „Lohnt sich jetzt die Waschmaschine?“</li>
+          <li>Die KI rechnet mit eigener Grafikkarte im Haus, ohne Cloud</li>
+          <li>Vor jedem Update wird der Stand gesichert, ein Zurück geht jederzeit</li>
+        </ul>
+      </article>
+    </div>
+    <div class="hub-cmp">
+      <table>
+        <caption>Core und Pro im Vergleich</caption>
+        <thead><tr><th scope="col"><span class="sr">Funktion</span></th><th scope="col">Core</th><th scope="col">Pro</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Energie-Steuerung für das ganze Haus</th><td class="y"><span class="sr">ja</span></td><td class="y"><span class="sr">ja</span></td></tr>
+          <tr><th scope="row">Dynamischer Stromtarif</th><td class="y"><span class="sr">ja</span></td><td class="y"><span class="sr">ja</span></td></tr>
+          <tr><th scope="row">VOLTHERM App auf dem Handy</th><td class="y"><span class="sr">ja</span></td><td class="y"><span class="sr">ja</span></td></tr>
+          <tr><th scope="row">Bedienung am Gerät</th><td>Drehknopf mit Rund-Display</td><td>10″ Touch-Display</td></tr>
+          <tr><th scope="row">Sprachsteuerung mit VOLTHERM KI</th><td class="n"><span class="sr">nein</span></td><td class="y"><span class="sr">ja</span></td></tr>
+          <tr><th scope="row">Rechner</th><td>im Gerät, lüfterlos</td><td>KI-Rechner im Technikraum</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <h3 class="hub-sub">Was der Hub für Sie erledigt</h3>
+    <div class="hub-why">
+      <div class="card"><svg class="hexi" viewBox="0 0 64 64" aria-hidden="true"><use href="#hex"/><use href="#i-uhr" x="17" y="17" width="30" height="30"/></svg><b>Günstige Stunden nutzen</b><p>Mit einem dynamischen Stromtarif lädt der Hub Auto und Speicher dann, wenn der Strom am wenigsten kostet.</p></div>
+      <div class="card warm"><svg class="hexi" viewBox="0 0 64 64" aria-hidden="true"><use href="#hex"/><use href="#i-wp" x="17" y="17" width="30" height="30"/></svg><b>Wärme mit Sonnenstrom</b><p>Bei Überschuss bekommt die Wärmepumpe über SG-Ready das Signal, Wärme auf Vorrat zu machen. Das Warmwasser heizt mit Sonne.</p></div>
+      <div class="card"><svg class="hexi" viewBox="0 0 64 64" aria-hidden="true"><use href="#hex"/><use href="#i-netz" x="17" y="17" width="30" height="30"/></svg><b>Bereit für §14a EnWG</b><p>Begrenzt der Netzbetreiber die Leistung, verteilt der Hub den verfügbaren Strom nach Ihren Prioritäten.</p></div>
+      <div class="card"><svg class="hexi" viewBox="0 0 64 64" aria-hidden="true"><use href="#hex"/><use href="#i-v2h" x="17" y="17" width="30" height="30"/></svg><b>Strom aus dem Auto</b><p>Vorbereitet für bidirektionales Laden (V2H), sobald Auto und Wallbox es unterstützen.</p></div>
+      <div class="card warm"><svg class="hexi" viewBox="0 0 64 64" aria-hidden="true"><use href="#hex"/><use href="#i-puls" x="17" y="17" width="30" height="30"/></svg><b>Service, bevor etwas ausfällt</b><p>Der Hub prüft Geräte und Verbindungen und meldet Auffälligkeiten. Auf Wunsch helfen wir über einen sicheren Fernzugang.</p></div>
+      <div class="card"><svg class="hexi" viewBox="0 0 64 64" aria-hidden="true"><use href="#hex"/><use href="#i-lock" x="17" y="17" width="30" height="30"/></svg><b>Ihre Daten bleiben im Haus</b><p>Kein Cloud-Abo, keine Daten auf fremden Servern. Der Hub arbeitet lokal.</p></div>
+    </div>
+    <div class="hub-end">
+      <p>Hub Core und Hub Pro sind in Entwicklung und noch nicht erhältlich. Sie möchten zu den Ersten gehören? Melden Sie Ihr Interesse an.</p>
+      <a class="btn" href="#kontakt" data-interesse="VOLTHERM Hub">Interesse anmelden</a>
+    </div>
+  </div>
+</section>
+
 <section class="sec dark" id="ki">
   <div class="wrap ki-grid">
     <div>
@@ -236,7 +306,7 @@
         <li>Tagesbilanz am Abend, verständlich erklärt</li>
         <li>Sicher: Jeder Befehl läuft durch die Schutzregeln von VOLTHERM, wichtige Schritte werden vorher bestätigt</li>
       </ul>
-      <p class="ki-note">In Vorbereitung. Sprechen Sie uns an, wenn Sie Interesse haben.</p>
+      <p class="ki-note">In Vorbereitung, als Teil von <a href="#hub">Hub Pro</a>. Sprechen Sie uns an, wenn Sie Interesse haben.</p>
     </div>
   </div>
   <div class="wrap">
@@ -298,6 +368,7 @@
           <label><input type="checkbox" name="i" value="Klimaanlage"><span>Klimaanlage</span></label>
           <label><input type="checkbox" name="i" value="Smart Home (Loxone / Home Assistant)"><span>Smart Home</span></label>
           <label><input type="checkbox" name="i" value="VOLTHERM Smart Energy"><span>Smart Energy</span></label>
+          <label><input type="checkbox" name="i" value="VOLTHERM Hub"><span>Hub</span></label>
         </div>
       </fieldset>
       <label class="fld"><span>Name</span><input name="name" autocomplete="name" required></label>
