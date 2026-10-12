@@ -203,6 +203,48 @@
     }, { threshold: .35 }).observe(kt);
   }
 
+  // Anfrage: Beispiele tippen sich im grauen Platzhaltertext, bis jemand ein Feld antippt
+  var af = document.getElementById('anfrage');
+  if (af && !ruhig && 'IntersectionObserver' in window) {
+    var felder = ['name', 'kontakt', 'ort', 'text'].map(function (n) { return af.elements[n]; });
+    var original = felder.map(function (f) { return f.getAttribute('placeholder') || ''; });
+    var BEISPIELE = [
+      ['Anna Bauer', '0171 1234567', '95514 Neustadt am Kulm', 'Einfamilienhaus, Süddach. Wir möchten Photovoltaik mit Speicher.'],
+      ['Thomas Weber', 'name@beispiel.de', '92637 Weiden', 'Solaranlage ist schon da, jetzt Wallbox und eine Klimaanlage fürs Schlafzimmer.'],
+      ['Familie Schmidt', '0160 7654321', '95478 Kemnath', 'Neubau, Wärmepumpe geplant. Alles soll mit Smart Home zusammenarbeiten.']
+    ];
+    var tLauf = 0, tUhr = null, satz = 0, aus = false;
+    var tWarte = function (fn, ms) { clearTimeout(tUhr); tUhr = setTimeout(fn, ms); };
+    var setze = function (f, t) { f.setAttribute('placeholder', t); };
+    var tippen = function (n, i, z) {
+      if (n !== tLauf) return;
+      if (i >= felder.length) return tWarte(function () { loeschen(n, felder.length - 1); }, 2600);
+      var f = felder[i], ziel = BEISPIELE[satz][i];
+      if (f.value) return tippen(n, i + 1, 0);
+      setze(f, ziel.slice(0, z) + (z < ziel.length ? '|' : ''));
+      if (z < ziel.length) return tWarte(function () { tippen(n, i, z + 1); }, 38 + Math.random() * 60);
+      tWarte(function () { tippen(n, i + 1, 0); }, 450);
+    };
+    var loeschen = function (n, i) {
+      if (n !== tLauf) return;
+      if (i < 0) { satz = (satz + 1) % BEISPIELE.length; return tWarte(function () { tippen(n, 0, 0); }, 500); }
+      var f = felder[i], t = f.getAttribute('placeholder');
+      if (f.value || !t) { setze(f, ''); return loeschen(n, i - 1); }
+      setze(f, t.slice(0, Math.max(0, t.length - 4)));
+      tWarte(function () { loeschen(n, i); }, 14);
+    };
+    var halt = function () { clearTimeout(tUhr); tLauf++; };
+    var zurueck = function () { felder.forEach(function (f, i) { setze(f, original[i]); }); };
+    // Sobald jemand ins Formular geht: Animation endet für immer, die normalen Hinweise kommen zurück
+    af.addEventListener('focusin', function () { if (aus) return; aus = true; halt(); zurueck(); });
+    new IntersectionObserver(function (e) {
+      if (aus) return;
+      halt();
+      if (e[0].isIntersecting) { felder.forEach(function (f) { setze(f, ''); }); tWarte(function () { tippen(tLauf, 0, 0); }, 600); }
+      else zurueck();
+    }, { threshold: .4 }).observe(af);
+  }
+
   // Anfrage: direkt senden (Push an VOLTHERM) oder Text für WhatsApp bzw. E-Mail vorbereiten
   var form = document.getElementById('anfrage');
   if (!form) return;
