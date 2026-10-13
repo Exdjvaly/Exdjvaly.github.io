@@ -82,21 +82,35 @@ const KONTAKT = {
   ticks.innerHTML = t;
   $(".pin-low").setAttribute("transform", `translate(${px(12.75)} ${py(15)})`);
   $(".pin-high").setAttribute("transform", `translate(${px(19.75)} ${py(103)})`);
-  // Surferul alunecă pe valul prețului cât timp graficul e pe ecran.
-  const kurve = $("#kurve"), surfer = $("#surfer");
+  // Un punct luminos merge pe curbă și arată ora și prețul; culoarea lui urmează prețul (verde ieftin, roșu scump).
+  const kurve = $("#kurve"), laeufer = $("#laeufer"), tag = $(".l-tag", laeufer), tagText = $("text", laeufer);
   const lang = kurve.getTotalLength();
-  const surfAn = (f) => {
-    const a = kurve.getPointAtLength(f * lang), b = kurve.getPointAtLength(Math.min(lang, f * lang + 2));
-    const w = (Math.atan2(b.y - a.y, b.x - a.x) * 180) / Math.PI;
-    surfer.setAttribute("transform", `translate(${a.x.toFixed(1)} ${(a.y - 2).toFixed(1)}) rotate(${w.toFixed(1)})`);
+  const FARBEN = [[0, [61, 220, 151]], [28, [61, 220, 151]], [50, [255, 197, 49]], [80, [255, 107, 44]], [110, [255, 61, 110]]];
+  const farbe = (p) => {
+    let i = 1;
+    while (i < FARBEN.length - 1 && p > FARBEN[i][0]) i++;
+    const [p0, c0] = FARBEN[i - 1], [p1, c1] = FARBEN[i];
+    const f = Math.min(1, Math.max(0, (p - p0) / (p1 - p0)));
+    return `rgb(${c0.map((v, k) => Math.round(v + (c1[k] - v) * f)).join(",")})`;
   };
-  surfAn(0.47);
+  const laufAn = (f) => {
+    const a = kurve.getPointAtLength(f * lang);
+    const stunde = ((a.x - X0) / (X1 - X0)) * 24, preis = ((Y0 - a.y) / (Y0 - Y1)) * PMAX;
+    const min = Math.round((stunde * 60) / 5) * 5;
+    tagText.textContent = `${String(Math.floor(min / 60) % 24).padStart(2, "0")}:${String(min % 60).padStart(2, "0")} · ${Math.round(preis)} ct`;
+    // Eticheta stă deasupra punctului; sus la vârf și la margini se mută, ca să nu iasă din grafic.
+    const dx = Math.max(X0 + 4 - a.x + 32, Math.min(0, X1 - a.x - 32));
+    tag.setAttribute("transform", `translate(${dx.toFixed(1)} ${a.y < 60 ? 46 : 0})`);
+    laeufer.setAttribute("transform", `translate(${a.x.toFixed(1)} ${a.y.toFixed(1)})`);
+    laeufer.style.setProperty("--l", farbe(preis));
+  };
+  laufAn(0.47);
   if (!ruhig) {
     let laeuft = false, start = 0;
     const schritt = (zeit) => {
       if (!laeuft) return;
       if (!start) start = zeit;
-      surfAn((((zeit - start) / 14000) + 0.47) % 1);
+      laufAn((((zeit - start) / 16000) + 0.47) % 1);
       requestAnimationFrame(schritt);
     };
     new IntersectionObserver(([e]) => {
@@ -116,21 +130,38 @@ const KONTAKT = {
   }
 
   // ---------- Capitolul 3: o zi cu VOLTHERM ----------
+  // Valorile de exemplu urmează textul fiecărui pas. bat = Speicher în %, ww = cât de cald e boilerul (0–1).
   const PHASEN = {
-    morgen: { zeit: "07:00", preis: "Preis: mittel", sprech: "" },
-    mittag: { zeit: "12:45", preis: "Preis: niedrig", sprech: "„Das Auto lädt mit Sonne.“" },
-    nachmittag: { zeit: "15:30", preis: "Preis: niedrig", sprech: "„Warmwasser ist fertig.“" },
-    abend: { zeit: "19:45", preis: "Preis: sehr hoch", sprech: "" },
-    nacht: { zeit: "02:00", preis: "Preis: am günstigsten", sprech: "Laden: günstigste Stunden" },
+    morgen: { zeit: "07:00", preis: "Preis: mittel", stufe: "mittel", sprech: "",
+      bat: 35, batT: "35 %", ww: 0.4, wwT: "lauwarm", auto: ["wartet auf Überschuss"], netz: ["fast still"] },
+    mittag: { zeit: "12:45", preis: "Preis: niedrig", stufe: "niedrig", sprech: "„Das Auto lädt mit Sonne.“",
+      bat: 70, batT: "70 % ↑", ww: 0.85, wwT: "heizt mit Sonne", auto: ["lädt mit Sonne", "sol"], netz: ["fast still"] },
+    nachmittag: { zeit: "15:30", preis: "Preis: niedrig", stufe: "niedrig", sprech: "„Warmwasser ist fertig.“",
+      bat: 100, batT: "100 %", ww: 1, wwT: "heiß", auto: ["pausiert"], netz: ["Rest wird eingespeist", "einsp"] },
+    abend: { zeit: "19:45", preis: "Preis: sehr hoch", stufe: "hoch", sprech: "",
+      bat: 45, batT: "45 % ↓", ww: 1, wwT: "heiß", auto: ["wartet auf die Nacht"], netz: ["fast still"] },
+    nacht: { zeit: "02:00", preis: "Preis: am günstigsten", stufe: "niedrig", sprech: "Laden: günstigste Stunden",
+      bat: 55, batT: "55 % ↑", ww: 0.85, wwT: "warm", auto: ["lädt günstig", "netz"], netz: ["günstiger Bezug", "netz"] },
   };
   const szene = $(".scene");
+  const wert = (sel, [text, farbe = ""]) => { const b = $(`${sel} b`, szene); b.textContent = text; b.dataset.farbe = farbe; };
   const setzePhase = (ph) => {
-    if (!PHASEN[ph] || szene.dataset.phase === ph && szene.dataset.init) return;
+    const P = PHASEN[ph];
+    if (!P || szene.dataset.phase === ph && szene.dataset.init) return;
     szene.dataset.phase = ph;
+    szene.dataset.preis = P.stufe;
     szene.dataset.init = "1";
-    $(".hud-zeit").textContent = PHASEN[ph].zeit;
-    $(".hud-preis").textContent = PHASEN[ph].preis;
-    $(".bubble-t").textContent = PHASEN[ph].sprech;
+    $(".hud-zeit").textContent = P.zeit;
+    $(".hud-preis").textContent = P.preis;
+    $(".bubble-t").textContent = P.sprech;
+    szene.classList.toggle("spricht", !!P.sprech);
+    szene.classList.toggle("heiss", P.ww >= 0.85);
+    wert(".l-bat", [P.batT]);
+    $(".l-bat s", szene).style.setProperty("--f", P.bat / 100);
+    wert(".l-ww", [P.wwT]);
+    $(".l-ww s", szene).style.setProperty("--f", P.ww);
+    wert(".l-auto", P.auto);
+    wert(".l-netz", P.netz);
     $$(".step").forEach((s) => s.classList.toggle("aktiv", s.dataset.phase === ph));
   };
   setzePhase("morgen");
