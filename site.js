@@ -35,6 +35,64 @@
     });
   }
 
+  // Startbild: Geräte kreisen langsam auf einer geneigten Bahn um das Haus. Was vorne ist, wird
+  // größer und liegt vor dem Haus, was hinten ist, kleiner und dahinter. Die Punkte auf den
+  // Linien zeigen den Energiefluss: zum Haus (Netz, Speicher) oder vom Haus weg (Verbraucher).
+  (function () {
+  var szene = document.querySelector('.szene');
+  if (!szene) return;
+    var NS = 'http://www.w3.org/2000/svg', linien = szene.querySelector('.linien');
+    var FARBE = { netz: '#3ddc97', bat: '#5b8cff', wb: '#19C3E6', wp: '#b07cff', kl: '#2ee6c8', ww: '#FF6B2C' };
+    var REIN = { netz: 1, bat: 1 };
+    var CX = 500, CY = 515, RX = 400, RY = 165, ZIEL = [500, 448];
+    var knoten = Array.prototype.map.call(szene.querySelectorAll('.hx'), function (el, i, alle) {
+      var k = el.getAttribute('data-k');
+      var schiene = document.createElementNS(NS, 'path'), lauf = document.createElementNS(NS, 'path');
+      schiene.setAttribute('class', 'schiene');
+      lauf.setAttribute('class', 'lauf' + (REIN[k] ? '' : ' raus'));
+      lauf.style.stroke = FARBE[k];
+      lauf.style.filter = 'drop-shadow(0 0 5px ' + FARBE[k] + ')';
+      lauf.style.animationDelay = (-i * 0.17) + 's';
+      linien.appendChild(schiene); linien.appendChild(lauf);
+      return { el: el, schiene: schiene, lauf: lauf, start: i / alle.length * Math.PI * 2 };
+    });
+    var ruhig = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var neig = 0, neigZiel = 0, sichtbar = true, t0 = performance.now();
+    var platziere = function (zeit) {
+      var w = ruhig ? 0 : (zeit - t0) / 70000 * Math.PI * 2;
+      neig += (neigZiel - neig) * 0.06;
+      var ry = RY * (1 + neig * 0.35);
+      knoten.forEach(function (n) {
+        var a = n.start + w, tiefe = Math.cos(a);
+        var x = CX + RX * Math.sin(a), y = CY + ry * tiefe;
+        var vorn = (tiefe + 1) / 2, gross = 0.58 + 0.36 * vorn;
+        n.el.style.left = x / 10 + '%';
+        n.el.style.top = (y - 60 * gross) / 8 + '%';
+        n.el.style.transform = 'scale(' + gross.toFixed(3) + ')';
+        n.el.style.zIndex = tiefe > -0.15 ? 7 : 4;
+        n.el.style.opacity = (0.5 + 0.5 * vorn).toFixed(2);
+        n.el.style.setProperty('--vorn', vorn.toFixed(2));
+        var mx = (x + ZIEL[0]) / 2, my = Math.max(y, ZIEL[1]) + 30 * (tiefe + 1);
+        var d = 'M' + x.toFixed(1) + ' ' + y.toFixed(1) + 'Q' + mx.toFixed(1) + ' ' + my.toFixed(1) + ' ' + ZIEL[0] + ' ' + ZIEL[1];
+        n.schiene.setAttribute('d', d); n.lauf.setAttribute('d', d);
+      });
+      szene.style.setProperty('--tx', (neig * -6).toFixed(2) + 'deg');
+    };
+    var schritt = function (zeit) { if (sichtbar) platziere(zeit); requestAnimationFrame(schritt); };
+    platziere(t0);
+    if (!ruhig) {
+      requestAnimationFrame(schritt);
+      if ('IntersectionObserver' in window) new IntersectionObserver(function (e) { sichtbar = e[0].isIntersecting; }).observe(szene);
+      // Maus oder Finger neigt die Bahn ein wenig, das gibt Tiefe
+      szene.addEventListener('pointermove', function (e) {
+        var r = szene.getBoundingClientRect();
+        neigZiel = Math.max(-1, Math.min(1, ((e.clientY - r.top) / r.height - 0.5) * 2));
+        szene.style.setProperty('--ty', (((e.clientX - r.left) / r.width - 0.5) * 10).toFixed(2) + 'deg');
+      });
+      szene.addEventListener('pointerleave', function () { neigZiel = 0; szene.style.setProperty('--ty', '0deg'); });
+    }
+  })();
+
   // Knöpfe wie „Klimaanlage anfragen“ wählen das Interesse im Formular vor
   document.querySelectorAll('[data-interesse]').forEach(function (a) {
     a.addEventListener('click', function () {

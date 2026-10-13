@@ -77,36 +77,45 @@ a { color: inherit; }
 .lead { color: #c5d0e6; font-size: 18px; max-width: 560px; }
 .chips { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; padding: 0; margin: 30px 0 0; }
 .chips li { font-size: 13px; color: #c5d0e6; padding: 6px 12px; border-radius: 999px; border: 1px solid rgba(143,163,200,.3); }
-.hero-art { display: flex; justify-content: center; }
-@property --spin { syntax: "<angle>"; inherits: true; initial-value: 0deg; }
-.orbit { --spin: 0deg; position: relative; width: min(84vw, 400px); aspect-ratio: 1; border-radius: 50%; animation: spin 90s linear infinite; }
-@keyframes spin { to { --spin: 360deg; } }
-/* Energiefluss: Punkte laufen vom Dach zum Kern und vom Kern zu den Verbrauchern */
-.flow { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; transform: rotate(var(--spin)); }
-.flow .ring { fill: none; stroke: rgba(143,163,200,.35); stroke-width: 1; stroke-dasharray: 3 5; }
-.flow .rail { fill: none; stroke: rgba(143,163,200,.16); stroke-width: 2; }
-.flow .dot { fill: none; stroke: var(--cyan); stroke-width: 4.5; stroke-linecap: round; stroke-dasharray: 0 13; animation: flow .9s linear infinite; filter: drop-shadow(0 0 4px rgba(25,195,230,.9)); }
-.flow .dot.w { stroke: var(--orange); filter: drop-shadow(0 0 4px rgba(255,107,44,.9)); }
-@keyframes flow { to { stroke-dashoffset: -13; } }
-.orbit::before { content: ""; position: absolute; inset: 18%; border-radius: 50%; border: 1px solid rgba(25,195,230,.25); box-shadow: 0 0 80px rgba(25,195,230,.18) inset; }
-.core { position: absolute; inset: 33%; display: grid; place-items: center; border-radius: 50%; background: radial-gradient(circle, #16233e, var(--navy)); box-shadow: 0 0 60px rgba(25,195,230,.35); animation: breathe 4s ease-in-out infinite; }
-.core::before, .core::after { content: ""; position: absolute; inset: 0; border-radius: 50%; border: 1.5px solid rgba(25,195,230,.55); animation: ripple 3.6s ease-out infinite; pointer-events: none; }
-.core::after { animation-delay: 1.8s; }
-@keyframes ripple { from { transform: scale(1); opacity: .9; } to { transform: scale(2.1); opacity: 0; } }
-@keyframes breathe { 50% { box-shadow: 0 0 90px rgba(25,195,230,.55); } }
-.core svg { width: 62%; height: 62%; }
-.node { --a: 0deg; position: absolute; left: 50%; top: 50%; width: 19%; aspect-ratio: 1; margin: -9.5%; display: grid; place-items: center;
-  transform: rotate(calc(var(--a) + var(--spin))) translateY(-205%) rotate(calc(-1 * (var(--a) + var(--spin)))); clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
-  background: linear-gradient(160deg, #1d3354, #10213a); animation: pulse 6s ease-in-out infinite; }
-.node::after { content: ""; position: absolute; inset: 0; clip-path: inherit; box-shadow: inset 0 0 0 2px var(--cyan); }
-.node svg { width: 48%; height: 48%; fill: none; stroke: var(--cyan); stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
-.node.warm svg { stroke: var(--orange); }
-.n1 { --a: 0deg; } .n2 { --a: 60deg; animation-delay: -1s; } .n3 { --a: 120deg; animation-delay: -2s; }
-.n4 { --a: 180deg; animation-delay: -3s; } .n5 { --a: 240deg; animation-delay: -4s; } .n6 { --a: 300deg; animation-delay: -5s; }
-@keyframes pulse { 50% { filter: brightness(1.45); } }
+.hero-art { display: flex; justify-content: center; min-width: 0; }
+/* 3D-Szene: Haus aus der App in der Mitte, Geräte kreisen auf einer geneigten Bahn,
+   Energie fließt als Punkte zum Haus. Positionen setzt site.js; ohne JS steht alles still. */
+.szene { --tx: 0deg; --ty: 0deg; position: relative; width: min(100%, 640px); aspect-ratio: 5 / 4; margin: 0 auto; perspective: 1100px; }
+.szene > * { position: absolute; }
+.bahn { inset: 0; width: 100%; height: 100%; overflow: visible; }
+.bahn .ring { fill: none; stroke: rgba(143,163,200,.32); stroke-width: 1.2; stroke-dasharray: 4 7; vector-effect: non-scaling-stroke; }
+.bahn .ring.innen { stroke: rgba(25,195,230,.28); stroke-dasharray: none; filter: drop-shadow(0 0 10px rgba(25,195,230,.45)); }
+.bahn .lauf { fill: none; stroke-width: 5; stroke-linecap: round; stroke-dasharray: 0 16; animation: lauf 1s linear infinite; }
+.bahn .lauf.raus { animation-direction: reverse; }
+.bahn.oben { z-index: 6; pointer-events: none; }
+.bahn .sonne { stroke: #FFC83D; filter: drop-shadow(0 0 5px #FFC83D); }
+.bahn .schiene { fill: none; stroke: rgba(143,163,200,.14); stroke-width: 2; }
+@keyframes lauf { to { stroke-dashoffset: -16; } }
+.haus { left: 17%; top: 4%; width: 66%; height: auto; z-index: 5; filter: drop-shadow(0 30px 40px rgba(0,0,0,.55)); animation: hausSchweben 7s ease-in-out infinite;
+  transform: rotateX(var(--tx)) rotateY(var(--ty)); transition: transform .4s ease-out; }
+@keyframes hausSchweben { 50% { translate: 0 -1.2%; } }
+.kern { left: 50%; top: 56%; width: 8%; aspect-ratio: 1; translate: -50% -50%; z-index: 6; display: grid; place-items: center; border-radius: 50%;
+  background: radial-gradient(circle, #16233e, var(--navy)); box-shadow: 0 0 0 1.5px rgba(25,195,230,.7), 0 0 40px rgba(25,195,230,.6); animation: breathe 4s ease-in-out infinite; }
+.kern::before, .kern::after { content: ""; position: absolute; inset: 0; border-radius: 50%; border: 1.5px solid rgba(25,195,230,.55); animation: ripple 3.6s ease-out infinite; }
+.kern::after { animation-delay: 1.8s; }
+.kern svg { width: 64%; height: 64%; }
+@keyframes ripple { from { transform: scale(1); opacity: .9; } to { transform: scale(2.6); opacity: 0; } }
+@keyframes breathe { 50% { box-shadow: 0 0 0 1.5px rgba(25,195,230,.9), 0 0 70px rgba(25,195,230,.85); } }
+.hx { --c: var(--cyan); left: 0; top: 0; width: 17%; --vorn: 1; translate: -50% -50%; display: grid; grid-template-columns: 100%; justify-items: center; gap: 6px; z-index: 7; will-change: transform; }
+.hx.warm { --c: var(--orange); }
+.hx i { position: relative; display: grid; place-items: center; width: 100%; aspect-ratio: 1 / 1.08;
+  clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%); background: linear-gradient(160deg, rgba(36,62,100,.95), rgba(13,26,46,.95)); }
+.hx i::after { content: ""; position: absolute; inset: 0; clip-path: inherit; box-shadow: inset 0 0 0 2px var(--c), inset 0 0 24px color-mix(in srgb, var(--c) 35%, transparent); }
+.hx img { width: 70%; height: 70%; object-fit: contain; filter: drop-shadow(0 8px 10px rgba(0,0,0,.5)); }
+.hx b { font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: #dbe5f5; padding: 3px 9px; border-radius: 999px;
+  background: rgba(11,22,40,.8); box-shadow: 0 0 0 1px color-mix(in srgb, var(--c) 55%, transparent); white-space: nowrap;
+  opacity: clamp(0, calc(var(--vorn) * 2.2 - 1), 1); }
+/* Ohne JS: feste Plätze rund um das Haus */
+.hx[data-k="netz"] { left: 9%; top: 52%; } .hx[data-k="bat"] { left: 22%; top: 82%; } .hx[data-k="wb"] { left: 50%; top: 92%; }
+.hx[data-k="wp"] { left: 78%; top: 82%; } .hx[data-k="kl"] { left: 91%; top: 52%; } .hx[data-k="ww"] { left: 50%; top: 18%; z-index: 4; }
 @media (min-width: 900px) {
   .hero { padding: 90px 0 110px; }
-  .hero-grid { grid-template-columns: 1.15fr .85fr; }
+  .hero-grid { grid-template-columns: 1fr 1fr; }
 }
 
 /* ---------- Abschnitte ---------- */
