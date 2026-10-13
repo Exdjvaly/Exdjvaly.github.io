@@ -183,6 +183,15 @@
     var msgs = kt.querySelector('.kt-msgs'), listen = kt.querySelector('.kt-listen');
     var said = k('said'), hint = k('hint');
     var lauf = 0, uhren = [], werte;
+    // Stimme (Piper Thorsten) nur nach Klick auf „Mit Ton anhören“, Browser spielen Ton erst nach einer Eingabe
+    var KI_TON = [['assets/stimme/ki-1.mp3', 6.0], ['assets/stimme/ki-2.mp3', 8.1], ['assets/stimme/ki-3.mp3', 5.5]];
+    var KI_FRAGE = [['assets/stimme/ki-f1.mp3', 1.2], ['assets/stimme/ki-f2.mp3', 1.5], ['assets/stimme/ki-f3.mp3', 0.8]]; // Kundin: Stimme Kerstin
+    var tonAn = false, tonEl = null;
+    var tonKnopf = document.createElement('button');
+    tonKnopf.type = 'button'; tonKnopf.className = 'kt-ton'; tonKnopf.setAttribute('aria-pressed', 'false');
+    tonKnopf.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"/></svg><span>Mit Ton anhören</span>';
+    var figur = kt.closest('figure');
+    figur.insertBefore(tonKnopf, figur.querySelector('figcaption'));
     var GESPRAECH = [
       ['hoeren', 'Wie war der Tag bisher?'],
       ['antwort', 'Sehr gut. 82 % Ihres Stroms kam heute von der Sonne, das Auto lädt gerade mit Überschuss.'],
@@ -219,11 +228,14 @@
       }
       var s = GESPRAECH[i], weiter = function (ms) { spaeter(function () { schritt(n, i + 1); }, ms); };
       if (s[0] === 'hoeren') {
+        var fnr = GESPRAECH.slice(0, i + 1).filter(function (x) { return x[0] === 'hoeren'; }).length - 1;
+        var fton = tonAn && tonEl ? KI_FRAGE[fnr] : null;
+        if (fton) spaeter(function () { if (n !== lauf) return; tonEl.src = fton[0]; var pl = tonEl.play(); if (pl && pl.catch) pl.catch(function () {}); }, 150);
         listen.classList.add('on'); hint.textContent = 'Ich höre zu'; said.textContent = '„';
         var z = 0, tippe = function () {
           if (n !== lauf) return;
           z++; said.textContent = '„' + s[1].slice(0, z) + (z < s[1].length ? ' …' : '“');
-          if (z < s[1].length) return spaeter(tippe, 55);
+          if (z < s[1].length) return spaeter(tippe, fton ? Math.round(fton[1] * 1000 / s[1].length) : 55);
           spaeter(function () {
             ruhe();
             if (s[2] === 'tippen') {
@@ -236,8 +248,11 @@
         };
         spaeter(tippe, 450);
       } else {
-        var b = blase('b');
+        var b = blase('b'), nr = GESPRAECH.slice(0, i + 1).filter(function (x) { return x[0] === 'antwort'; }).length - 1;
+        var ton = tonAn && tonEl ? KI_TON[nr] : null;
         b.innerHTML = '<span class="kt-dots"><i></i><i></i><i></i></span>';
+        // Der Clip beginnt mit 0,3 s Stille: so fällt das erste Wort mit der Stimme zusammen
+        if (ton) spaeter(function () { if (n !== lauf) return; tonEl.src = ton[0]; var pl = tonEl.play(); if (pl && pl.catch) pl.catch(function () {}); }, 1000);
         spaeter(function () {
           if (n !== lauf) return;
           b.textContent = '';
@@ -246,13 +261,13 @@
             if (n !== lauf) return;
             var sp = document.createElement('span'); sp.className = 'w';
             sp.textContent = (w ? ' ' : '') + woerter[w]; b.appendChild(sp); w++;
-            if (w < woerter.length) return spaeter(wort, 70);
+            if (w < woerter.length) return spaeter(wort, ton ? Math.round(ton[1] * 1000 / woerter.length) : 70);
             if (s[2] === true) {
               var a = document.createElement('span'); a.className = 'act';
               a.innerHTML = '<span class="kb">Ja, starten</span><span class="kb g">Nein</span>'; b.appendChild(a);
             }
             if (s[2] === 'heizen') { werte.heizt = true; k('wwt').classList.add('heat'); }
-            weiter(1200 + woerter.length * 230);
+            weiter(ton ? 1500 : 1200 + woerter.length * 230);
           };
           wort();
         }, 1300);
@@ -269,8 +284,22 @@
       if (e[0].isIntersecting) {
         if (!kt.classList.contains('live')) kt.classList.add('live');
         alleStopp(); lauf++; start(lauf); takt(lauf);
-      } else { alleStopp(); lauf++; }
+      } else { alleStopp(); lauf++; if (tonEl) tonEl.pause(); }
     }, { threshold: .35 }).observe(kt);
+    tonKnopf.addEventListener('click', function () {
+      tonAn = !tonAn;
+      tonKnopf.setAttribute('aria-pressed', String(tonAn));
+      tonKnopf.querySelector('span').textContent = tonAn ? 'Ton aus' : 'Mit Ton anhören';
+      if (tonAn) {
+        // Im Klick einmal stumm anspielen, damit auch iPhone und Safari den Ton später erlauben
+        if (!tonEl) tonEl = new Audio();
+        tonEl.src = KI_TON[0][0]; tonEl.muted = true;
+        var pl = tonEl.play();
+        var frei = function () { tonEl.pause(); tonEl.muted = false; };
+        if (pl && pl.then) pl.then(frei, frei); else frei();
+        alleStopp(); lauf++; start(lauf); takt(lauf);
+      } else if (tonEl) tonEl.pause();
+    });
   }
 
   // Anfrage: Beispiele tippen sich im grauen Platzhaltertext, bis jemand ein Feld antippt
@@ -371,4 +400,286 @@
       window.open('https://wa.me/4915568656548?text=' + encodeURIComponent(nachricht), '_blank', 'noopener');
     }
   });
+})();
+
+/* Hub zum Ausprobieren: Drehknopf mit rundem Display (Hub Core) und Sprache am 7-Zoll-Display (Hub Pro). Beispielwerte. */
+(function () {
+  var ruhig = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var zahl = function (x, d) { return x.toFixed(d || 0).replace('.', ','); };
+  var esc = function (t) { return String(t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+
+  var rk = document.getElementById('rk');
+  if (rk) {
+    var scr = rk.querySelector('.rk-scr'), ansage = document.getElementById('rk-ansage');
+    var schritte = document.querySelectorAll('.hd-steps li');
+    var nachtKnopf = document.querySelector('.hd-nacht');
+    var BOGEN = 'M37.8 162.2A88 88 0 1 1 162.2 162.2';
+    var uhrzeit = function (m) { return ('0' + Math.floor(m / 60)).slice(-2) + ':' + ('0' + m % 60).slice(-2); };
+    var wert = function (e) { return e.zeit ? uhrzeit(e.w) : e.opt ? e.w : zahl(e.w, e.d) + (e.e ? ' ' + e.e : ''); };
+    var SEITEN = [
+      { t: 'Energie', c: '#FFC531', v: 6.8, d: 1, e: 'kW', max: 10, l: 'Sonne vom Dach', s: function () { return ['Haus 5,5 kW', 'Einspeisung 0,9 kW']; } },
+      { t: 'Speicher', c: '#4D8DFF', v: 71, e: '%', max: 100, l: 'lädt mit 0,4 kW',
+        set: [{ k: 'Reserve für Stromausfall', w: 10, e: '%', min: 5, max: 50, st: 5 }],
+        s: function (p) { return ['Reserve ' + wert(p.set[0])]; } },
+      { t: 'Wallbox', c: '#19C3E6', v: 62, e: '%', max: 100, l: 'Auto lädt mit Sonne',
+        set: [{ k: 'Laden', w: 'Nur Sonne', opt: ['Aus', 'Nur Sonne', 'Automatisch', 'Sofort'] }, { k: 'Ladeziel', w: 80, e: '%', min: 20, max: 100, st: 5 }, { k: 'Fertig bis', w: 420, zeit: true, min: 0, max: 1410, st: 30 }],
+        s: function (p) { return [p.set[0].w + ' · Ziel ' + wert(p.set[1]) + ' bis ' + wert(p.set[2])]; } },
+      { t: 'Warmwasser', c: '#FF6B2C', v: 52.5, d: 1, e: '°C', max: 80, l: 'heizt mit Sonne',
+        set: [{ k: 'Jetzt 1 Stunde heizen', akt: true }, { k: 'Mit Sonnenstrom bis', w: 62, e: '°C', min: 50, max: 80, st: 1 }, { k: 'Mindesttemperatur', w: 45, e: '°C', min: 35, max: 60, st: 1 }],
+        s: function (p) { return [p.boost ? 'heizt jetzt 1 Stunde' : 'mit Sonne bis ' + wert(p.set[1])]; } },
+      { t: 'Wohnzimmer', c: '#2FD0C2', v: 21.8, d: 1, e: '°C', min: 10, max: 30, l: 'jetzt im Raum',
+        set: [{ k: 'Wunschtemperatur', w: 21.5, d: 1, e: '°C', min: 16, max: 30, st: 0.5 }, { k: 'Modus', w: 'Auto', opt: ['Auto', 'Komfort', 'Selbst'] }],
+        s: function (p) { return ['Wunsch ' + wert(p.set[0]) + ' · ' + p.set[1].w]; } },
+      { t: 'Schlafzimmer', c: '#2FD0C2', v: 19.4, d: 1, e: '°C', min: 10, max: 30, l: 'jetzt im Raum',
+        set: [{ k: 'Wunschtemperatur', w: 19, d: 1, e: '°C', min: 16, max: 30, st: 0.5 }, { k: 'Modus', w: 'Auto', opt: ['Auto', 'Komfort', 'Selbst'] }],
+        s: function (p) { return ['Wunsch ' + wert(p.set[0]) + ' · ' + p.set[1].w]; } },
+      { t: 'Bilanz', c: '#3DDC97', v: 4.2, d: 2, e: '€', l: 'heute gespart', bruch: 0.82, s: function () { return ['Sonne 31,2 kWh', 'Autarkie 82 %']; } }
+    ];
+    var z = { mod: 'seite', i: 0, sel: 0, tmp: null, rot: 0, nacht: false };
+    var ruheUhr = null, okUhr = null, toastUhr = null, uhrTakt = null;
+
+    var bogen = function (bruch, farbe) {
+      bruch = Math.max(0, Math.min(1, bruch));
+      return '<svg class="rk-g" viewBox="0 0 200 200"><path class="bg" d="' + BOGEN + '" pathLength="100"/><path d="' + BOGEN + '" pathLength="100" stroke="' + farbe + '" stroke-dasharray="' + (bruch * 100).toFixed(1) + ' 100"/></svg>';
+    };
+    var punkte = function () {
+      var h = '<span class="rk-dots">';
+      for (var j = 0; j < SEITEN.length; j++) h += '<i' + (j === z.i ? ' class="on"' : '') + '></i>';
+      return h + '</span>';
+    };
+    var uhr = function () {
+      var jetzt = new Date(), h = jetzt.getHours() % 12, m = jetzt.getMinutes(), g = '';
+      for (var j = 0; j < 60; j++) {
+        var a = j * Math.PI / 30, gross = j % 5 === 0, r0 = gross ? 74 : 81, r1 = 86;
+        g += '<line x1="' + (100 + r0 * Math.sin(a)).toFixed(1) + '" y1="' + (100 - r0 * Math.cos(a)).toFixed(1) + '" x2="' + (100 + r1 * Math.sin(a)).toFixed(1) + '" y2="' + (100 - r1 * Math.cos(a)).toFixed(1) +
+          '" stroke="#8FA3C8" stroke-opacity="' + (gross ? '.75' : '.3') + '" stroke-width="' + (gross ? 2.6 : 1) + '" stroke-linecap="round"/>';
+      }
+      var zeiger = function (grad, l, w) { var a = grad * Math.PI / 180; return '<line x1="100" y1="100" x2="' + (100 + l * Math.sin(a)).toFixed(1) + '" y2="' + (100 - l * Math.cos(a)).toFixed(1) + '" stroke="#19C3E6" stroke-opacity=".85" stroke-width="' + w + '" stroke-linecap="round"/>'; };
+      return '<svg class="rk-uhr" viewBox="0 0 200 200">' + g +
+        '<text x="100" y="148" text-anchor="middle" fill="#19C3E6" font-size="11" font-weight="800" letter-spacing="3" font-family="system-ui, sans-serif">VOLTHERM</text>' +
+        zeiger((h + m / 60) * 30, 44, 5) + zeiger(m * 6, 66, 3) + '<circle cx="100" cy="100" r="4" fill="#19C3E6"/></svg>';
+    };
+
+    var zeichne = function () {
+      var p = SEITEN[z.i], h = '', txt = '';
+      rk.style.setProperty('--rot', z.rot + 'deg');
+      scr.classList.toggle('nacht', z.mod === 'uhr');
+      scr.style.setProperty('--c', p.c);
+      if (z.mod === 'uhr') {
+        h = uhr(); txt = 'Nachtansicht: Uhr';
+      } else if (z.mod === 'seite') {
+        var bruch = p.bruch != null ? p.bruch : (p.v - (p.min || 0)) / (p.max - (p.min || 0));
+        var zeilen = p.s(p);
+        h = bogen(bruch, p.c) + '<span class="rk-t">' + esc(p.t) + '</span><b class="rk-v">' + zahl(p.v, p.d) + '<small>' + esc(p.e) + '</small></b><span class="rk-l">' + esc(p.l) + '</span>';
+        zeilen.forEach(function (s) { h += '<span class="rk-s">' + esc(s) + '</span>'; });
+        h += punkte();
+        txt = p.t + ': ' + zahl(p.v, p.d) + ' ' + p.e + ', ' + p.l + '. ' + zeilen.join('. ');
+      } else if (z.mod === 'liste') {
+        h = '<span class="rk-t">' + esc(p.t) + '</span><div class="rk-list">';
+        p.set.forEach(function (e, j) { h += '<span class="rk-i' + (j === z.sel ? ' on' : '') + '">' + esc(e.k) + (e.akt ? '' : '<b>' + esc(wert(e)) + '</b>') + '</span>'; });
+        h += '<span class="rk-i zur' + (z.sel === p.set.length ? ' on' : '') + '">Zurück</span></div>';
+        txt = z.sel === p.set.length ? 'Zurück' : p.set[z.sel].k;
+      } else if (z.mod === 'wert') {
+        var e = p.set[z.sel], anz = { w: z.tmp, e: e.e, d: e.d, zeit: e.zeit, opt: e.opt }, b2;
+        b2 = e.opt ? (e.opt.indexOf(z.tmp) + 1) / e.opt.length : (z.tmp - e.min) / (e.max - e.min);
+        var gross = e.opt ? esc(z.tmp) : esc(e.zeit ? uhrzeit(z.tmp) : zahl(z.tmp, e.d)) + (e.e ? '<small>' + esc(e.e) + '</small>' : '');
+        h = bogen(b2, p.c) + '<span class="rk-t">' + esc(p.t) + '</span><span class="rk-l">' + esc(e.k) + '</span><b class="rk-v acc"' + (e.opt ? ' style="font-size:2.1em"' : '') + '>' + gross + '</b><span class="rk-s">Drücken zum Speichern</span>';
+        txt = e.k + ' ' + wert(anz);
+      } else if (z.mod === 'ok') {
+        h = '<span class="rk-ok"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><b class="rk-v" style="font-size:1.5em">' + esc(z.okText || 'Gespeichert') + '</b>';
+        txt = z.okText || 'Gespeichert';
+      }
+      if (z.toast) h += '<span class="rk-toast">' + esc(z.toast) + '</span>';
+      scr.innerHTML = h;
+      ansage.textContent = txt;
+      var aktiv = { seite: 0, liste: 1, wert: 2, ok: 3 }[z.mod];
+      Array.prototype.forEach.call(schritte, function (li, j) { li.classList.toggle('on', j === aktiv); });
+    };
+
+    var weckeRuhe = function () {
+      clearTimeout(ruheUhr);
+      if (z.mod === 'liste' || z.mod === 'wert') ruheUhr = setTimeout(function () { z.mod = 'seite'; zeichne(); weckeRuhe(); }, 10000);
+      else if (z.mod === 'seite' && z.nacht) ruheUhr = setTimeout(function () { z.mod = 'uhr'; zeichne(); }, 8000);
+    };
+    var zeigeToast = function (t) { z.toast = t; clearTimeout(toastUhr); toastUhr = setTimeout(function () { z.toast = null; zeichne(); }, 1400); };
+
+    var drehe = function (r, sichtbar) {
+      if (sichtbar !== false) z.rot += r * 12;
+      var p = SEITEN[z.i];
+      if (z.mod === 'uhr') { z.mod = 'seite'; z.i = 0; }
+      else if (z.mod === 'seite') z.i = (z.i + r + SEITEN.length) % SEITEN.length;
+      else if (z.mod === 'liste') z.sel = Math.max(0, Math.min(p.set.length, z.sel + r));
+      else if (z.mod === 'wert') {
+        var e = p.set[z.sel];
+        if (e.opt) z.tmp = e.opt[Math.max(0, Math.min(e.opt.length - 1, e.opt.indexOf(z.tmp) + r))];
+        else z.tmp = Math.max(e.min, Math.min(e.max, Math.round((z.tmp + r * e.st) * 10) / 10));
+      }
+      zeichne(); weckeRuhe();
+    };
+    var druecke = function () {
+      var p = SEITEN[z.i];
+      if (z.mod === 'uhr') { z.mod = 'seite'; z.i = 0; }
+      else if (z.mod === 'seite') { if (p.set) { z.mod = 'liste'; z.sel = 0; } else zeigeToast('Diese Seite zeigt nur an'); }
+      else if (z.mod === 'liste') {
+        if (z.sel === p.set.length) z.mod = 'seite';
+        else if (p.set[z.sel].akt) { p.boost = true; z.mod = 'ok'; z.okText = 'Heizt 1 Stunde'; }
+        else { z.mod = 'wert'; z.tmp = p.set[z.sel].w; }
+      } else if (z.mod === 'wert') { p.set[z.sel].w = z.tmp; z.mod = 'ok'; z.okText = 'Gespeichert'; }
+      if (z.mod === 'ok') { clearTimeout(okUhr); okUhr = setTimeout(function () { z.mod = 'seite'; zeichne(); weckeRuhe(); }, 1500); }
+      zeichne(); weckeRuhe();
+    };
+
+    // Rundgang, bis jemand selbst dreht oder drückt
+    var tour = null, tourAus = false;
+    var TOUR = [1, 1, 1, 1, 'd', 'd', 1, 1, 'd', 'w', 1, 1, 'w', 1];
+    var stoppeTour = function () { tourAus = true; clearTimeout(tour); };
+    var tourSchritt = function (n) {
+      if (tourAus) return;
+      if (n >= TOUR.length) { tour = setTimeout(function () { tourSchritt(0); }, 4000); return; }
+      if (n === 0) SEITEN[4].set[0].w = 21.5;
+      var a = TOUR[n];
+      if (a === 'd') druecke(); else if (a !== 'w') drehe(a);
+      tour = setTimeout(function () { tourSchritt(n + 1); }, a === 'w' ? 2200 : 1300);
+    };
+    var nutzer = function () { if (!tourAus) stoppeTour(); if (navigator.vibrate) try { navigator.vibrate(6); } catch (err) {} };
+
+    document.querySelectorAll('[data-rk]').forEach(function (b) {
+      b.addEventListener('click', function () { nutzer(); var r = +b.getAttribute('data-rk'); if (r) drehe(r); else druecke(); });
+    });
+    nachtKnopf.addEventListener('click', function () {
+      stoppeTour();
+      z.nacht = !z.nacht; nachtKnopf.setAttribute('aria-pressed', String(z.nacht));
+      z.mod = z.nacht ? 'uhr' : 'seite'; zeichne(); weckeRuhe();
+      clearInterval(uhrTakt);
+      if (z.nacht) uhrTakt = setInterval(function () { if (z.mod === 'uhr') zeichne(); }, 20000);
+    });
+    rk.addEventListener('keydown', function (e) {
+      var r = { ArrowRight: 1, ArrowUp: 1, ArrowLeft: -1, ArrowDown: -1 }[e.key];
+      if (r) { e.preventDefault(); nutzer(); drehe(r); }
+      else if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); nutzer(); druecke(); }
+    });
+    var rad = 0;
+    rk.addEventListener('wheel', function (e) {
+      e.preventDefault(); nutzer();
+      rad += e.deltaY;
+      while (Math.abs(rad) >= 60) { drehe(rad > 0 ? 1 : -1); rad -= (rad > 0 ? 60 : -60); }
+    }, { passive: false });
+    // Ziehen am Ring: alle 15 Grad eine Rastung; kurzes Tippen = Drücken
+    var zug = null;
+    var winkel = function (e) { var b = rk.getBoundingClientRect(); return Math.atan2(e.clientY - b.top - b.height / 2, e.clientX - b.left - b.width / 2) * 180 / Math.PI; };
+    rk.addEventListener('pointerdown', function (e) {
+      if (e.button) return;
+      nutzer();
+      zug = { w: winkel(e), x: e.clientX, y: e.clientY, summe: 0, rest: 0, gedreht: false };
+      try { rk.setPointerCapture(e.pointerId); } catch (err) {}
+    });
+    rk.addEventListener('pointermove', function (e) {
+      if (!zug) return;
+      var w = winkel(e), dw = w - zug.w;
+      if (dw > 180) dw -= 360; else if (dw < -180) dw += 360;
+      zug.w = w; zug.summe += Math.abs(dw); zug.rest += dw;
+      if (zug.summe > 6) zug.gedreht = true;
+      z.rot += dw; rk.style.setProperty('--rot', z.rot + 'deg');
+      while (Math.abs(zug.rest) >= 15) { var r = zug.rest > 0 ? 1 : -1; zug.rest -= r * 15; drehe(r, false); if (navigator.vibrate) try { navigator.vibrate(6); } catch (err) {} }
+    });
+    var ende = function (e) {
+      if (!zug) return;
+      var weit = Math.abs(e.clientX - zug.x) + Math.abs(e.clientY - zug.y);
+      if (!zug.gedreht && weit < 10 && e.type === 'pointerup') druecke();
+      zug = null;
+    };
+    rk.addEventListener('pointerup', ende);
+    rk.addEventListener('pointercancel', ende);
+
+    // Werte leben leicht mit
+    setInterval(function () {
+      if (z.mod !== 'seite' || document.hidden) return;
+      var e = SEITEN[0]; e.v = Math.max(6.2, Math.min(7.4, e.v + (Math.random() - .5) * .3));
+      var s = SEITEN[1]; if (s.v < 99) s.v += Math.random() < .25 ? 1 : 0;
+      zeichne();
+    }, 2600);
+
+    zeichne();
+    if (!ruhig && 'IntersectionObserver' in window) {
+      var gestartet = false;
+      new IntersectionObserver(function (ein) {
+        if (ein[0].isIntersecting && !gestartet && !tourAus) { gestartet = true; tour = setTimeout(function () { tourSchritt(0); }, 900); }
+        else if (!ein[0].isIntersecting && gestartet && !tourAus) { clearTimeout(tour); gestartet = false; }
+      }, { threshold: 0.6 }).observe(rk);
+    }
+  }
+
+  // Hub Pro: echtes VOLTHERM Home im 7-Zoll-Rahmen, dazu Beispielfragen per Sprache
+  var pf = document.getElementById('pf-scr');
+  if (pf) {
+    var passe = function () { pf.style.setProperty('--s', (pf.clientWidth / 1280).toFixed(4)); };
+    passe();
+    if ('ResizeObserver' in window) new ResizeObserver(passe).observe(pf); else window.addEventListener('resize', passe);
+
+    var stimme = document.getElementById('pf-voice'), unten = document.querySelector('.pf-unten'), chips = document.querySelectorAll('[data-frage]'), uhren = [];
+    var FRAGEN = [
+      { f: 'Lohnt sich jetzt die Waschmaschine?', a: 'Ja, jetzt passt es gut. Die Sonne liefert mehr, als das Haus gerade braucht, und der Speicher ist zu 71 % voll.',
+        ton: ['assets/stimme/hub-dialog-1.mp3', 7.2], frage: [200, 1.6], ab: 2540 },
+      { f: 'Wann ist das Auto voll?', a: 'Das Auto hat 62 %. Es lädt mit Sonnenstrom und ist bis 07:00 Uhr auf 80 %.',
+        ton: ['assets/stimme/hub-dialog-2.mp3', 5.8], frage: [200, 1.6], ab: 2540 },
+      { f: 'Mach bitte warmes Wasser.', a: 'Gern. Der Speicher hat 52 °C. Ich heize eine Stunde mit Sonnenstrom, das kostet nichts. Soll ich starten?',
+        ton: ['assets/stimme/hub-dialog-3.mp3', 7.1], frage: [200, 1.4], ab: 2300,
+        ja: 'Erledigt. Ich sage Bescheid, wenn das Wasser warm ist.', jaTon: ['assets/stimme/hub-ja.mp3', 3.0],
+        nein: 'In Ordnung, ich lasse alles, wie es ist.', neinTon: ['assets/stimme/hub-nein.mp3', 2.3] }
+    ];
+    // Ein Clip pro Frage: erst die Kundin (Kerstin), dann der Hub (Thorsten). Der Ton startet direkt im Klick
+    // (erlaubt auf allen Geräten); frage = [Beginn ms, Dauer s], ab = Beginn der Antwort in ms.
+    var aktTon = null;
+    var stummen = function () { if (aktTon) { aktTon.pause(); aktTon = null; } };
+    var spiele = function (src) {
+      stummen();
+      var a = new Audio(src), pl = a.play();
+      if (pl && pl.catch) pl.catch(function () {});
+      aktTon = a; return a;
+    };
+    var tempo = function (text, ton) { return ton ? Math.max(14, Math.round(ton[1] * 920 / text.length)) : 22; };
+    var MIC = '<span class="pv-mic"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/></svg></span>';
+    var spaeter = function (fn, ms) { uhren.push(setTimeout(fn, ruhig ? 0 : ms)); };
+    var stopp = function () { uhren.forEach(clearTimeout); uhren = []; };
+    var tippe = function (el, text, ms, fertig) {
+      if (ruhig) { el.textContent = text; fertig(); return; }
+      var n = 0, weiter = function () { n++; el.textContent = text.slice(0, n); if (n < text.length) spaeter(weiter, ms); else fertig(); };
+      weiter();
+    };
+    var antworte = function (q, text, ton) {
+      var a = stimme.querySelector('.pv-a');
+      if (!a) { a = document.createElement('div'); a.className = 'pv-a'; stimme.appendChild(a); }
+      a.innerHTML = '<b>VOLTHERM</b><span></span>';
+      tippe(a.querySelector('span'), text, tempo(text, ton), function () {
+        if (q && q.ja) {
+          var act = document.createElement('div'); act.className = 'pv-act';
+          act.innerHTML = '<button type="button">Ja, starten</button><button type="button">Nein</button>';
+          act.children[0].addEventListener('click', function () { act.remove(); spiele(q.jaTon[0]); antworte(null, q.ja, q.jaTon); });
+          act.children[1].addEventListener('click', function () { act.remove(); spiele(q.neinTon[0]); antworte(null, q.nein, q.neinTon); });
+          a.appendChild(act);
+        } else spaeter(function () { stimme.classList.remove('on'); chips.forEach(function (c) { c.classList.remove('on'); }); }, 7000);
+      });
+    };
+    chips.forEach(function (chip) {
+      chip.addEventListener('click', function () {
+        stopp();
+        var q = FRAGEN[+chip.getAttribute('data-frage')];
+        // Auf schmalen Bildschirmen ist das Display zu klein: die Antwort erscheint unter dem Gerät
+        (pf.clientWidth < 440 ? unten : pf).appendChild(stimme);
+        chips.forEach(function (c) { c.classList.toggle('on', c === chip); });
+        stimme.innerHTML = '<div class="pv-f">' + MIC + '<span>„<span class="pv-t"></span>“</span></div>';
+        stimme.classList.add('on', 'hoert');
+        var ton = spiele(q.ton[0]), gestartet = false;
+        var los = function () {
+          if (gestartet) return;
+          gestartet = true;
+          spaeter(function () { tippe(stimme.querySelector('.pv-t'), q.f, Math.round(q.frage[1] * 1000 / q.f.length), function () { stimme.classList.remove('hoert'); }); }, q.frage[0]);
+          uhren.push(setTimeout(function () { antworte(q, q.a, q.ton); }, q.ab));
+        };
+        // Bild und Ton gemeinsam starten; bleibt der Ton aus (stumm, blockiert), läuft das Bild trotzdem
+        ton.addEventListener('playing', los);
+        spaeter(los, 900);
+      });
+    });
+  }
 })();
