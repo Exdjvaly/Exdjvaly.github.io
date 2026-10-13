@@ -619,11 +619,11 @@
     var stimme = document.getElementById('pf-voice'), unten = document.querySelector('.pf-unten'), chips = document.querySelectorAll('[data-frage]'), uhren = [];
     var FRAGEN = [
       { f: 'Lohnt sich jetzt die Waschmaschine?', a: 'Ja, jetzt passt es gut. Die Sonne liefert mehr, als das Haus gerade braucht, und der Speicher ist zu 71 % voll.',
-        ton: ['assets/stimme/hub-frage-1.mp3', 7.2], frage: [200, 1.6], ab: 2540 },
+        ton: ['assets/stimme/hub-dialog-1.mp3', 7.2], frage: [200, 1.6], ab: 2540 },
       { f: 'Wann ist das Auto voll?', a: 'Das Auto hat 62 %. Es lädt mit Sonnenstrom und ist bis 07:00 Uhr auf 80 %.',
-        ton: ['assets/stimme/hub-frage-2.mp3', 5.8], frage: [200, 1.6], ab: 2540 },
+        ton: ['assets/stimme/hub-dialog-2.mp3', 5.8], frage: [200, 1.6], ab: 2540 },
       { f: 'Mach bitte warmes Wasser.', a: 'Gern. Der Speicher hat 52 °C. Ich heize eine Stunde mit Sonnenstrom, das kostet nichts. Soll ich starten?',
-        ton: ['assets/stimme/hub-frage-3.mp3', 7.1], frage: [200, 1.4], ab: 2300,
+        ton: ['assets/stimme/hub-dialog-3.mp3', 7.1], frage: [200, 1.4], ab: 2300,
         ja: 'Erledigt. Ich sage Bescheid, wenn das Wasser warm ist.', jaTon: ['assets/stimme/hub-ja.mp3', 3.0],
         nein: 'In Ordnung, ich lasse alles, wie es ist.', neinTon: ['assets/stimme/hub-nein.mp3', 2.3] }
     ];
