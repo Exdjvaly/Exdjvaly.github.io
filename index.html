@@ -13,7 +13,7 @@
 <link rel="canonical" href="https://voltherm.de/">
 <meta property="og:locale" content="de_DE">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 300'%3E%3Crect width='300' height='300' rx='60' fill='%230B1220'/%3E%3Cpolygon points='22,20 86,20 166,232 150,272' fill='%238FA3C8'/%3E%3Cpolygon points='74,20 112,20 168,200 154,226' fill='%23FFFFFF'/%3E%3Cpolygon points='200,20 290,20 214,118 276,118 126,286 176,170 128,170' fill='%2319C3E6'/%3E%3C/svg%3E">
-<link rel="stylesheet" href="site.css?v=20261013c">
+<link rel="stylesheet" href="site.css?v=20261013d">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -279,7 +279,7 @@
         <h3>Der leise Regler</h3>
         <p>Ein lüfterloser Rechner im VOLTHERM Gehäuse steuert Solaranlage, Speicher, Wallbox, Warmwasser, Wärmepumpe und Klimaanlage. Vorne sitzt ein Drehknopf mit rundem Display.</p>
         <ul class="ticks">
-          <li>Drehen und drücken: Raumtemperatur, Sonnenstrom und Akku auf einen Blick</li>
+          <li>Drehen und drücken: ablesen und einstellen, vom Zimmer bis zur Wallbox</li>
           <li>Schalter ON / OFF und Starttaste direkt am Gerät</li>
           <li>Lüfterlos und lautlos, sparsam im Dauerbetrieb</li>
           <li>Funk für Sensoren und Thermostate im ganzen Haus (Zigbee)</li>
@@ -289,13 +289,71 @@
       <article class="card hub-card pro">
         <p class="tag">Hub Pro</p>
         <h3>Großes Display. Mit KI.</h3>
-        <p>Alles, was Hub Core kann, dazu ein 10-Zoll-Touch-Display und die VOLTHERM KI. Gerechnet wird auf einem leistungsstarken Rechner im Technikraum, im Wohnzimmer bleibt es still.</p>
+        <p>Alles, was Hub Core kann, dazu ein 7-Zoll-Touch-Display und die VOLTHERM KI. Gerechnet wird auf einem leistungsstarken Rechner im Technikraum, im Wohnzimmer bleibt es still.</p>
         <ul class="ticks">
           <li>Energiefluss, Tagesbilanz und alle Geräte auf dem Touch-Display</li>
           <li>Fragen per Sprache: „Lohnt sich jetzt die Waschmaschine?“</li>
           <li>Die KI rechnet mit eigener Grafikkarte im Haus, ohne Cloud</li>
           <li>Vor jedem Update wird der Stand gesichert, ein Zurück geht jederzeit</li>
         </ul>
+      </article>
+    </div>
+    <h3 class="hub-sub">Probieren Sie es aus</h3>
+    <p class="hd-lead">So bedienen Sie Hub Core und Hub Pro. Alle Werte sind Beispiele.</p>
+    <div class="hd">
+      <article class="hd-box">
+        <div class="hd-dev hd-core">
+          <span class="hd-name" aria-hidden="true">VOLTHERM HUB CORE</span>
+          <div class="rk" id="rk" tabindex="0" role="group" aria-roledescription="Drehknopf" aria-label="Drehknopf mit rundem Display. Pfeiltasten drehen, Eingabetaste drückt.">
+            <div class="rk-ring" aria-hidden="true"></div>
+            <div class="rk-scr" aria-hidden="true"></div>
+          </div>
+          <p class="sr" id="rk-ansage" aria-live="polite"></p>
+          <div class="hd-ctl">
+            <button type="button" class="hd-b" data-rk="-1" aria-label="Nach links drehen">&#8249;</button>
+            <button type="button" class="hd-b hd-druck" data-rk="0">Drücken</button>
+            <button type="button" class="hd-b" data-rk="1" aria-label="Nach rechts drehen">&#8250;</button>
+            <button type="button" class="hd-b hd-nacht" aria-pressed="false">Nacht</button>
+          </div>
+        </div>
+        <div class="hd-txt">
+          <p class="tag">Hub Core</p>
+          <h3>Drehen. Drücken. Fertig.</h3>
+          <ol class="hd-steps">
+            <li data-s="0"><b>Drehen</b> blättert durch die Seiten: Energie, Speicher, Wallbox, Warmwasser, jedes Zimmer mit Klimaanlage und die Tagesbilanz.</li>
+            <li data-s="1"><b>Drücken</b> öffnet die Einstellungen der Seite.</li>
+            <li data-s="2"><b>Drehen</b> ändert den Wert. Jeder Klick ist ein Schritt, beim Zimmer zum Beispiel 0,5 °C.</li>
+            <li data-s="3"><b>Drücken</b> speichert. Ohne Drücken bleibt alles, wie es war.</li>
+          </ol>
+          <p class="hd-note">Nachts zeigt das Display nur eine dunkle Uhr. Ein Dreh am Knopf, und alles ist wieder da.</p>
+          <p class="hd-hint">Hier auf der Seite: Ring mit dem Finger oder der Maus drehen, aufs Display tippen zum Drücken.</p>
+        </div>
+      </article>
+      <article class="hd-box hd-p">
+        <div class="hd-dev hd-pro">
+          <div class="pf">
+            <div class="pf-scr" id="pf-scr">
+              <iframe title="VOLTHERM Home auf dem Display von Hub Pro, Beispielwerte" loading="lazy" src="voltherm/demo.html"></iframe>
+              <a class="pf-voll" href="voltherm/demo.html"><span>Antippen und ausprobieren</span></a>
+              <div class="pf-voice" id="pf-voice" aria-live="polite"></div>
+            </div>
+            <div class="pf-side" aria-hidden="true"><svg viewBox="0 0 300 300"><use href="#logo"/></svg><span>VOLTHERM HUB PRO</span></div>
+          </div>
+          <div class="pf-unten"></div>
+          <div class="hd-fragen">
+            <span>Fragen Sie den Hub:</span>
+            <button type="button" class="hd-chip" data-frage="0">„Lohnt sich jetzt die Waschmaschine?“</button>
+            <button type="button" class="hd-chip" data-frage="1">„Wann ist das Auto voll?“</button>
+            <button type="button" class="hd-chip" data-frage="2">„Mach bitte warmes Wasser.“</button>
+          </div>
+        </div>
+        <div class="hd-txt">
+          <p class="tag pro">Hub Pro</p>
+          <h3>Tippen oder einfach fragen.</h3>
+          <p>Auf dem 7-Zoll-Touch-Display läuft VOLTHERM Home, dieselbe Oberfläche wie in der App. Hier läuft sie mit Beispielwerten, probieren Sie es aus.</p>
+          <p>Mikrofon und Lautsprecher sind im Gehäuse eingebaut. Sie fragen, der Hub antwortet mit Stimme und zeigt die Antwort auf dem Display. Bevor er etwas einschaltet, fragt er nach.</p>
+          <a class="btn btn-ghost hd-voll" href="voltherm/demo.html">Im Vollbild öffnen</a>
+        </div>
       </article>
     </div>
     <div class="hub-cmp">
@@ -306,7 +364,7 @@
           <tr><th scope="row">Energie-Steuerung für das ganze Haus</th><td class="y"><span class="sr">ja</span></td><td class="y"><span class="sr">ja</span></td></tr>
           <tr><th scope="row">Dynamischer Stromtarif</th><td class="y"><span class="sr">ja</span></td><td class="y"><span class="sr">ja</span></td></tr>
           <tr><th scope="row">VOLTHERM App auf dem Handy</th><td class="y"><span class="sr">ja</span></td><td class="y"><span class="sr">ja</span></td></tr>
-          <tr><th scope="row">Bedienung am Gerät</th><td>Drehknopf mit Rund-Display</td><td>10″ Touch-Display</td></tr>
+          <tr><th scope="row">Bedienung am Gerät</th><td>Drehknopf mit Rund-Display</td><td>7″ Touch-Display</td></tr>
           <tr><th scope="row">Sprachsteuerung mit VOLTHERM KI</th><td class="n"><span class="sr">nein</span></td><td class="y"><span class="sr">ja</span></td></tr>
           <tr><th scope="row">Rechner</th><td>im Gerät, lüfterlos</td><td>KI-Rechner im Technikraum</td></tr>
         </tbody>
@@ -475,6 +533,6 @@
 </dialog>
 <!-- Fotos aus echten Projekten je Leistung: {"photovoltaik": [{"src": "...", "t": "Vorschaubild", "text": "Bildunterschrift"}], ...} -->
 <script type="application/json" id="galerie-daten">{}</script>
-<script src="site.js?v=20261013c" defer></script>
+<script src="site.js?v=20261013d" defer></script>
 </body>
 </html>
