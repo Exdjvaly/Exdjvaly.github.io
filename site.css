@@ -454,3 +454,9 @@ html:has(.galerie[open]) { overflow: hidden; }
 @keyframes buehneSchweben { 50% { translate: 0 -6px; } }
 .card:hover .buehne img { transform: rotateX(var(--rx)) rotateY(var(--ry)) translateZ(40px) scale(1.06); }
 @media (min-width: 620px) { .card-wide .buehne { margin: 0; width: 220px; height: 150px; } }
+/* Smart Home: Systeme als schwebende Schilder um das Haus */
+.sys-tag { position: absolute; z-index: 2; font-size: 11px; font-weight: 800; letter-spacing: .04em; padding: 4px 10px; border-radius: 999px; color: #fff;
+  background: rgba(11,22,40,.85); box-shadow: 0 0 0 1.5px var(--t), 0 0 16px color-mix(in srgb, var(--t) 55%, transparent); animation: buehneSchweben 5s ease-in-out infinite; }
+.sys-tag.lox { --t: #69c350; left: 7%; top: 18%; }
+.sys-tag.knx { --t: #9ad13c; right: 8%; top: 14%; animation-delay: -1.6s; }
+.sys-tag.ha { --t: #18bcf2; right: 10%; bottom: 14%; animation-delay: -3.2s; }
