@@ -185,6 +185,7 @@
     var lauf = 0, uhren = [], werte;
     // Stimme (Piper Thorsten) nur nach Klick auf „Mit Ton anhören“, Browser spielen Ton erst nach einer Eingabe
     var KI_TON = [['assets/stimme/ki-1.mp3', 6.0], ['assets/stimme/ki-2.mp3', 8.1], ['assets/stimme/ki-3.mp3', 5.5]];
+    var KI_FRAGE = [['assets/stimme/ki-f1.mp3', 1.2], ['assets/stimme/ki-f2.mp3', 1.5], ['assets/stimme/ki-f3.mp3', 0.8]]; // Kundin: Stimme Kerstin
     var tonAn = false, tonEl = null;
     var tonKnopf = document.createElement('button');
     tonKnopf.type = 'button'; tonKnopf.className = 'kt-ton'; tonKnopf.setAttribute('aria-pressed', 'false');
@@ -227,11 +228,14 @@
       }
       var s = GESPRAECH[i], weiter = function (ms) { spaeter(function () { schritt(n, i + 1); }, ms); };
       if (s[0] === 'hoeren') {
+        var fnr = GESPRAECH.slice(0, i + 1).filter(function (x) { return x[0] === 'hoeren'; }).length - 1;
+        var fton = tonAn && tonEl ? KI_FRAGE[fnr] : null;
+        if (fton) spaeter(function () { if (n !== lauf) return; tonEl.src = fton[0]; var pl = tonEl.play(); if (pl && pl.catch) pl.catch(function () {}); }, 150);
         listen.classList.add('on'); hint.textContent = 'Ich höre zu'; said.textContent = '„';
         var z = 0, tippe = function () {
           if (n !== lauf) return;
           z++; said.textContent = '„' + s[1].slice(0, z) + (z < s[1].length ? ' …' : '“');
-          if (z < s[1].length) return spaeter(tippe, 55);
+          if (z < s[1].length) return spaeter(tippe, fton ? Math.round(fton[1] * 1000 / s[1].length) : 55);
           spaeter(function () {
             ruhe();
             if (s[2] === 'tippen') {
@@ -615,17 +619,17 @@
     var stimme = document.getElementById('pf-voice'), unten = document.querySelector('.pf-unten'), chips = document.querySelectorAll('[data-frage]'), uhren = [];
     var FRAGEN = [
       { f: 'Lohnt sich jetzt die Waschmaschine?', a: 'Ja, jetzt passt es gut. Die Sonne liefert mehr, als das Haus gerade braucht, und der Speicher ist zu 71 % voll.',
-        ton: ['assets/stimme/hub-frage-1.mp3', 7.1] },
+        ton: ['assets/stimme/hub-frage-1.mp3', 7.2], frage: [200, 1.6], ab: 2540 },
       { f: 'Wann ist das Auto voll?', a: 'Das Auto hat 62 %. Es lädt mit Sonnenstrom und ist bis 07:00 Uhr auf 80 %.',
-        ton: ['assets/stimme/hub-frage-2.mp3', 6.1] },
+        ton: ['assets/stimme/hub-frage-2.mp3', 5.8], frage: [200, 1.6], ab: 2540 },
       { f: 'Mach bitte warmes Wasser.', a: 'Gern. Der Speicher hat 52 °C. Ich heize eine Stunde mit Sonnenstrom, das kostet nichts. Soll ich starten?',
-        ton: ['assets/stimme/hub-frage-3.mp3', 7.5],
+        ton: ['assets/stimme/hub-frage-3.mp3', 7.1], frage: [200, 1.4], ab: 2300,
         ja: 'Erledigt. Ich sage Bescheid, wenn das Wasser warm ist.', jaTon: ['assets/stimme/hub-ja.mp3', 3.0],
         nein: 'In Ordnung, ich lasse alles, wie es ist.', neinTon: ['assets/stimme/hub-nein.mp3', 2.3] }
     ];
-    // Die Antworten der Fragen beginnen nach 2,4 s Stille: der Ton startet direkt im Klick (erlaubt auf allen Geräten),
-    // in der Stille erscheint die Frage, dann spricht der Hub.
-    var STILLE = 2400, aktTon = null;
+    // Ein Clip pro Frage: erst die Kundin (Kerstin), dann der Hub (Thorsten). Der Ton startet direkt im Klick
+    // (erlaubt auf allen Geräten); frage = [Beginn ms, Dauer s], ab = Beginn der Antwort in ms.
+    var aktTon = null;
     var stummen = function () { if (aktTon) { aktTon.pause(); aktTon = null; } };
     var spiele = function (src) {
       stummen();
@@ -669,8 +673,8 @@
         var los = function () {
           if (gestartet) return;
           gestartet = true;
-          spaeter(function () { tippe(stimme.querySelector('.pv-t'), q.f, 40, function () { stimme.classList.remove('hoert'); }); }, 300);
-          uhren.push(setTimeout(function () { antworte(q, q.a, q.ton); }, STILLE));
+          spaeter(function () { tippe(stimme.querySelector('.pv-t'), q.f, Math.round(q.frage[1] * 1000 / q.f.length), function () { stimme.classList.remove('hoert'); }); }, q.frage[0]);
+          uhren.push(setTimeout(function () { antworte(q, q.a, q.ton); }, q.ab));
         };
         // Bild und Ton gemeinsam starten; bleibt der Ton aus (stumm, blockiert), läuft das Bild trotzdem
         ton.addEventListener('playing', los);
