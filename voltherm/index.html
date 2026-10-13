@@ -6,20 +6,16 @@
 <title>Was ist VOLTHERM?</title>
 <meta name="description" content="VOLTHERM verteilt Ihren Strom intelligent: Sonnenstrom selbst nutzen, günstig laden, Warmwasser aus Sonne. Alles in einer App, Ihre Daten bleiben im Haus.">
 <meta name="theme-color" content="#0B1220">
+<meta name="color-scheme" content="dark">
 <meta property="og:title" content="Was ist VOLTHERM?">
 <meta property="og:description" content="Ihre Energie. Intelligent verteilt.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 300'%3E%3Crect width='300' height='300' rx='60' fill='%230B1220'/%3E%3Cpolygon points='22,20 86,20 166,232 150,272' fill='%238FA3C8'/%3E%3Cpolygon points='74,20 112,20 168,200 154,226' fill='%23FFFFFF'/%3E%3Cpolygon points='200,20 290,20 214,118 276,118 126,286 176,170 128,170' fill='%2319C3E6'/%3E%3C/svg%3E">
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=20261013b">
 </head>
 <body>
 
-<!-- Filtru „desenat de mână”: tremur ușor pe liniile statice. -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <defs>
-    <filter id="wobble" x="-5%" y="-5%" width="110%" height="110%">
-      <feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="7"/>
-      <feDisplacementMap in="SourceGraphic" scale="2.2"/>
-    </filter>
     <symbol id="logo" viewBox="0 0 300 300">
       <polygon points="22,20 86,20 166,232 150,272" fill="#8FA3C8"/>
       <polygon points="74,20 112,20 168,200 154,226" fill="#FFFFFF"/>
@@ -69,20 +65,29 @@
 
     <figure class="price-fig sketch reveal" id="preiskurve">
       <svg viewBox="0 0 360 230" role="img" aria-label="Preisverlauf eines Tages: mittags 15 Cent, abends 103 Cent">
-        <g class="axis" filter="url(#wobble)">
-          <path d="M30 196 H346" pathLength="1" class="draw"/>
-          <path d="M30 196 V14" pathLength="1" class="draw"/>
-        </g>
+        <defs>
+          <!-- Culoarea liniei urmează prețul: verde ieftin, galben, portocaliu, roșu scump -->
+          <linearGradient id="preis-linie" gradientUnits="userSpaceOnUse" x1="0" y1="196" x2="0" y2="22">
+            <stop offset="0" stop-color="#3DDC97"/><stop offset=".26" stop-color="#3DDC97"/><stop offset=".46" stop-color="#FFC531"/>
+            <stop offset=".72" stop-color="#FF6B2C"/><stop offset="1" stop-color="#FF3D6E"/>
+          </linearGradient>
+          <linearGradient id="preis-flaeche" gradientUnits="userSpaceOnUse" x1="0" y1="22" x2="0" y2="196">
+            <stop offset="0" stop-color="#FF6B2C" stop-opacity=".34"/><stop offset=".55" stop-color="#FFC531" stop-opacity=".12"/><stop offset="1" stop-color="#3DDC97" stop-opacity=".02"/>
+          </linearGradient>
+          <filter id="leuchten" x="-10%" y="-20%" width="120%" height="140%">
+            <feGaussianBlur stdDeviation="2.6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+        <path class="axis" d="M30 196 H346"/>
         <g class="ticks"></g>
         <path id="kurve-flaeche" class="curve-area" d=""/>
-        <path id="kurve" class="curve draw" pathLength="1" d=""/>
-        <g class="surfer" id="surfer" aria-hidden="true">
-          <path d="M-15 -1 Q0 6 15 -1 Q0 -4 -15 -1 Z" class="board"/>
-          <path d="M-5 -2 L-2 -10 L4 -2 M-2 -10 L0 -18 M-8 -15 L0 -16 L8 -13" class="ink"/>
-          <circle cx="1" cy="-22" r="3.4" class="ink"/>
+        <path id="kurve" class="curve draw" pathLength="1" d="" filter="url(#leuchten)"/>
+        <g class="pin pin-low"><path d="M0 8 V30" class="leader"/><circle class="puls" r="5"/><circle r="5"/></g>
+        <g class="pin pin-high"><circle class="puls" r="5"/><circle r="5"/></g>
+        <g class="laeufer" id="laeufer" aria-hidden="true">
+          <circle class="l-halo" r="11"/><circle class="l-dot" r="4"/>
+          <g class="l-tag"><rect x="-32" y="-33" width="64" height="19" rx="9.5"/><text y="-19.6" text-anchor="middle"></text></g>
         </g>
-        <g class="pin pin-low"><circle r="5"/><path d="M0 8 V30" class="leader"/></g>
-        <g class="pin pin-high"><circle r="5"/></g>
       </svg>
       <div class="big-nums">
         <div class="bn low"><span class="outline">15&nbsp;¢</span><small>um 12:45 Uhr: Sonne satt, Strom billig</small></div>
@@ -101,33 +106,34 @@
     <button type="button" class="hoer" data-clip="kapitel-2" hidden><span class="hoer-i" aria-hidden="true"></span><span class="hoer-t">Anhören</span></button>
     <div class="blocks">
       <article class="block sketch reveal">
-        <svg class="ic" data-i="panel" viewBox="0 0 48 48"></svg>
+        <div class="bs-bild"><img src="3d/haus_pv.webp" width="900" height="673" alt="" loading="lazy" decoding="async"></div>
         <h3>Solarmodule</h3>
         <p>fangen <mark class="hl">kostenlose Energie</mark> ein. Jede Kilowattstunde vom Dach, die Sie selbst nutzen, müssen Sie nicht kaufen. VOLTHERM kennt die Sonnenprognose für heute und morgen.</p>
       </article>
       <article class="block sketch reveal">
-        <svg class="ic" data-i="meter" viewBox="0 0 48 48"></svg>
+        <div class="bs-bild"><img src="3d/zaehlerschrank.webp" width="420" height="393" alt="" loading="lazy" decoding="async"></div>
         <h3>Der Smart Meter</h3>
         <p>überwacht <mark class="hl">exakt</mark>, wie viel Strom ins Haus fließt und wie viel hinausgeht. So weiß VOLTHERM jede Sekunde, ob gerade Überschuss da ist.</p>
       </article>
       <article class="block sketch reveal">
-        <svg class="ic" data-i="battery" viewBox="0 0 48 48"></svg>
+        <div class="bs-bild"><img src="3d/batterie.webp" width="200" height="355" alt="" loading="lazy" decoding="async"></div>
         <h3>Der Batteriespeicher</h3>
         <p>ist ein <mark class="hl">brillanter Puffer</mark>: Er lädt mit Sonne oder günstigem Strom (im Beispiel 15&nbsp;¢) und liefert abends, wenn Netzstrom teuer ist (im Beispiel 103&nbsp;¢).</p>
         <div class="buffer" aria-hidden="true"><span class="in">rein: 15&nbsp;¢</span><span class="arrow">→</span><span class="out">raus statt 103&nbsp;¢</span></div>
       </article>
       <article class="block sketch reveal">
-        <svg class="ic" data-i="cockpit" viewBox="0 0 48 48"></svg>
+        <div class="bs-bild bs-live">
+          <div class="cockpit" id="cockpit" aria-label="Beispielwerte Energiefluss">
+            <div class="node n-sol"><span><svg data-i="sun" viewBox="0 0 48 48"></svg></span><b data-w="6.4">6,4</b><small>kW Solar</small></div>
+            <div class="flow"><i></i></div>
+            <div class="node n-haus"><span><svg data-i="house" viewBox="0 0 48 48"></svg></span><b data-w="5.0">5,0</b><small>kW Haus</small></div>
+            <div class="flow f-einsp"><i></i></div>
+            <div class="node n-netz"><span><svg data-i="pylon" viewBox="0 0 48 48"></svg></span><b data-w="1.4">1,4</b><small>kW ins Netz</small></div>
+          </div>
+          <p class="note">Beispielwerte</p>
+        </div>
         <h3>Das Live-Cockpit</h3>
         <p>zeigt den Energiefluss im Haus, live und verständlich, in der VOLTHERM-App und auf dem Wandtablet.</p>
-        <div class="cockpit" id="cockpit" aria-label="Beispielwerte Energiefluss">
-          <div class="node"><svg data-i="sun" viewBox="0 0 48 48"></svg><b data-w="6.4">6,4</b><small>kW Solar</small></div>
-          <div class="flow"><i></i></div>
-          <div class="node"><svg data-i="house" viewBox="0 0 48 48"></svg><b data-w="5.0">5,0</b><small>kW Haus</small></div>
-          <div class="flow"><i></i></div>
-          <div class="node"><svg data-i="pylon" viewBox="0 0 48 48"></svg><b data-w="1.4">1,4</b><small>kW ins Netz</small></div>
-        </div>
-        <p class="note">Beispielwerte</p>
       </article>
     </div>
   </div>
@@ -144,66 +150,60 @@
   <div class="scrolly" id="tag">
     <div class="scene-wrap">
       <div class="scene sketch" data-phase="morgen">
-        <svg viewBox="0 0 360 250" role="img" aria-label="Haus mit Solaranlage, Batterie, Auto, Boiler, Wärmepumpe und Stromnetz">
+        <!-- Scena: randările 3D de pe voltherm.de pe un platou; cerul, soarele și fluxurile se schimbă cu ora din pasul activ. -->
+        <svg class="sz" viewBox="0 0 1000 625" role="img" aria-label="Haus mit Solaranlage, Batterie, Auto, Warmwasser, Wärmepumpe und Stromnetz im Tagesverlauf">
           <defs>
             <linearGradient id="himmel" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" class="sky-top"/><stop offset="1" class="sky-bot"/>
+              <stop offset="0" class="sky-top"/><stop offset=".58" class="sky-mid"/><stop offset="1" class="sky-bot"/>
             </linearGradient>
+            <radialGradient id="sonnenhof">
+              <stop offset="0" stop-color="#FFF6CF" stop-opacity=".95"/><stop offset=".22" stop-color="#FFD45C" stop-opacity=".6"/><stop offset="1" stop-color="#FFC531" stop-opacity="0"/>
+            </radialGradient>
+            <radialGradient id="mondhof">
+              <stop offset="0" stop-color="#cfe0ff" stop-opacity=".35"/><stop offset="1" stop-color="#cfe0ff" stop-opacity="0"/>
+            </radialGradient>
+            <radialGradient id="platou" cx=".5" cy=".3" r=".7">
+              <stop offset="0" stop-color="#1c2b4b"/><stop offset=".65" stop-color="#0f182c"/><stop offset="1" stop-color="#0B1220"/>
+            </radialGradient>
+            <filter id="fluss-glow" x="-10%" y="-10%" width="120%" height="120%">
+              <feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
           </defs>
-          <rect x="0" y="0" width="360" height="250" fill="url(#himmel)"/>
-          <g class="stars"><circle cx="40" cy="30" r="1.2"/><circle cx="90" cy="18" r="1"/><circle cx="150" cy="40" r="1.3"/><circle cx="230" cy="22" r="1"/><circle cx="300" cy="44" r="1.2"/><circle cx="335" cy="16" r="1"/><circle cx="270" cy="70" r=".9"/></g>
-          <g class="sun"><circle r="15"/><path d="M0 -24v-6M0 24v6M-24 0h-6M24 0h6M-17 -17l-4 -4M17 17l4 4M17 -17l4 -4M-17 17l-4 4"/></g>
-          <g class="moon"><path d="M8 -14 A15 15 0 1 0 8 14 A11 11 0 1 1 8 -14 Z"/></g>
-
-          <!-- linia solului și desenul casei -->
-          <g class="lines" filter="url(#wobble)">
-            <path d="M0 208 H360"/>
-            <path d="M118 120 L184 66 L252 120"/>
-            <path d="M128 112 V208 M242 112 V208"/>
-            <path class="pv" d="M136 104 L176 72 L186 80 L146 112 Z M146 96 L156 104 M156 88 L166 96 M166 80 L176 88 M141 100 L181 76"/>
-            <!-- baterie -->
-            <path d="M138 160 H160 V200 H138 Z M144 156 H154"/>
-            <!-- boiler -->
-            <path d="M210 150 Q210 144 221 144 Q232 144 232 150 V196 Q232 202 221 202 Q210 202 210 196 Z"/>
-            <!-- creierul VOLTHERM -->
-            <path d="M174 136 H198 V156 H174 Z"/>
-            <!-- wallbox și mașină -->
-            <path d="M100 158 H112 V184 H100 Z M106 184 C106 194 96 196 86 192"/>
-            <path d="M14 200 V190 L24 176 H64 L78 188 H86 V200 Z"/>
-            <path d="M22 200 a7 7 0 1 0 14 0 M60 200 a7 7 0 1 0 14 0"/>
-            <!-- pompă de căldură -->
-            <path d="M256 176 H290 V206 H256 Z M262 191 a8 8 0 1 0 16 0 a8 8 0 1 0 -16 0 M270 183 V199 M262 191 H278"/>
-            <!-- stâlp -->
-            <path d="M330 92 L316 208 M330 92 L344 208 M316 110 H344 M318 128 H342 M320 110 L340 128 M340 110 L320 128 M321 160 H339"/>
+          <rect width="1000" height="625" fill="url(#himmel)"/>
+          <g class="stars"><circle cx="60" cy="60" r="2.2"/><circle cx="140" cy="34" r="1.6"/><circle cx="220" cy="92" r="2"/><circle cx="300" cy="40" r="1.4"/><circle cx="380" cy="120" r="1.8"/><circle cx="455" cy="54" r="2.4"/><circle cx="540" cy="30" r="1.5"/><circle cx="600" cy="104" r="1.7"/><circle cx="680" cy="46" r="2.1"/><circle cx="760" cy="128" r="1.5"/><circle cx="830" cy="64" r="1.8"/><circle cx="920" cy="36" r="2.2"/><circle cx="960" cy="140" r="1.6"/><circle cx="110" cy="150" r="1.4"/><circle cx="250" cy="176" r="1.3"/><circle cx="700" cy="190" r="1.4"/></g>
+          <g class="sun"><circle r="150" fill="url(#sonnenhof)"/><circle class="sun-core" r="30"/></g>
+          <g class="moon"><circle r="90" fill="url(#mondhof)"/><path d="M14 -30 A32 32 0 1 0 14 30 A24 24 0 1 1 14 -30 Z"/></g>
+          <path class="platou" d="M0 410 Q500 352 1000 410 V625 H0 Z" fill="url(#platou)"/>
+          <path class="kante" d="M0 410 Q500 352 1000 410"/>
+          <ellipse class="orbit" cx="500" cy="500" rx="450" ry="84"/>
+          <image href="3d/mast.webp" x="806" y="112" width="186" height="320"/>
+          <image href="3d/haus_pv.webp" x="285" y="146" width="430" height="321"/>
+          <image href="3d/wp.webp" x="716" y="396" width="150" height="137"/>
+          <image href="3d/boiler.webp" x="612" y="414" width="70" height="125"/>
+          <image href="3d/batterie.webp" x="314" y="408" width="76" height="135"/>
+          <image href="3d/wallbox.webp" x="22" y="400" width="272" height="146"/>
+          <g class="flows" filter="url(#fluss-glow)">
+            <path class="fl sol" id="f-haus" d="M520 240 C512 300 486 352 468 384"/>
+            <path class="fl sol" id="f-bat" d="M500 248 C430 282 372 338 352 404"/>
+            <path class="fl sol" id="f-auto" d="M486 244 C380 250 248 330 190 432"/>
+            <path class="fl sol" id="f-boiler" d="M532 250 C600 290 640 356 647 410"/>
+            <path class="fl sol" id="f-wp" d="M542 244 C650 258 742 326 784 394"/>
+            <path class="fl einsp" id="f-netz" d="M548 234 C680 178 800 150 884 158"/>
+            <path class="fl bat" id="f-bathaus" d="M376 470 C404 450 428 432 448 418"/>
+            <path class="fl netz" id="f-netzauto" d="M878 432 C760 568 400 596 214 512"/>
+            <path class="fl netz" id="f-netzbat" d="M888 440 C766 610 468 606 360 546"/>
           </g>
-          <svg x="177" y="137" width="18" height="18" viewBox="0 0 300 300"><use href="#logo"/></svg>
-          <rect class="bat-fill" x="141" y="163" width="16" height="34" rx="1.5"/>
-          <rect class="boiler-fill" x="213" y="160" width="16" height="38" rx="3"/>
-          <g class="car-glow"><path d="M28 186 h8 l-3 6 h5 l-8 9 2 -6 h-5 z"/></g>
-
-          <!-- fluxuri de energie -->
-          <path class="fl sol" id="f-haus" d="M164 92 C170 112 182 120 186 136"/>
-          <path class="fl sol" id="f-bat" d="M150 108 C148 126 149 140 149 156"/>
-          <path class="fl sol" id="f-boiler" d="M186 92 C204 104 216 120 221 144"/>
-          <path class="fl sol" id="f-auto" d="M140 108 C120 120 110 140 106 158"/>
-          <path class="fl sol" id="f-wp" d="M252 120 C262 140 270 156 272 176"/>
-          <path class="fl sol" id="f-netz" d="M252 118 C280 108 304 104 326 104"/>
-          <path class="fl bat" id="f-bathaus" d="M160 172 C168 166 172 160 176 156"/>
-          <path class="fl netz" id="f-netzauto" d="M330 210 V224 H106 V184"/>
-          <path class="fl netz" id="f-netzbat" d="M336 210 V232 H149 V200"/>
-
-          <!-- uhr și preț -->
-          <g class="hud">
-            <rect x="10" y="10" width="140" height="34" rx="8"/>
-            <text x="20" y="25" class="hud-zeit">07:00</text>
-            <text x="20" y="38" class="hud-preis">Preis: mittel</text>
-          </g>
-          <g class="bubble">
-            <rect x="194" y="10" width="158" height="34" rx="10"/>
-            <path d="M226 44 l-6 9 l14 -9"/>
-            <text x="273" y="31" class="bubble-t" text-anchor="middle"></text>
-          </g>
+          <g class="vt-badge" transform="translate(466 402)" filter="url(#fluss-glow)"><circle r="25"/><svg x="-15" y="-15" width="30" height="30" viewBox="0 0 300 300"><use href="#logo"/></svg></g>
         </svg>
+        <div class="hud"><b class="hud-zeit">07:00</b><span class="hud-preis">Preis: mittel</span></div>
+        <div class="bubble"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"/></svg><span class="bubble-t"></span></div>
+        <div class="chip c-wp">Boost</div>
+        <div class="leiste">
+          <div class="l-bat"><small>Speicher</small><b></b><i><s></s></i></div>
+          <div class="l-ww"><small>Warmwasser</small><b></b><i><s></s></i></div>
+          <div class="l-auto"><small>Auto</small><b></b></div>
+          <div class="l-netz"><small>Netz</small><b></b></div>
+        </div>
       </div>
     </div>
     <div class="steps">
@@ -256,7 +256,7 @@
             <circle class="seg s3" cx="100" cy="100" r="70" pathLength="100" style="--a:30;--o:-65"/>
             <circle class="seg s4" cx="100" cy="100" r="70" pathLength="100" style="--a:5;--o:-95"/>
           </g>
-          <circle cx="100" cy="100" r="50" class="donut-hole" filter="url(#wobble)"/>
+          <circle cx="100" cy="100" r="50" class="donut-hole"/>
           <text x="100" y="96" class="donut-t1">1 kWh</text>
           <text x="100" y="116" class="donut-t2">Strompreis</text>
         </svg>
@@ -272,24 +272,19 @@
         <p class="lead">Jede Kilowattstunde vom eigenen Dach spart den <mark class="hl">ganzen Preis</mark>: Energie, Netzentgelt, Steuern. Darum lohnt es sich, Sonnenstrom selbst zu nutzen, statt ihn zu verkaufen.</p>
         <div class="money sketch" aria-hidden="true">
           <svg viewBox="0 0 300 140">
-            <g class="lines" filter="url(#wobble)">
-              <path d="M20 120 H280"/>
-              <path d="M30 70 L66 40 L102 70 M38 64 V120 H94 V64"/>
-              <path d="M250 30 L238 120 M250 30 L262 120 M238 52 H262 M240 76 H260 M240 52 L260 76 M260 52 L240 76"/>
-            </g>
-            <text x="66" y="136" class="lbl">mittags: verschenkt</text>
-            <text x="250" y="136" class="lbl">abends: teuer</text>
-            <g class="coin c1"><use href="#coinwing"/></g>
-            <g class="coin c2"><use href="#coinwing"/></g>
-            <g class="coin c3"><use href="#coinwing"/></g>
             <defs>
-              <g id="coinwing">
-                <path d="M-9 -3 C-16 -13 -24 -10 -22 -5 C-26 -2 -18 3 -9 2" class="wing"/>
-                <path d="M9 -3 C16 -13 24 -10 22 -5 C26 -2 18 3 9 2" class="wing"/>
-                <circle r="9" class="coinbody"/>
-                <text y="4.3" class="eur">€</text>
-              </g>
+              <radialGradient id="muenze" cx=".38" cy=".32" r=".75"><stop offset="0" stop-color="#FFF1B8"/><stop offset=".45" stop-color="#FFC531"/><stop offset="1" stop-color="#C98A00"/></radialGradient>
+              <g id="geld"><circle r="9.5" class="coinbody"/><circle r="7" class="coinring"/><text y="4" class="eur">€</text></g>
             </defs>
+            <path class="m-boden" d="M10 121 H290"/>
+            <image href="3d/haus_pv.webp" x="12" y="40" width="116" height="87"/>
+            <image href="3d/mast.webp" x="222" y="24" width="55" height="95"/>
+            <path class="m-bahn" d="M72 62 C120 4 196 2 246 38"/>
+            <text x="70" y="136" class="lbl">mittags: verschenkt</text>
+            <text x="250" y="136" class="lbl">abends: teuer</text>
+            <g class="coin c1"><use href="#geld"/></g>
+            <g class="coin c2"><use href="#geld"/></g>
+            <g class="coin c3"><use href="#geld"/></g>
           </svg>
         </div>
         <p class="money-t">Ohne Steuerung fliegt Geld davon: Mittags wird Sonnenstrom für wenige Cent eingespeist, abends teurer Netzstrom zurückgekauft.</p>
@@ -399,12 +394,12 @@
     <h2 class="sec-h reveal">Ihre Vorteile</h2>
     <button type="button" class="hoer" data-clip="vorteile" hidden><span class="hoer-i" aria-hidden="true"></span><span class="hoer-t">Anhören</span></button>
     <div class="cards">
-      <article class="card sketch reveal"><svg class="ic" data-i="sun" viewBox="0 0 48 48"></svg><h3>Sonnenstrom selbst nutzen</h3><p>Erst ins Haus, dann in Batterie, Auto und Warmwasser. Eingespeist wird nur, was übrig bleibt.</p></article>
-      <article class="card sketch reveal"><svg class="ic" data-i="car" viewBox="0 0 48 48"></svg><h3>Günstig laden</h3><p>Das Auto lädt mit Überschuss und in den günstigsten Nachtstunden, rechtzeitig bis zur Abfahrt.</p></article>
-      <article class="card sketch reveal"><svg class="ic" data-i="drop" viewBox="0 0 48 48"></svg><h3>Warmwasser aus Sonne</h3><p>Der Heizstab heizt den Boiler mit Sonnenüberschuss, statt Strom billig ins Netz zu geben.</p></article>
-      <article class="card sketch reveal"><svg class="ic" data-i="phone" viewBox="0 0 48 48"></svg><h3>Alles in einer App</h3><p>Ein VOLTHERM-Bildschirm für alle Geräte, mit Tages- und Monatsbilanz und gesparten Euro.</p></article>
-      <article class="card sketch reveal"><svg class="ic" data-i="voice" viewBox="0 0 48 48"></svg><h3>Ansagen auf Deutsch</h3><p>„Das Auto ist geladen.“ „Warmwasser ist fertig.“ Kurze Sprachansagen, nur wenn es etwas zu sagen gibt.</p></article>
-      <article class="card sketch reveal"><svg class="ic" data-i="shield" viewBox="0 0 48 48"></svg><h3>Daten bleiben im Haus</h3><p>Die Steuerung läuft auf einem kleinen Rechner bei Ihnen zu Hause. Kein Cloud-Konto nötig. Fällt etwas aus, laufen alle Geräte sicher normal weiter.</p></article>
+      <article class="card sketch reveal"><span class="hex"><svg class="ic" data-i="sun" viewBox="0 0 48 48"></svg></span><h3>Sonnenstrom selbst nutzen</h3><p>Erst ins Haus, dann in Batterie, Auto und Warmwasser. Eingespeist wird nur, was übrig bleibt.</p></article>
+      <article class="card sketch reveal"><span class="hex"><svg class="ic" data-i="car" viewBox="0 0 48 48"></svg></span><h3>Günstig laden</h3><p>Das Auto lädt mit Überschuss und in den günstigsten Nachtstunden, rechtzeitig bis zur Abfahrt.</p></article>
+      <article class="card sketch reveal"><span class="hex"><svg class="ic" data-i="drop" viewBox="0 0 48 48"></svg></span><h3>Warmwasser aus Sonne</h3><p>Der Heizstab heizt den Boiler mit Sonnenüberschuss, statt Strom billig ins Netz zu geben.</p></article>
+      <article class="card sketch reveal"><span class="hex"><svg class="ic" data-i="phone" viewBox="0 0 48 48"></svg></span><h3>Alles in einer App</h3><p>Ein VOLTHERM-Bildschirm für alle Geräte, mit Tages- und Monatsbilanz und gesparten Euro.</p></article>
+      <article class="card sketch reveal"><span class="hex"><svg class="ic" data-i="voice" viewBox="0 0 48 48"></svg></span><h3>Ansagen auf Deutsch</h3><p>„Das Auto ist geladen.“ „Warmwasser ist fertig.“ Kurze Sprachansagen, nur wenn es etwas zu sagen gibt.</p></article>
+      <article class="card sketch reveal"><span class="hex"><svg class="ic" data-i="shield" viewBox="0 0 48 48"></svg></span><h3>Daten bleiben im Haus</h3><p>Die Steuerung läuft auf einem kleinen Rechner bei Ihnen zu Hause. Kein Cloud-Konto nötig. Fällt etwas aus, laufen alle Geräte sicher normal weiter.</p></article>
     </div>
   </div>
 </section>
@@ -460,6 +455,6 @@
 <button type="button" class="ton-dock" id="ton-dock" aria-pressed="false" aria-label="Mit Ton erleben" hidden>
   <svg data-i="voice" viewBox="0 0 48 48"></svg><span>Ton</span><span class="ton-switch" aria-hidden="true"><i></i></span>
 </button>
-<script src="main.js" defer></script>
+<script src="main.js?v=20261013b" defer></script>
 </body>
 </html>
