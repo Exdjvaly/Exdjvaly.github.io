@@ -410,6 +410,10 @@ a { color: inherit; }
 .hd-chip { padding: 8px 14px; border-radius: 999px; border: 1px solid rgba(255,255,255,.22); background: rgba(11,18,32,.35); color: var(--white); font: 600 14px var(--font); cursor: pointer; -webkit-tap-highlight-color: transparent; }
 .hd-chip:hover { border-color: var(--cyan); }
 .hd-chip.on { background: var(--cyan); border-color: var(--cyan); color: var(--navy); }
+.kt-ton { display: flex; align-items: center; gap: 8px; margin: 18px auto 0; min-height: 44px; padding: 0 18px; border-radius: 999px; border: 1px solid rgba(255,255,255,.25); background: rgba(255,255,255,.06); color: var(--white); font: 600 15px var(--font); cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.kt-ton svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.kt-ton:hover { border-color: var(--cyan); }
+.kt-ton[aria-pressed="true"] { background: var(--cyan); border-color: var(--cyan); color: var(--navy); }
 .ki-note a { color: var(--cyan); }
 
 /* VOLTHERM KI: lebendiges Wandtablet. Maße in em, 1em = 16px bei 1320px Breite. */

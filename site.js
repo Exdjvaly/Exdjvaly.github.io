@@ -183,6 +183,14 @@
     var msgs = kt.querySelector('.kt-msgs'), listen = kt.querySelector('.kt-listen');
     var said = k('said'), hint = k('hint');
     var lauf = 0, uhren = [], werte;
+    // Stimme (Piper Thorsten) nur nach Klick auf „Mit Ton anhören“, Browser spielen Ton erst nach einer Eingabe
+    var KI_TON = [['assets/stimme/ki-1.mp3', 6.0], ['assets/stimme/ki-2.mp3', 8.1], ['assets/stimme/ki-3.mp3', 5.5]];
+    var tonAn = false, tonEl = null;
+    var tonKnopf = document.createElement('button');
+    tonKnopf.type = 'button'; tonKnopf.className = 'kt-ton'; tonKnopf.setAttribute('aria-pressed', 'false');
+    tonKnopf.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"/></svg><span>Mit Ton anhören</span>';
+    var figur = kt.closest('figure');
+    figur.insertBefore(tonKnopf, figur.querySelector('figcaption'));
     var GESPRAECH = [
       ['hoeren', 'Wie war der Tag bisher?'],
       ['antwort', 'Sehr gut. 82 % Ihres Stroms kam heute von der Sonne, das Auto lädt gerade mit Überschuss.'],
@@ -236,8 +244,11 @@
         };
         spaeter(tippe, 450);
       } else {
-        var b = blase('b');
+        var b = blase('b'), nr = GESPRAECH.slice(0, i + 1).filter(function (x) { return x[0] === 'antwort'; }).length - 1;
+        var ton = tonAn && tonEl ? KI_TON[nr] : null;
         b.innerHTML = '<span class="kt-dots"><i></i><i></i><i></i></span>';
+        // Der Clip beginnt mit 0,3 s Stille: so fällt das erste Wort mit der Stimme zusammen
+        if (ton) spaeter(function () { if (n !== lauf) return; tonEl.src = ton[0]; var pl = tonEl.play(); if (pl && pl.catch) pl.catch(function () {}); }, 1000);
         spaeter(function () {
           if (n !== lauf) return;
           b.textContent = '';
@@ -246,13 +257,13 @@
             if (n !== lauf) return;
             var sp = document.createElement('span'); sp.className = 'w';
             sp.textContent = (w ? ' ' : '') + woerter[w]; b.appendChild(sp); w++;
-            if (w < woerter.length) return spaeter(wort, 70);
+            if (w < woerter.length) return spaeter(wort, ton ? Math.round(ton[1] * 1000 / woerter.length) : 70);
             if (s[2] === true) {
               var a = document.createElement('span'); a.className = 'act';
               a.innerHTML = '<span class="kb">Ja, starten</span><span class="kb g">Nein</span>'; b.appendChild(a);
             }
             if (s[2] === 'heizen') { werte.heizt = true; k('wwt').classList.add('heat'); }
-            weiter(1200 + woerter.length * 230);
+            weiter(ton ? 1500 : 1200 + woerter.length * 230);
           };
           wort();
         }, 1300);
@@ -269,8 +280,22 @@
       if (e[0].isIntersecting) {
         if (!kt.classList.contains('live')) kt.classList.add('live');
         alleStopp(); lauf++; start(lauf); takt(lauf);
-      } else { alleStopp(); lauf++; }
+      } else { alleStopp(); lauf++; if (tonEl) tonEl.pause(); }
     }, { threshold: .35 }).observe(kt);
+    tonKnopf.addEventListener('click', function () {
+      tonAn = !tonAn;
+      tonKnopf.setAttribute('aria-pressed', String(tonAn));
+      tonKnopf.querySelector('span').textContent = tonAn ? 'Ton aus' : 'Mit Ton anhören';
+      if (tonAn) {
+        // Im Klick einmal stumm anspielen, damit auch iPhone und Safari den Ton später erlauben
+        if (!tonEl) tonEl = new Audio();
+        tonEl.src = KI_TON[0][0]; tonEl.muted = true;
+        var pl = tonEl.play();
+        var frei = function () { tonEl.pause(); tonEl.muted = false; };
+        if (pl && pl.then) pl.then(frei, frei); else frei();
+        alleStopp(); lauf++; start(lauf); takt(lauf);
+      } else if (tonEl) tonEl.pause();
+    });
   }
 
   // Anfrage: Beispiele tippen sich im grauen Platzhaltertext, bis jemand ein Feld antippt
@@ -589,11 +614,26 @@
 
     var stimme = document.getElementById('pf-voice'), unten = document.querySelector('.pf-unten'), chips = document.querySelectorAll('[data-frage]'), uhren = [];
     var FRAGEN = [
-      { f: 'Lohnt sich jetzt die Waschmaschine?', a: 'Ja, jetzt passt es gut. Die Sonne liefert mehr, als das Haus gerade braucht, und der Speicher ist zu 71 % voll.' },
-      { f: 'Wann ist das Auto voll?', a: 'Das Auto hat 62 %. Es lädt mit Sonnenstrom und ist bis 07:00 Uhr auf 80 %.' },
+      { f: 'Lohnt sich jetzt die Waschmaschine?', a: 'Ja, jetzt passt es gut. Die Sonne liefert mehr, als das Haus gerade braucht, und der Speicher ist zu 71 % voll.',
+        ton: ['assets/stimme/hub-frage-1.mp3', 7.1] },
+      { f: 'Wann ist das Auto voll?', a: 'Das Auto hat 62 %. Es lädt mit Sonnenstrom und ist bis 07:00 Uhr auf 80 %.',
+        ton: ['assets/stimme/hub-frage-2.mp3', 6.1] },
       { f: 'Mach bitte warmes Wasser.', a: 'Gern. Der Speicher hat 52 °C. Ich heize eine Stunde mit Sonnenstrom, das kostet nichts. Soll ich starten?',
-        ja: 'Erledigt. Ich sage Bescheid, wenn das Wasser warm ist.', nein: 'In Ordnung, ich lasse alles, wie es ist.' }
+        ton: ['assets/stimme/hub-frage-3.mp3', 7.5],
+        ja: 'Erledigt. Ich sage Bescheid, wenn das Wasser warm ist.', jaTon: ['assets/stimme/hub-ja.mp3', 3.0],
+        nein: 'In Ordnung, ich lasse alles, wie es ist.', neinTon: ['assets/stimme/hub-nein.mp3', 2.3] }
     ];
+    // Die Antworten der Fragen beginnen nach 2,4 s Stille: der Ton startet direkt im Klick (erlaubt auf allen Geräten),
+    // in der Stille erscheint die Frage, dann spricht der Hub.
+    var STILLE = 2400, aktTon = null;
+    var stummen = function () { if (aktTon) { aktTon.pause(); aktTon = null; } };
+    var spiele = function (src) {
+      stummen();
+      var a = new Audio(src), pl = a.play();
+      if (pl && pl.catch) pl.catch(function () {});
+      aktTon = a; return a;
+    };
+    var tempo = function (text, ton) { return ton ? Math.max(14, Math.round(ton[1] * 920 / text.length)) : 22; };
     var MIC = '<span class="pv-mic"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/></svg></span>';
     var spaeter = function (fn, ms) { uhren.push(setTimeout(fn, ruhig ? 0 : ms)); };
     var stopp = function () { uhren.forEach(clearTimeout); uhren = []; };
@@ -602,16 +642,16 @@
       var n = 0, weiter = function () { n++; el.textContent = text.slice(0, n); if (n < text.length) spaeter(weiter, ms); else fertig(); };
       weiter();
     };
-    var antworte = function (q, text) {
+    var antworte = function (q, text, ton) {
       var a = stimme.querySelector('.pv-a');
       if (!a) { a = document.createElement('div'); a.className = 'pv-a'; stimme.appendChild(a); }
       a.innerHTML = '<b>VOLTHERM</b><span></span>';
-      tippe(a.querySelector('span'), text, 22, function () {
+      tippe(a.querySelector('span'), text, tempo(text, ton), function () {
         if (q && q.ja) {
           var act = document.createElement('div'); act.className = 'pv-act';
           act.innerHTML = '<button type="button">Ja, starten</button><button type="button">Nein</button>';
-          act.children[0].addEventListener('click', function () { act.remove(); antworte(null, q.ja); });
-          act.children[1].addEventListener('click', function () { act.remove(); antworte(null, q.nein); });
+          act.children[0].addEventListener('click', function () { act.remove(); spiele(q.jaTon[0]); antworte(null, q.ja, q.jaTon); });
+          act.children[1].addEventListener('click', function () { act.remove(); spiele(q.neinTon[0]); antworte(null, q.nein, q.neinTon); });
           a.appendChild(act);
         } else spaeter(function () { stimme.classList.remove('on'); chips.forEach(function (c) { c.classList.remove('on'); }); }, 7000);
       });
@@ -625,12 +665,16 @@
         chips.forEach(function (c) { c.classList.toggle('on', c === chip); });
         stimme.innerHTML = '<div class="pv-f">' + MIC + '<span>„<span class="pv-t"></span>“</span></div>';
         stimme.classList.add('on', 'hoert');
-        spaeter(function () {
-          tippe(stimme.querySelector('.pv-t'), q.f, 45, function () {
-            stimme.classList.remove('hoert');
-            spaeter(function () { antworte(q, q.a); }, 500);
-          });
-        }, 400);
+        var ton = spiele(q.ton[0]), gestartet = false;
+        var los = function () {
+          if (gestartet) return;
+          gestartet = true;
+          spaeter(function () { tippe(stimme.querySelector('.pv-t'), q.f, 40, function () { stimme.classList.remove('hoert'); }); }, 300);
+          uhren.push(setTimeout(function () { antworte(q, q.a, q.ton); }, STILLE));
+        };
+        // Bild und Ton gemeinsam starten; bleibt der Ton aus (stumm, blockiert), läuft das Bild trotzdem
+        ton.addEventListener('playing', los);
+        spaeter(los, 900);
       });
     });
   }
