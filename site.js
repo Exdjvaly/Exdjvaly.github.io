@@ -93,6 +93,18 @@
     }
   })();
 
+  // Leistungen: das Gerät auf der Karte neigt sich zur Maus
+  document.querySelectorAll('.card').forEach(function (karte) {
+    var b = karte.querySelector('.buehne');
+    if (!b) return;
+    karte.addEventListener('pointermove', function (e) {
+      var r = karte.getBoundingClientRect();
+      b.style.setProperty('--ry', (((e.clientX - r.left) / r.width - 0.5) * 24).toFixed(1) + 'deg');
+      b.style.setProperty('--rx', (((e.clientY - r.top) / r.height - 0.5) * -14).toFixed(1) + 'deg');
+    });
+    karte.addEventListener('pointerleave', function () { b.style.setProperty('--rx', '0deg'); b.style.setProperty('--ry', '0deg'); });
+  });
+
   // Knöpfe wie „Klimaanlage anfragen“ wählen das Interesse im Formular vor
   document.querySelectorAll('[data-interesse]').forEach(function (a) {
     a.addEventListener('click', function () {
