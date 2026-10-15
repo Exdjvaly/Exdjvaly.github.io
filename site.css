@@ -564,3 +564,28 @@ html:has(.galerie[open]) { overflow: hidden; }
 .sys-tag.lox { --t: #69c350; left: 7%; top: 18%; }
 .sys-tag.knx { --t: #9ad13c; right: 8%; top: 14%; animation-delay: -1.6s; }
 .sys-tag.ha { --t: #18bcf2; right: 10%; bottom: 14%; animation-delay: -3.2s; }
+
+/* ---------- App & Uhr ---------- */
+.uw-grid { display: grid; gap: 44px; align-items: center; }
+@media (min-width: 900px) { .uw-grid { grid-template-columns: 1.1fr .9fr; } }
+.uw-gift { display: flex; gap: 16px; margin-top: 22px; padding: 18px 20px; border-radius: var(--r); background: linear-gradient(135deg, rgba(25,195,230,.14), rgba(255,107,44,.12)); border: 1px solid rgba(25,195,230,.35); }
+.uw-gift-ic { font-size: 30px; line-height: 1; }
+.uw-gift b { display: block; color: var(--white); font-size: 18px; margin-bottom: 4px; }
+.uw-gift p { margin: 0 0 8px; font-size: 16px; }
+.uw-gift small { display: block; color: var(--steel); font-size: 13px; line-height: 1.5; }
+.uw-pic { margin: 0; }
+.uw-pic figcaption { margin-top: 12px; font-size: 13px; color: var(--steel); text-align: center; }
+.uw-duo { position: relative; width: min(100%, 420px); margin: 0 auto; padding-bottom: 40px; }
+.uw-phone { width: min(64vw, 260px); margin-left: 4%; justify-self: auto; }
+.uw-watch { position: absolute; right: 0; bottom: 0; width: min(46vw, 230px); filter: drop-shadow(0 24px 34px rgba(0,0,0,.55)); animation: schweben 6s ease-in-out 2.5s infinite; }
+.uw-watch svg { display: block; width: 100%; height: auto; }
+.uw-watch text { text-anchor: middle; font-family: var(--font); }
+.uw-wm { font-size: 15px; font-weight: 800; letter-spacing: .14em; fill: #fff; }
+.uw-v { font-size: 19px; font-weight: 800; fill: #fff; }
+.uw-l { font-size: 11px; fill: #8FA3C8; }
+.uw-g { fill: #3ddc84; font-weight: 800; letter-spacing: .08em; }
+.uw-time { font-size: 22px; font-weight: 700; fill: #dbe3f1; }
+.uw-hands line { stroke-linecap: round; }
+.uw-h { stroke: #fff; stroke-width: 7; }
+.uw-m { stroke: #19C3E6; stroke-width: 4; }
+.uw-hands line { transform-origin: 180px 180px; transform-box: view-box; }

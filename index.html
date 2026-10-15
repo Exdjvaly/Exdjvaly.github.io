@@ -13,7 +13,7 @@
 <link rel="canonical" href="https://voltherm.de/">
 <meta property="og:locale" content="de_DE">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 300'%3E%3Crect width='300' height='300' rx='60' fill='%230B1220'/%3E%3Cpolygon points='22,20 86,20 166,232 150,272' fill='%238FA3C8'/%3E%3Cpolygon points='74,20 112,20 168,200 154,226' fill='%23FFFFFF'/%3E%3Cpolygon points='200,20 290,20 214,118 276,118 126,286 176,170 128,170' fill='%2319C3E6'/%3E%3C/svg%3E">
-<link rel="stylesheet" href="site.css?v=20261013g">
+<link rel="stylesheet" href="site.css?v=20261015a">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -73,6 +73,7 @@
       <a href="#klima">Klima</a>
       <a href="#smarthome">Smart Home</a>
       <a href="#smart">Smart Energy</a>
+      <a href="#unterwegs">App &amp; Uhr</a>
       <a href="#hub">Hub</a>
       <a href="#ki">KI</a>
       <a href="#ablauf">Ablauf</a>
@@ -261,6 +262,65 @@
         <a class="btn btn-line" href="voltherm/demo.html">Demo ausprobieren</a>
       </div>
     </div>
+  </div>
+</section>
+
+<section class="sec dark" id="unterwegs">
+  <div class="wrap uw-grid">
+    <div>
+      <p class="kicker">VOLTHERM App &amp; Smartwatch</p>
+      <h2>Ihr Haus in der Hosentasche.<br><span class="grad">Und am Handgelenk.</span></h2>
+      <p>Mit der VOLTHERM App haben Sie Ihre Anlage immer dabei. Zu Hause im WLAN genauso wie unterwegs: Sie sehen, was Ihr Haus gerade macht, und steuern es mit einem Fingertipp.</p>
+      <ul class="ticks">
+        <li>Live: Sonne vom Dach, Speicher, Netz und aktueller Strompreis</li>
+        <li>Steuern von überall, jeder Befehl läuft durch die Schutzregeln von VOLTHERM</li>
+        <li>Nachrichten aufs Handy, zum Beispiel wenn das Auto geladen oder das Warmwasser fertig ist</li>
+        <li>Verschlüsselter Zugriff von unterwegs, ohne Cloud-Abo</li>
+      </ul>
+      <div class="uw-gift">
+        <span class="uw-gift-ic" aria-hidden="true">🎁</span>
+        <div>
+          <b>Geschenkt: die VOLTHERM Uhr-App</b>
+          <p>Für VOLTHERM-Kunden kostenlos dabei. Zifferblatt mit Sonne, Speicher, Netz und Strompreis (günstig oder teuer), dazu Kachel und App auf der Uhr. Unterwegs kommen die Werte einfach über Ihr Handy.</p>
+          <small>Für Smartwatches mit Wear OS, zum Beispiel Samsung Galaxy Watch. Die Uhr selbst ist nicht im Lieferumfang enthalten.</small>
+        </div>
+      </div>
+    </div>
+    <figure class="uw-pic">
+      <div class="uw-duo">
+        <div class="phone uw-phone"><img src="assets/app-demo.webp?v=030" width="400" height="860" alt="VOLTHERM App auf dem Handy" loading="lazy"></div>
+        <div class="uw-watch" aria-hidden="true">
+          <svg viewBox="0 0 360 360">
+            <defs>
+              <radialGradient id="uwFace" cx=".5" cy=".42" r=".6"><stop offset="0" stop-color="#18233b"/><stop offset="1" stop-color="#070c16"/></radialGradient>
+              <linearGradient id="uwRing" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9aa4b4"/><stop offset=".5" stop-color="#3b4456"/><stop offset="1" stop-color="#c8cfdb"/></linearGradient>
+            </defs>
+            <circle cx="180" cy="180" r="176" fill="url(#uwRing)"/>
+            <circle cx="180" cy="180" r="162" fill="url(#uwFace)"/>
+            <g class="uw-ticks" stroke="#4a5873" stroke-width="3" stroke-linecap="round">
+              <path d="M180 26v12 M180 322v12 M26 180h12 M322 180h12"/>
+            </g>
+            <use href="#logo" x="156" y="98" width="48" height="48"/>
+            <text x="180" y="162" class="uw-wm">VOLT<tspan fill="#19C3E6">HERM</tspan></text>
+            <text x="180" y="66" class="uw-v">↑ 97 W</text><text x="180" y="82" class="uw-l">Netz</text>
+            <circle cx="88" cy="180" r="34" fill="none" stroke="#26324a" stroke-width="7"/>
+            <circle cx="88" cy="180" r="34" fill="none" stroke="#FFC24D" stroke-width="7" stroke-linecap="round" stroke-dasharray="45 214" transform="rotate(-90 88 180)"/>
+            <text x="88" y="180" class="uw-v">2,1</text><text x="88" y="196" class="uw-l">kW Sonne</text>
+            <circle cx="272" cy="180" r="34" fill="none" stroke="#26324a" stroke-width="7"/>
+            <circle cx="272" cy="180" r="34" fill="none" stroke="#19C3E6" stroke-width="7" stroke-linecap="round" stroke-dasharray="211 214" transform="rotate(-90 272 180)"/>
+            <text x="272" y="180" class="uw-v">99</text><text x="272" y="196" class="uw-l">% Speicher</text>
+            <text x="180" y="276" class="uw-v">23,4 ct</text><text x="180" y="294" class="uw-l uw-g">GÜNSTIG</text>
+            <text x="180" y="226" class="uw-time" id="uw-zeit">17:42</text>
+            <g class="uw-hands">
+              <line class="uw-h" id="uw-h" x1="180" y1="180" x2="180" y2="112"/>
+              <line class="uw-m" id="uw-m" x1="180" y1="180" x2="180" y2="76"/>
+              <circle cx="180" cy="180" r="6" fill="#FF6B2C"/>
+            </g>
+          </svg>
+        </div>
+      </div>
+      <figcaption>Visualisierung, Beispielwerte.</figcaption>
+    </figure>
   </div>
 </section>
 
@@ -533,6 +593,6 @@
 </dialog>
 <!-- Fotos aus echten Projekten je Leistung: {"photovoltaik": [{"src": "...", "t": "Vorschaubild", "text": "Bildunterschrift"}], ...} -->
 <script type="application/json" id="galerie-daten">{}</script>
-<script src="site.js?v=20261013g" defer></script>
+<script src="site.js?v=20261015a" defer></script>
 </body>
 </html>
