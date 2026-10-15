@@ -683,3 +683,16 @@
     });
   }
 })();
+
+/* App & Uhr: Zeiger und Uhrzeit auf der Beispieluhr zeigen die echte Zeit. */
+(function () {
+  var h = document.getElementById('uw-h'), m = document.getElementById('uw-m'), z = document.getElementById('uw-zeit');
+  if (!h || !m || !z) return;
+  function stellen() {
+    var d = new Date(), mi = d.getMinutes(), st = d.getHours();
+    m.style.transform = 'rotate(' + (mi * 6) + 'deg)';
+    h.style.transform = 'rotate(' + ((st % 12) * 30 + mi / 2) + 'deg)';
+    z.textContent = st + ':' + (mi < 10 ? '0' : '') + mi;
+  }
+  stellen(); setInterval(stellen, 20000);
+})();
