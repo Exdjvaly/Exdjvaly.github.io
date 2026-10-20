@@ -13,7 +13,7 @@
 <link rel="canonical" href="https://voltherm.de/">
 <meta property="og:locale" content="de_DE">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 300'%3E%3Crect width='300' height='300' rx='60' fill='%230B1220'/%3E%3Cpolygon points='22,20 86,20 166,232 150,272' fill='%238FA3C8'/%3E%3Cpolygon points='74,20 112,20 168,200 154,226' fill='%23FFFFFF'/%3E%3Cpolygon points='200,20 290,20 214,118 276,118 126,286 176,170 128,170' fill='%2319C3E6'/%3E%3C/svg%3E">
-<link rel="stylesheet" href="site.css?v=20261020a">
+<link rel="stylesheet" href="site.css?v=20261020b">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -491,6 +491,12 @@
       <div class="card warm"><svg class="hexi" viewBox="0 0 64 64" aria-hidden="true"><use href="#hex"/><use href="#i-puls" x="17" y="17" width="30" height="30"/></svg><b>Service, bevor etwas ausfällt</b><p>Der Hub prüft Geräte und Verbindungen und meldet Auffälligkeiten. Auf Wunsch helfen wir über einen sicheren Fernzugang.</p></div>
       <div class="card"><svg class="hexi" viewBox="0 0 64 64" aria-hidden="true"><use href="#hex"/><use href="#i-lock" x="17" y="17" width="30" height="30"/></svg><b>Ihre Daten bleiben im Haus</b><p>Kein Cloud-Abo, keine Daten auf fremden Servern. Der Hub arbeitet lokal.</p></div>
     </div>
+    <div class="hub-basic">
+      <p class="kicker">Schon heute verfügbar</p>
+      <h3>VOLTHERM Basic</h3>
+      <p>Sie müssen nicht auf die Displays warten: Das Energiemanagementsystem VOLTHERM läuft bereits und wird direkt im Zählerschrank installiert, ohne Display am Gerät. Bedient wird es über die App auf Handy, Tablet und Uhr.</p>
+      <a class="btn" href="#kontakt" data-interesse="VOLTHERM Smart Energy">VOLTHERM Basic anfragen</a>
+    </div>
     <div class="hub-end">
       <p>Hub Core und Hub Pro sind in Entwicklung und noch nicht erhältlich. Sie möchten zu den Ersten gehören? Melden Sie Ihr Interesse an.</p>
       <a class="btn" href="#kontakt" data-interesse="VOLTHERM Hub">Interesse anmelden</a>
@@ -613,6 +619,61 @@
   </div>
 </section>
 
+<section class="sec dark" id="system-check">
+  <div class="wrap check-grid">
+    <div>
+      <p class="kicker">System-Check</p>
+      <h2>Welches Potenzial steckt in Ihrem Zuhause?</h2>
+      <p>Finden Sie in weniger als 1 Minute heraus, welches Potenzial in Ihrem Zuhause steckt. Beantworten Sie 3 kurze Fragen – wir melden uns mit einer unverbindlichen Einschätzung.</p>
+    </div>
+    <form class="anfrage check" id="check" novalidate>
+      <p class="check-stand" aria-live="polite">Schritt <b>1</b> von 4</p>
+      <fieldset class="schritt" data-schritt="1">
+        <legend>Was ist in Ihrem Haus bereits vorhanden?</legend>
+        <div class="pick">
+          <label><input type="checkbox" name="vorhanden" value="Photovoltaikanlage"><span>Photovoltaikanlage</span></label>
+          <label><input type="checkbox" name="vorhanden" value="Stromspeicher"><span>Stromspeicher</span></label>
+          <label><input type="checkbox" name="vorhanden" value="Wallbox"><span>Wallbox</span></label>
+          <label><input type="checkbox" name="vorhanden" value="Wärmepumpe / Klimaanlage"><span>Wärmepumpe / Klimaanlage</span></label>
+          <label><input type="checkbox" name="vorhanden" value="Smart Home"><span>Smart Home</span></label>
+          <label><input type="checkbox" name="vorhanden" value="Noch nichts davon"><span>Noch nichts davon</span></label>
+        </div>
+      </fieldset>
+      <fieldset class="schritt" data-schritt="2">
+        <legend>Was planen Sie in nächster Zeit?</legend>
+        <div class="pick">
+          <label><input type="checkbox" name="geplant" value="Neue PV-Anlage / Speicher"><span>Neue PV-Anlage / Speicher</span></label>
+          <label><input type="checkbox" name="geplant" value="Wallbox für E-Auto"><span>Wallbox für E-Auto</span></label>
+          <label><input type="checkbox" name="geplant" value="Umstieg auf Wärmepumpe"><span>Umstieg auf Wärmepumpe</span></label>
+          <label><input type="checkbox" name="geplant" value="Alles intelligent vernetzen"><span>Alles intelligent vernetzen</span></label>
+        </div>
+      </fieldset>
+      <fieldset class="schritt" data-schritt="3">
+        <legend>Nutzen Sie bereits einen dynamischen Stromtarif?</legend>
+        <div class="pick">
+          <label><input type="radio" name="tarif" value="Ja"><span>Ja</span></label>
+          <label><input type="radio" name="tarif" value="Nein, aber ich habe Interesse"><span>Nein, aber ich habe Interesse</span></label>
+          <label><input type="radio" name="tarif" value="Weiß ich noch nicht"><span>Weiß ich noch nicht</span></label>
+        </div>
+      </fieldset>
+      <fieldset class="schritt" data-schritt="4">
+        <legend>Wie dürfen wir Ihnen unsere Einschätzung zukommen lassen?</legend>
+        <label class="fld"><span>Name</span><input name="name" autocomplete="name" required></label>
+        <label class="fld"><span>E-Mail</span><input name="email" type="email" autocomplete="email" required></label>
+      </fieldset>
+      <label class="hp" aria-hidden="true">Website<input name="website" tabindex="-1" autocomplete="off"></label>
+      <div class="check-knoepfe">
+        <button class="btn btn-ghost" type="button" data-zurueck hidden>Zurück</button>
+        <button class="btn" type="button" data-weiter hidden>Weiter</button>
+        <button class="btn" type="submit">Einschätzung anfordern</button>
+      </div>
+      <p class="fine">Ihre Angaben gehen direkt an uns und werden nur für die Einschätzung genutzt. Mehr dazu im <a href="datenschutz.html#anfrage">Datenschutz</a>.</p>
+      <p class="err" role="alert" hidden></p>
+      <p class="ok" role="status" hidden>Danke! Wir melden uns mit einer unverbindlichen Einschätzung bei Ihnen.</p>
+    </form>
+  </div>
+</section>
+
 <section class="sec dark" id="kontakt">
   <div class="wrap contact-grid">
     <div>
@@ -686,6 +747,6 @@
 </dialog>
 <!-- Fotos aus echten Projekten je Leistung: {"photovoltaik": [{"src": "...", "t": "Vorschaubild", "text": "Bildunterschrift"}], ...} -->
 <script type="application/json" id="galerie-daten">{}</script>
-<script src="site.js?v=20261015a" defer></script>
+<script src="site.js?v=20261020a" defer></script>
 </body>
 </html>

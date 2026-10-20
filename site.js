@@ -696,3 +696,54 @@
   }
   stellen(); setInterval(stellen, 20000);
 })();
+
+// System-Check: drei Fragen Schritt für Schritt, dann Name und E-Mail; geht wie die Anfrage über /api/anfrage
+(function () {
+  var f = document.getElementById('check');
+  if (!f) return;
+  var schritte = f.querySelectorAll('.schritt'), nr = 0;
+  var zurueck = f.querySelector('[data-zurueck]'), weiter = f.querySelector('[data-weiter]'), senden = f.querySelector('button[type=submit]');
+  var stand = f.querySelector('.check-stand b'), fehler = f.querySelector('.err'), ok = f.querySelector('.ok');
+  f.classList.add('js');
+  function zeige(i) {
+    nr = i;
+    schritte.forEach(function (s, j) { s.hidden = j !== i; });
+    zurueck.hidden = i === 0;
+    weiter.hidden = i === schritte.length - 1;
+    senden.hidden = i !== schritte.length - 1;
+    stand.textContent = i + 1;
+    fehler.hidden = true;
+  }
+  zeige(0);
+  weiter.addEventListener('click', function () { zeige(nr + 1); var erstes = schritte[nr].querySelector('input'); if (erstes) erstes.focus(); });
+  zurueck.addEventListener('click', function () { zeige(nr - 1); });
+  // „Noch nichts davon“ schließt die anderen Antworten aus
+  f.querySelectorAll('input[name=vorhanden]').forEach(function (c) {
+    c.addEventListener('change', function () {
+      if (!c.checked) return;
+      f.querySelectorAll('input[name=vorhanden]').forEach(function (o) {
+        if (o !== c && (c.value === 'Noch nichts davon' || o.value === 'Noch nichts davon')) o.checked = false;
+      });
+    });
+  });
+  function werte(n) { return Array.prototype.map.call(f.querySelectorAll('input[name="' + n + '"]:checked'), function (c) { return c.value; }).join(', ') || 'keine Angabe'; }
+  function fehlt(text, feld) { fehler.textContent = text; fehler.hidden = false; ok.hidden = true; if (feld) feld.focus(); }
+  f.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var name = f.elements['name'].value.trim(), mail = f.elements['email'].value.trim();
+    if (!name) return fehlt('Bitte geben Sie Ihren Namen an.', f.elements['name']);
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mail)) return fehlt('Bitte geben Sie eine gültige E-Mail-Adresse an.', f.elements['email']);
+    var text = ['Vorhanden: ' + werte('vorhanden'), 'Geplant: ' + werte('geplant'), 'Dynamischer Tarif: ' + werte('tarif')].join('\n');
+    senden.disabled = true; fehler.hidden = true;
+    fetch('/api/anfrage', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: name, kontakt: mail, text: text, interesse: 'System-Check', website: f.elements['website'].value })
+    }).then(function (r) {
+      if (!r.ok) throw new Error(String(r.status));
+      f.reset(); zeige(0); ok.hidden = false;
+    }).catch(function (err) {
+      fehlt('Das Senden hat leider nicht geklappt. Bitte nutzen Sie das Formular unten, WhatsApp oder rufen Sie uns an: 01556 8656548. (Fehler ' + err.message + ')');
+    }).then(function () { senden.disabled = false; });
+  });
+})();

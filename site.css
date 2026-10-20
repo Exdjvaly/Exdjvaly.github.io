@@ -607,3 +607,19 @@ html:has(.galerie[open]) { overflow: hidden; }
 .foot .region { margin: 12px 0 0; max-width: 360px; color: #c5d0e6; font-size: 14px; }
 #smart h2, #faq summary { hyphens: auto; overflow-wrap: break-word; }
 .smart-grid > * { min-width: 0; }
+
+/* ---------- VOLTHERM Basic und System-Check ---------- */
+.hub-basic { margin-top: 34px; background: var(--white); border: 1.5px solid var(--cyan); border-radius: var(--r); padding: 26px 24px; }
+.hub-basic h3 { margin: 0 0 8px; font-size: 24px; }
+.hub-basic p { color: var(--ink2); max-width: 720px; }
+.hub-basic .btn { margin-top: 8px; }
+.check-grid { display: grid; gap: 34px; align-items: start; }
+@media (min-width: 900px) { .check-grid { grid-template-columns: .9fr 1.1fr; } }
+.check-stand { font-size: 14px; color: var(--steel) !important; margin: 0 0 14px; }
+.check-stand b { color: var(--cyan); }
+.check .schritt { margin-bottom: 22px; }
+.check-knoepfe { display: flex; flex-wrap: wrap; gap: 10px; }
+.check-knoepfe .btn { flex: 1 1 160px; }
+.check-knoepfe [hidden] { display: none; }
+.check.js .check-stand { display: block; }
+.check:not(.js) .check-stand { display: none; }
