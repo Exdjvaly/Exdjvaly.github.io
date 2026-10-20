@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>VOLTHERM · Photovoltaik, Speicher, Wallbox, Wärmepumpe und Klimaanlagen aus Mockersdorf</title>
-<meta name="description" content="VOLTHERM Integrated Solutions aus Mockersdorf (Bayern): Elektroinstallation, Photovoltaik, Stromspeicher, Wallbox, Wärmepumpe, Vivax Klimaanlagen und Smart Home als Loxone Partner und mit Home Assistant. Geplant, montiert und intelligent vernetzt.">
+<title>VOLTHERM · Photovoltaik, Speicher, Wallbox, Wärmepumpe, Klimaanlagen und Energiemanagement (HEMS) aus der Oberpfalz</title>
+<meta name="description" content="VOLTHERM Integrated Solutions aus Mockersdorf (Bayern): Elektroinstallation, Photovoltaik, Stromspeicher, Wallbox, Wärmepumpe, Vivax Klimaanlagen und Smart Home als Loxone Partner und mit unserem Energiemanagementsystem (HEMS) VOLTHERM. Geplant, montiert und intelligent vernetzt.">
 <meta name="theme-color" content="#0B1220">
 <meta property="og:type" content="website">
 <meta property="og:title" content="VOLTHERM · Ihre Energie. Intelligent verteilt.">
@@ -13,17 +13,57 @@
 <link rel="canonical" href="https://voltherm.de/">
 <meta property="og:locale" content="de_DE">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 300'%3E%3Crect width='300' height='300' rx='60' fill='%230B1220'/%3E%3Cpolygon points='22,20 86,20 166,232 150,272' fill='%238FA3C8'/%3E%3Cpolygon points='74,20 112,20 168,200 154,226' fill='%23FFFFFF'/%3E%3Cpolygon points='200,20 290,20 214,118 276,118 126,286 176,170 128,170' fill='%2319C3E6'/%3E%3C/svg%3E">
-<link rel="stylesheet" href="site.css?v=20261015a">
+<link rel="stylesheet" href="site.css?v=20261020a">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "Electrician",
   "name": "VOLTHERM Integrated Solutions",
-  "description": "Elektroinstallation, Photovoltaik, Stromspeicher, Wallbox, Wärmepumpe, Klimaanlagen, Smart Home (Loxone, Home Assistant) und intelligentes Energiemanagement.",
+  "description": "Elektroinstallation, Photovoltaik, Stromspeicher, Wallbox, Wärmepumpe, Klimaanlagen, Smart Home (Loxone, KNX) und das Energiemanagementsystem (HEMS) VOLTHERM.",
   "email": "office@voltherm.de",
   "telephone": "+49 1556 8656548",
   "address": { "@type": "PostalAddress", "streetAddress": "Kulmblick 2", "postalCode": "95514", "addressLocality": "Neustadt am Kulm", "addressRegion": "Bayern", "addressCountry": "DE" },
-  "areaServed": "Bayern"
+  "areaServed": ["Oberpfalz", "Weiden in der Oberpfalz", "Bayreuth", "Neustadt am Kulm", "Bayern"]
+}
+</script>
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "FAQPage",
+ "mainEntity": [
+  {
+   "@type": "Question",
+   "name": "Kann ich meine bestehende, ältere Wärmepumpe mit einer neuen PV-Anlage verbinden?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Ja, in den meisten Fällen! Auch wenn ältere Modelle kein „SG-Ready“-Label haben, können wir sie oft über den VOLTHERM Hub in das Energiemanagement integrieren. So heizt auch Ihre bestehende Anlage bevorzugt dann, wenn die Sonne scheint."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Wie funktioniert die Leistungsbegrenzung (§14a EnWG)? Sitze ich im Kalten?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Keine Sorge! Der Netzbetreiber darf zwar in Spitzenzeiten den Strom für Wärmepumpen drosseln, aber dank des VOLTHERM Hubs passiert das intelligent. Unser System fängt die Drosselung ab und verteilt die restliche Energie klug, ohne Komfortverlust."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Brauche ich zwingend Loxone oder KNX, um VOLTHERM zu nutzen?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Nein. Der VOLTHERM Hub bringt sein eigenes, von uns entwickeltes System für das Energiemanagement mit. Wenn Sie noch kein Smart Home haben, funktioniert unser Hub als eigenständige Zentrale. Vorhandene Systeme binden wir nahtlos ein."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Funktioniert das System mit einem dynamischen Stromtarif wie Tibber?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Absolut! Der VOLTHERM Hub kennt die Börsenstrompreise von morgen und plant automatisch, wann das E-Auto geladen oder der Heimspeicher gefüllt wird – genau dann, wenn der Strom am günstigsten ist."
+   }
+  }
+ ]
 }
 </script>
 </head>
@@ -90,7 +130,7 @@
     <div class="hero-text">
       <p class="eyebrow">Aus Mockersdorf · Bayern</p>
       <h1>Strom vom Dach.<br><span class="grad">Wärme, Kühlung und Mobilität</span><br>aus einer Hand.</h1>
-      <p class="lead">Wir sind Ihr Elektriker für Elektroinstallation, Photovoltaik, Stromspeicher, Wallbox, Wärmepumpe, Klimaanlagen und Smart Home mit Loxone oder Home Assistant. Und wir verbinden alles so, dass Ihr Haus seinen Sonnenstrom selbst klug verteilt.</p>
+      <p class="lead">Wir sind Ihr Elektriker für Elektroinstallation, Photovoltaik, Stromspeicher, Wallbox, Wärmepumpe, Klimaanlagen und Smart Home mit Loxone oder unserem eigenen VOLTHERM System. Und wir verbinden alles so, dass Ihr Haus seinen Sonnenstrom selbst klug verteilt.</p>
       <div class="cta-row">
         <a class="btn" href="#kontakt">Kostenlos beraten lassen</a>
         <a class="btn btn-ghost" href="https://wa.me/4915568656548" rel="noopener"><svg class="ic" aria-hidden="true"><use href="#i-wa"/></svg>WhatsApp</a>
@@ -155,9 +195,9 @@
         <p>Split-Klimageräte von Vivax zum Kühlen im Sommer und Heizen in der Übergangszeit. Beratung, Verkauf und Montage.</p>
       </article>
       <article class="card warm" data-galerie="smarthome">
-        <div class="buehne" aria-hidden="true"><img src="assets/3d/haus.webp" alt="" loading="lazy" decoding="async"><span class="sys-tag lox">Loxone</span><span class="sys-tag knx">KNX</span><span class="sys-tag ha">Home Assistant</span></div>
+        <div class="buehne" aria-hidden="true"><img src="assets/3d/haus.webp" alt="" loading="lazy" decoding="async"><span class="sys-tag lox">Loxone</span><span class="sys-tag knx">KNX</span><span class="sys-tag vt">VOLTHERM</span></div>
         <h3>Smart Home</h3>
-        <p>Licht, Beschattung, Heizung und Sicherheit automatisiert, mit Loxone, KNX oder Home Assistant. Planung, Verkabelung und Programmierung.</p>
+        <p>Licht, Beschattung, Heizung und Sicherheit automatisiert, mit Loxone, KNX oder unserem eigenen VOLTHERM System. Planung, Verkabelung und Programmierung.</p>
       </article>
     </div>
   </div>
@@ -231,16 +271,16 @@
         </ul>
       </article>
       <article class="card">
-        <h3>Home Assistant</h3>
-        <p>Die offene Plattform, die mit fast jedem Gerät spricht. Ideal zum Nachrüsten im bestehenden Haus, mit Funkschaltern, Sensoren und Ihren vorhandenen Geräten.</p>
+        <h3>VOLTHERM <span class="badge">Eigenes System</span></h3>
+        <p>Unser eigenes System, ideal zum Nachrüsten im bestehenden Haus. Es spricht mit fast jedem Gerät, mit Funkschaltern, Sensoren und Ihren vorhandenen Anlagen.</p>
         <ul class="ticks">
-          <li>Einrichtung auf einem kleinen Rechner im Haus</li>
+          <li>Läuft auf einem kleinen Rechner im Haus</li>
           <li>Ihre Daten bleiben lokal, Fernzugriff auf Wunsch</li>
-          <li>Grundlage unseres Systems VOLTHERM Smart Energy</li>
+          <li>Mit Energiemanagement VOLTHERM Smart Energy</li>
         </ul>
       </article>
     </div>
-    <a class="btn" href="#kontakt" data-interesse="Smart Home (Loxone / Home Assistant)">Smart Home anfragen</a>
+    <a class="btn" href="#kontakt" data-interesse="Smart Home (Loxone / VOLTHERM)">Smart Home anfragen</a>
   </div>
 </section>
 
@@ -248,8 +288,8 @@
   <div class="wrap smart-grid">
     <div class="phone"><img src="assets/app-demo.webp?v=030" width="400" height="860" alt="VOLTHERM App: Haus mit Photovoltaik, Speicher, Wallbox, Klima, Wärmepumpe und Warmwasser" loading="lazy"></div>
     <div>
-      <p class="kicker">VOLTHERM Smart Energy</p>
-      <h2>Ihre Energie.<br><span class="grad-dark">Intelligent verteilt.</span></h2>
+      <p class="kicker">Ihre Energie. Intelligent verteilt.</p>
+      <h2>VOLTHERM Smart Energy&nbsp;–<br><span class="grad-dark">Das intelligente Energie&shy;management&shy;system (HEMS)</span></h2>
       <p>Ein kleiner Rechner im Haus verbindet Solaranlage, Speicher, Wallbox, Warmwasser, Wärmepumpe und Klimaanlage. Er sieht, wie viel Sonne gerade da ist und was Strom aus dem Netz kostet, und entscheidet danach.</p>
       <ul class="ticks">
         <li>Sonnenstrom zuerst selbst nutzen statt billig einspeisen</li>
@@ -262,6 +302,18 @@
         <a class="btn btn-line" href="voltherm/demo.html">Demo ausprobieren</a>
       </div>
     </div>
+  </div>
+</section>
+
+<section class="sec soft" id="stromtarife">
+  <div class="wrap">
+    <p class="kicker">Dynamische Stromtarife</p>
+    <h2>Clever laden, günstig heizen</h2>
+    <div class="text-spalten">
+      <p>Warum einen festen Strompreis zahlen, wenn Energie an der Börse oft viel günstiger ist? Mit dem VOLTHERM Hub machen wir Ihr Zuhause bereit für die Zukunft des Strommarktes – die dynamischen Stromtarife.</p>
+      <p>Egal ob Sie Anbieter wie Tibber, aWATTar oder andere nutzen: Unser HEMS kennt die stündlichen Börsenstrompreise im Voraus. Es entscheidet völlig autonom, wann es am sinnvollsten ist, Energie aus dem Netz zu beziehen. Die Sonne scheint mal nicht, aber nachts weht viel Wind und der Strompreis fällt? Der VOLTHERM Hub erkennt das und startet automatisch die Wärmepumpe, füllt Ihren Heimspeicher oder lädt das E-Auto in der Garage – exakt dann, wenn es am billigsten ist.</p>
+    </div>
+    <a class="btn" href="#kontakt" data-interesse="VOLTHERM Smart Energy">Beratung zum dynamischen Tarif</a>
   </div>
 </section>
 
@@ -521,6 +573,46 @@
   </div>
 </section>
 
+<section class="sec" id="ueber-uns">
+  <div class="wrap">
+    <p class="kicker">Über uns</p>
+    <h2>Klassisches Handwerk trifft Energiemanagement</h2>
+    <div class="text-spalten">
+      <p>Hallo, ich bin Valentin, Elektriker und der Kopf hinter VOLTHERM.</p>
+      <p>Alles begann mit meinem eigenen Zuhause und einer klaren Vision: Ich wollte, dass mein Haus mitdenkt. Wenn mittags die Sonne scheint, sollte der Strom nicht einfach billig ins Netz fließen, sondern intelligent genutzt werden – für die Wärmepumpe, das Warmwasser oder das E-Auto in der Garage. Und wenn die Sonne mal nicht scheint, wollte ich die günstigsten Stunden eines dynamischen Stromtarifs automatisch nutzen.</p>
+      <p>Dabei stieß ich auf ein Problem, das viele Hausbesitzer kennen: Klassische Installateure bauen zwar hervorragende Hardware ein, aber die Geräte sprechen oft nicht miteinander. Die Solaranlage weiß nichts von der Wärmepumpe, und die Wallbox ignoriert den aktuellen Strompreis.</p>
+      <p>Als Elektriker und begeisterter Smart-Home-Entwickler wollte ich mich damit nicht abfinden. Ich begann, verschiedene Systeme wie Loxone und offene Standards zu kombinieren, zu programmieren und die Abläufe im eigenen Haus so lange zu perfektionieren, bis alles reibungslos aus einer Hand lief. Aus dieser Leidenschaft entstand der VOLTHERM Hub – unser eigenes, lokales Home Energy Management System (HEMS).</p>
+    </div>
+    <blockquote class="zitat">Heute ist VOLTHERM ein Elektrobetrieb, der die Brücke zwischen solidem Elektrohandwerk und moderner IT schlägt.</blockquote>
+    <p class="text-ende">Wir verlegen nicht nur fachgerecht die Kabel im Zählerschrank, sondern programmieren auch das Gehirn Ihres Hauses. Keine Kompromisse, kein Cloud-Zwang, sondern ein System, das sich nach Ihrem Leben richtet. <b>Ihre Energie, klug verteilt. Aus einer Hand. Aus der Region.</b></p>
+  </div>
+</section>
+
+<section class="sec soft" id="faq">
+  <div class="wrap">
+    <p class="kicker">FAQ</p>
+    <h2>Häufige Fragen</h2>
+    <div class="faq">
+      <details>
+        <summary>Kann ich meine bestehende, ältere Wärmepumpe mit einer neuen PV-Anlage verbinden?</summary>
+        <p>Ja, in den meisten Fällen! Auch wenn ältere Modelle kein „SG-Ready“-Label haben, können wir sie oft über den VOLTHERM Hub in das Energiemanagement integrieren. So heizt auch Ihre bestehende Anlage bevorzugt dann, wenn die Sonne scheint.</p>
+      </details>
+      <details>
+        <summary>Wie funktioniert die Leistungsbegrenzung (§14a EnWG)? Sitze ich im Kalten?</summary>
+        <p>Keine Sorge! Der Netzbetreiber darf zwar in Spitzenzeiten den Strom für Wärmepumpen drosseln, aber dank des VOLTHERM Hubs passiert das intelligent. Unser System fängt die Drosselung ab und verteilt die restliche Energie klug, ohne Komfortverlust.</p>
+      </details>
+      <details>
+        <summary>Brauche ich zwingend Loxone oder KNX, um VOLTHERM zu nutzen?</summary>
+        <p>Nein. Der VOLTHERM Hub bringt sein eigenes, von uns entwickeltes System für das Energiemanagement mit. Wenn Sie noch kein Smart Home haben, funktioniert unser Hub als eigenständige Zentrale. Vorhandene Systeme binden wir nahtlos ein.</p>
+      </details>
+      <details>
+        <summary>Funktioniert das System mit einem dynamischen Stromtarif wie Tibber?</summary>
+        <p>Absolut! Der VOLTHERM Hub kennt die Börsenstrompreise von morgen und plant automatisch, wann das E-Auto geladen oder der Heimspeicher gefüllt wird – genau dann, wenn der Strom am günstigsten ist.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
 <section class="sec dark" id="kontakt">
   <div class="wrap contact-grid">
     <div>
@@ -543,7 +635,7 @@
           <label><input type="checkbox" name="i" value="Wallbox"><span>Wallbox</span></label>
           <label><input type="checkbox" name="i" value="Wärmepumpe"><span>Wärmepumpe</span></label>
           <label><input type="checkbox" name="i" value="Klimaanlage"><span>Klimaanlage</span></label>
-          <label><input type="checkbox" name="i" value="Smart Home (Loxone / Home Assistant)"><span>Smart Home</span></label>
+          <label><input type="checkbox" name="i" value="Smart Home (Loxone / VOLTHERM)"><span>Smart Home</span></label>
           <label><input type="checkbox" name="i" value="VOLTHERM Smart Energy"><span>Smart Energy</span></label>
           <label><input type="checkbox" name="i" value="VOLTHERM Hub"><span>Hub</span></label>
         </div>
@@ -572,6 +664,7 @@
     <div>
       <a class="brand" href="#start"><svg viewBox="0 0 300 300" aria-hidden="true"><use href="#logo"/></svg><span class="wm">VOLT<span>HERM</span></span></a>
       <p class="tagline">INTEGRATED SOLUTIONS</p>
+      <p class="region">Ihr Elektriker und Smart Home Experte für die Oberpfalz, Weiden, Bayreuth und Umgebung.</p>
     </div>
     <nav class="foot-nav" aria-label="Rechtliches und mehr">
       <a href="voltherm/">Was ist VOLTHERM?</a>
