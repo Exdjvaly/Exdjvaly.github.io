@@ -491,7 +491,7 @@ class VolthermHome extends HTMLElement {
       ${werte.map(([t, v, f]) => `<div><span>${t}</span><b style="color:${f}">${v}</b></div>`).join("")}</div></div>`;
   }
 
-  // Systempflege: Home Assistant, evcc und Co. aktualisiert VOLTHERM nachts selbst, nur mit freigegebenen Versionen.
+  // Systempflege: die Systemsoftware aktualisiert VOLTHERM nachts selbst, nur mit freigegebenen Versionen.
   _pflegeZeile() {
     const p = this._cfg.systempflege;
     if (!p) return "";
@@ -522,7 +522,7 @@ class VolthermHome extends HTMLElement {
     this._render();
   }
 
-  // Update VOLTHERM: der Kunde aktualisiert hier, auf Tablet oder Handy, nie in Home Assistant.
+  // Update VOLTHERM: der Kunde aktualisiert hier, auf Tablet oder Handy.
   _updateHtml() {
     const u = this._cfg?.update;
     const laeuft = u?.laeuft || Date.now() - (this._updSeit || 0) < 300000;
