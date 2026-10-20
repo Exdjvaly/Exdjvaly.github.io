@@ -417,25 +417,114 @@
     var uhrzeit = function (m) { return ('0' + Math.floor(m / 60)).slice(-2) + ':' + ('0' + m % 60).slice(-2); };
     var wert = function (e) { return e.zeit ? uhrzeit(e.w) : e.opt ? e.w : zahl(e.w, e.d) + (e.e ? ' ' + e.e : ''); };
     var SEITEN = [
-      { t: 'Energie', c: '#FFC531', v: 6.8, d: 1, e: 'kW', max: 10, l: 'Sonne vom Dach', s: function () { return ['Haus 5,5 kW', 'Einspeisung 0,9 kW']; } },
-      { t: 'Speicher', c: '#4D8DFF', v: 71, e: '%', max: 100, l: 'lädt mit 0,4 kW',
+      { t: 'Energie', c: '#FFC531', v: 6.8, d: 1, e: 'kW', max: 10, l: 'von der Sonne', a: 'sonne', s: function () { return ['Haus 5,5 kW', 'Einspeisung 0,9 kW']; } },
+      { t: 'Speicher', c: '#4D8DFF', v: 71, e: '%', max: 100, l: 'lädt mit 2,4 kW', a: 'laden', f: 0.71,
         set: [{ k: 'Reserve für Stromausfall', w: 10, e: '%', min: 5, max: 50, st: 5 }],
         s: function (p) { return ['Reserve ' + wert(p.set[0])]; } },
-      { t: 'Wallbox', c: '#19C3E6', v: 62, e: '%', max: 100, l: 'Auto lädt mit Sonne',
+      { t: 'Wallbox', c: '#19C3E6', v: 62, e: '%', max: 100, l: 'Auto lädt mit Sonne', a: 'wallbox',
         set: [{ k: 'Laden', w: 'Nur Sonne', opt: ['Aus', 'Nur Sonne', 'Automatisch', 'Sofort'] }, { k: 'Ladeziel', w: 80, e: '%', min: 20, max: 100, st: 5 }, { k: 'Fertig bis', w: 420, zeit: true, min: 0, max: 1410, st: 30 }],
         s: function (p) { return [p.set[0].w + ' · Ziel ' + wert(p.set[1]) + ' bis ' + wert(p.set[2])]; } },
-      { t: 'Warmwasser', c: '#FF6B2C', v: 52.5, d: 1, e: '°C', max: 80, l: 'heizt mit Sonne',
+      { t: 'Warmwasser', c: '#FF6B2C', v: 52.5, d: 1, e: '°C', max: 80, l: 'heizt mit Sonne', a: 'wasser_heizt', f: 0.54,
         set: [{ k: 'Jetzt 1 Stunde heizen', akt: true }, { k: 'Mit Sonnenstrom bis', w: 62, e: '°C', min: 50, max: 80, st: 1 }, { k: 'Mindesttemperatur', w: 45, e: '°C', min: 35, max: 60, st: 1 }],
         s: function (p) { return [p.boost ? 'heizt jetzt 1 Stunde' : 'mit Sonne bis ' + wert(p.set[1])]; } },
-      { t: 'Wohnzimmer', c: '#2FD0C2', v: 21.8, d: 1, e: '°C', min: 10, max: 30, l: 'jetzt im Raum',
+      { t: 'Wohnzimmer', c: '#2FD0C2', v: 21.8, d: 1, e: '°C', min: 10, max: 30, l: 'jetzt im Raum', a: 'heizen',
         set: [{ k: 'Wunschtemperatur', w: 21.5, d: 1, e: '°C', min: 16, max: 30, st: 0.5 }, { k: 'Modus', w: 'Auto', opt: ['Auto', 'Komfort', 'Selbst'] }],
         s: function (p) { return ['Wunsch ' + wert(p.set[0]) + ' · ' + p.set[1].w]; } },
-      { t: 'Schlafzimmer', c: '#2FD0C2', v: 19.4, d: 1, e: '°C', min: 10, max: 30, l: 'jetzt im Raum',
-        set: [{ k: 'Wunschtemperatur', w: 19, d: 1, e: '°C', min: 16, max: 30, st: 0.5 }, { k: 'Modus', w: 'Auto', opt: ['Auto', 'Komfort', 'Selbst'] }],
+      { t: 'Schlafzimmer', c: '#2FD0C2', v: 24.0, d: 1, e: '°C', min: 10, max: 30, l: 'jetzt im Raum', a: 'kuehlen',
+        set: [{ k: 'Wunschtemperatur', w: 23, d: 1, e: '°C', min: 16, max: 30, st: 0.5 }, { k: 'Modus', w: 'Auto', opt: ['Auto', 'Komfort', 'Selbst'] }],
         s: function (p) { return ['Wunsch ' + wert(p.set[0]) + ' · ' + p.set[1].w]; } },
       { t: 'Bilanz', c: '#3DDC97', v: 4.2, d: 2, e: '€', l: 'heute gespart', bruch: 0.82, s: function () { return ['Sonne 31,2 kWh', 'Autarkie 82 %']; } }
     ];
-    var z = { mod: 'seite', i: 0, sel: 0, tmp: null, rot: 0, nacht: false };
+    var z = { mod: 'seite', i: 0, sel: 0, tmp: null, rot: 0, nacht: false, quelle: 0 };
+
+    // Energie wie auf dem Display: tags von der Sonne, nachts abwechselnd aus dem Speicher und aus dem Netz
+    var QUELLEN = {
+      sonne: { c: '#FFC531', v: 6.8, l: 'von der Sonne', s: ['Haus 5,5 kW', 'Einspeisung 0,9 kW'] },
+      speicher: { c: '#4D8DFF', v: 1.7, l: 'aus dem Speicher', s: ['Haus 1,8 kW', 'Netz ausgeglichen'], f: 0.48 },
+      netz: { c: '#FF5A5F', v: 1.2, l: 'aus dem Netz', s: ['Haus 1,2 kW'] }
+    };
+    var energie = function () {
+      var a = z.nacht ? (z.quelle % 2 ? 'netz' : 'speicher') : 'sonne', q = QUELLEN[a], p = SEITEN[0];
+      p.a = a; p.c = q.c; p.v = q.v; p.l = q.l; p.f = q.f; p.s = function () { return q.s; };
+    };
+
+    // Animationen des Displays (gleiche Formen wie die Firmware, Raster 200 x 200 = 20em)
+    var tempo = function (kw) { return Math.max(1.2, 6.5 - kw * 0.55).toFixed(2); };
+    var ring = function (farbe, kw, dreht) {
+      var h = '<svg class="rk-g" viewBox="0 0 200 200"><circle cx="100" cy="100" r="88" fill="none" stroke="' + farbe + '" stroke-opacity="' + (dreht ? '.12' : '.15') + '" stroke-width="7"/>';
+      if (dreht) h += '<defs><linearGradient id="rk-k" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="' + farbe + '" stop-opacity="0"/><stop offset="1" stop-color="' + farbe + '"/></linearGradient></defs>' +
+        '<g class="rk-dreh" style="animation-duration:' + tempo(kw) + 's"><path d="M100 12a88 88 0 1 1-62.2 25.8" fill="none" stroke="url(#rk-k)" stroke-width="7" stroke-linecap="round"/></g>';
+      return h + '</svg>';
+    };
+    var sonne = function () {
+      var st = '';
+      for (var i = 0; i < 12; i++) st += '<path d="M50 ' + (i % 2 ? 16 : 13) + 'V' + (i % 2 ? 21 : 22) + '" transform="rotate(' + i * 30 + ' 50 50)" stroke="#FFC531" stroke-width="' + (i % 2 ? 2 : 3) + '" stroke-linecap="round"/>';
+      return '<svg class="rk-sym" style="width:4.5em" viewBox="14 14 72 72"><defs><radialGradient id="rk-sg"><stop offset="0" stop-color="#FFE7A3"/><stop offset=".6" stop-color="#FFC531"/><stop offset="1" stop-color="#FF9F1C"/></radialGradient>' +
+        '<radialGradient id="rk-sh"><stop offset="0" stop-color="#FFC531" stop-opacity=".45"/><stop offset="1" stop-color="#FFC531" stop-opacity="0"/></radialGradient></defs>' +
+        '<circle cx="50" cy="50" r="30" fill="url(#rk-sh)" class="rk-puls"/><g class="rk-dreh" style="transform-origin:50px 50px;animation-duration:' + (14 - 6.8).toFixed(1) + 's">' + st + '</g><circle cx="50" cy="50" r="13" fill="url(#rk-sg)"/></svg>';
+    };
+    var mast = function () {
+      var d = ['M50 50 Q78 56 100 40', 'M50 56 Q78 62 100 46', 'M100 40 Q122 56 150 50', 'M100 46 Q122 62 150 56'], h = '';
+      d.forEach(function (w, i) {
+        h += '<path d="' + w + '" stroke="#5d636c" stroke-width="1" fill="none"/>';
+        for (var k = 0; k < 2; k++) h += '<circle r="1.8" fill="#FF5A5F"><animateMotion dur="1.6s" repeatCount="indefinite" begin="-' + (k * 0.8 + i * 0.2).toFixed(1) + 's" path="' + w + '"/></circle>';
+      });
+      return '<svg class="rk-sym" style="width:9.2em" viewBox="50 34 100 46">' + h + '<rect x="97.5" y="36" width="5" height="42" rx="1.5" fill="#7a5a3e"/><rect x="86" y="41" width="28" height="3" rx="1.5" fill="#5d636c"/>' +
+        [89, 95, 105, 111].map(function (x) { return '<rect x="' + (x - 1.5) + '" y="36" width="3" height="5" rx="1" fill="#e9edf2"/>'; }).join('') + '</svg>';
+    };
+    var akku = function (a, f, oben) {
+      var laden = a === 'laden', farbe = laden ? '#3DDC84' : '#4D8DFF', voll = Math.max(0, Math.min(1, f || 0)) * 5, ganz = Math.floor(voll), h = '';
+      for (var i = 0; i < 5; i++) {
+        var x = 54 + i * 37;
+        h += '<rect x="' + x + '" y="10" width="32" height="64" rx="6" fill="' + farbe + '" opacity=".1"/>';
+        if (i < ganz) h += '<rect x="' + x + '" y="10" width="32" height="64" rx="6" fill="' + farbe + '"/>';
+        if (i === ganz) h += '<rect class="' + (laden ? 'rk-auf' : 'rk-ab') + '" x="' + x + '" y="10" width="32" height="64" rx="6" fill="' + farbe + '"/>';
+      }
+      for (var j = 0; j < 3; j++) h += '<path class="rk-pfeil" style="animation-delay:-' + (j * 0.5) + 's" d="M' + (laden ? 6 : 264) + ' 27l14 15-14 15" fill="none" stroke="' + farbe + '" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>';
+      return '<svg class="rk-sym' + (oben ? '' : ' unten') + '" style="width:' + (oben ? 8.75 : 12.5) + 'em" viewBox="0 0 300 84"><rect x="46.5" y="2.5" width="195" height="79" rx="16" fill="none" stroke="#8FA3C8" stroke-opacity=".7" stroke-width="5"/>' +
+        '<rect x="246" y="26" width="11" height="32" rx="4" fill="#8FA3C8" opacity=".7"/>' + h + '</svg>';
+    };
+    var flamme = function () {
+      var funken = '';
+      for (var i = 0; i < 7; i++) funken += '<circle class="rk-funke" cx="' + (88 + i * 4) + '" cy="' + (130 - (i % 3) * 6) + '" r="1.6" fill="#FFC531" style="animation-delay:-' + (i * 0.23).toFixed(2) + 's"/>';
+      return '<svg class="rk-sym unten" style="width:6.2em" viewBox="56 78 88 99"><defs><radialGradient id="rk-fg" cx=".5" cy=".85" r=".8"><stop offset="0" stop-color="#FFE7A3"/><stop offset=".35" stop-color="#FFC531"/><stop offset=".7" stop-color="#FF6B2C"/><stop offset="1" stop-color="#FF3B2C" stop-opacity="0"/></radialGradient></defs>' +
+        '<ellipse cx="100" cy="158" rx="40" ry="8" fill="#FF6B2C" opacity=".25" class="rk-puls"/>' +
+        '<path class="rk-fl" d="M100 92c14 18 30 30 30 50a30 30 0 0 1-60 0c0-12 6-18 10-26 2 8 6 12 10 12-2-14 2-26 10-36z" fill="url(#rk-fg)" opacity=".9"/>' +
+        '<path class="rk-fl b" d="M100 118c8 10 16 16 16 26a16 16 0 0 1-32 0c0-8 6-12 8-18 2 4 4 6 6 6 0-6 0-10 2-14z" fill="#FFE7A3" opacity=".85"/>' +
+        '<path class="rk-fl c" d="M80 132c4 6 8 10 8 16a8 8 0 0 1-16 0c0-6 4-10 8-16zM120 130c4 6 8 10 8 16a8 8 0 0 1-16 0c0-6 4-10 8-16z" fill="#FFC531" opacity=".7"/>' + funken + '</svg>';
+    };
+    var wasser = function (f, heizt) {
+      var y = 200 - (29 + 46 * Math.max(0, Math.min(1, f))), blasen = '';
+      if (heizt) for (var i = 0; i < 9; i++) blasen += '<circle class="rk-blase" cx="' + (50 + ((i * 23) % 100)) + '" cy="182" r="' + (1.5 + (i % 3)) + '" fill="#fff" style="--h:' + (y - 175) + 'px;animation-duration:' + (2 + (i % 3) * 0.6).toFixed(1) + 's;animation-delay:-' + (i * 0.4).toFixed(1) + 's"/>';
+      var welle = function (dy, op, cls) { return '<g class="' + cls + '"><path d="M-10 ' + (y + dy) + ' q20 -8 40 0 t40 0 t40 0 t40 0 t40 0 t40 0 V210 H-10z" fill="url(#rk-wg)" opacity="' + op + '"/></g>'; };
+      return '<svg class="rk-bg" viewBox="0 0 200 200"><defs><linearGradient id="rk-wg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FF6B2C" stop-opacity=".55"/><stop offset="1" stop-color="#4D8DFF" stop-opacity=".35"/></linearGradient></defs>' +
+        welle(-3, '.5', 'rk-welle zur') + welle(0, '1', 'rk-welle') + blasen + '</svg>';
+    };
+    var schnee = function () {
+      var s = '';
+      for (var i = 0; i < 18; i++) {
+        var r = 3 + (i % 3) * 1.5, q = (r * 0.87).toFixed(1);
+        s += '<g class="rk-flocke" style="animation-duration:' + (4 + (i % 4)) + 's;animation-delay:-' + ((i * 0.7) % 5).toFixed(1) + 's"><g transform="translate(' + (18 + ((i * 37) % 164)) + ' 0)" stroke="#BFE3FF" stroke-width="1.4" stroke-linecap="round" opacity=".9">' +
+          '<path d="M0 -' + r + 'V' + r + 'M-' + q + ' -' + r / 2 + 'L' + q + ' ' + r / 2 + 'M-' + q + ' ' + r / 2 + 'L' + q + ' -' + r / 2 + '"/></g></g>';
+      }
+      return '<svg class="rk-bg" viewBox="0 0 200 200">' + s + '</svg>';
+    };
+    // Hintergrund (Ring, Wasser, Schnee) und Symbol (oben oder unter dem Wert) einer Seite
+    var deko = function (p) {
+      var a = p.a || '', hinten = '', oben = '', unten = '';
+      if (a === 'sonne' || a === 'netz' || a === 'speicher') hinten = ring(p.c, p.v, true);
+      else if (a === 'laden') hinten = ring('#3DDC84', 0, false);
+      else if (a === 'heizen') hinten = ring('#FF6B2C', 0, false);
+      else if (a === 'kuehlen') hinten = ring('#4DB8FF', 0, false) + schnee();
+      else if (a.indexOf('wasser') === 0) hinten = wasser(p.f, a === 'wasser_heizt');
+      if (a === 'sonne') oben = sonne();
+      else if (a === 'netz') oben = mast();
+      else if (a === 'speicher') oben = akku(a, p.f, true);
+      else if (a === 'wallbox') oben = '<svg class="rk-sym rk-blitz" style="width:2em" viewBox="90 40 20 40"><path d="M104 40l-14 22h10l-6 18 16-24h-10z" fill="#19C3E6"/></svg>';
+      else if (a === 'laden') unten = akku(a, p.f, false);
+      else if (a === 'heizen') unten = flamme();
+      return { hinten: hinten, oben: oben, unten: unten, bogen: !a || a === 'wallbox' };
+    };
     var ruheUhr = null, okUhr = null, toastUhr = null, uhrTakt = null;
 
     var bogen = function (bruch, farbe) {
@@ -456,7 +545,8 @@
       }
       var zeiger = function (grad, l, w) { var a = grad * Math.PI / 180; return '<line x1="100" y1="100" x2="' + (100 + l * Math.sin(a)).toFixed(1) + '" y2="' + (100 - l * Math.cos(a)).toFixed(1) + '" stroke="#19C3E6" stroke-opacity=".85" stroke-width="' + w + '" stroke-linecap="round"/>'; };
       return '<svg class="rk-uhr" viewBox="0 0 200 200">' + g +
-        '<text x="100" y="148" text-anchor="middle" fill="#19C3E6" font-size="11" font-weight="800" letter-spacing="3" font-family="system-ui, sans-serif">VOLTHERM</text>' +
+        '<g class="rk-puls lang" transform="translate(84 128) scale(.11)"><polygon points="22,20 86,20 166,232 150,272" fill="#8FA3C8"/><polygon points="74,20 112,20 168,200 154,226" fill="#FFFFFF"/>' +
+        '<polygon points="200,20 290,20 214,118 276,118 126,286 176,170 128,170" fill="#19C3E6"/></g>' +
         zeiger((h + m / 60) * 30, 44, 5) + zeiger(m * 6, 66, 3) + '<circle cx="100" cy="100" r="4" fill="#19C3E6"/></svg>';
     };
 
@@ -468,9 +558,10 @@
       if (z.mod === 'uhr') {
         h = uhr(); txt = 'Nachtansicht: Uhr';
       } else if (z.mod === 'seite') {
+        if (z.i === 0) { energie(); scr.style.setProperty('--c', p.c); }
         var bruch = p.bruch != null ? p.bruch : (p.v - (p.min || 0)) / (p.max - (p.min || 0));
-        var zeilen = p.s(p);
-        h = bogen(bruch, p.c) + '<span class="rk-t">' + esc(p.t) + '</span><b class="rk-v">' + zahl(p.v, p.d) + '<small>' + esc(p.e) + '</small></b><span class="rk-l">' + esc(p.l) + '</span>';
+        var zeilen = p.s(p), dk = deko(p);
+        h = dk.hinten + (dk.bogen ? bogen(bruch, p.c) : '') + dk.oben + '<span class="rk-t">' + esc(p.t) + '</span><b class="rk-v">' + zahl(p.v, p.d) + '<small>' + esc(p.e) + '</small></b>' + dk.unten + '<span class="rk-l">' + esc(p.l) + '</span>';
         zeilen.forEach(function (s) { h += '<span class="rk-s">' + esc(s) + '</span>'; });
         h += punkte();
         txt = p.t + ': ' + zahl(p.v, p.d) + ' ' + p.e + ', ' + p.l + '. ' + zeilen.join('. ');
@@ -505,7 +596,7 @@
 
     var drehe = function (r, sichtbar) {
       if (sichtbar !== false) z.rot += r * 12;
-      var p = SEITEN[z.i];
+      var p = SEITEN[z.i], vorher = z.mod === 'uhr' ? -1 : z.i;
       if (z.mod === 'uhr') { z.mod = 'seite'; z.i = 0; }
       else if (z.mod === 'seite') z.i = (z.i + r + SEITEN.length) % SEITEN.length;
       else if (z.mod === 'liste') z.sel = Math.max(0, Math.min(p.set.length, z.sel + r));
@@ -514,6 +605,7 @@
         if (e.opt) z.tmp = e.opt[Math.max(0, Math.min(e.opt.length - 1, e.opt.indexOf(z.tmp) + r))];
         else z.tmp = Math.max(e.min, Math.min(e.max, Math.round((z.tmp + r * e.st) * 10) / 10));
       }
+      if (z.mod === 'seite' && z.i === 0 && vorher !== 0) z.quelle++;
       zeichne(); weckeRuhe();
     };
     var druecke = function () {
