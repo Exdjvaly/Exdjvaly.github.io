@@ -133,7 +133,10 @@ async function claude(env, body) {
     if (res.ok || (res.status !== 429 && res.status < 500)) break;
   }
   if (!res) throw Object.assign(new Error('nicht erreichbar'), { status: 0 });
-  if (!res.ok) throw Object.assign(new Error('Fehler'), { status: res.status });
+  if (!res.ok) {
+    const text = (await res.text().catch(() => '')).replace(/\s+/g, ' ').trim().slice(0, 200);
+    throw Object.assign(new Error(text || 'Fehler'), { status: res.status });
+  }
   return res.json();
 }
 
@@ -143,9 +146,17 @@ function texte(inhalt) {
 
 const STOERUNG = 'Entschuldigung, gerade klappt es technisch nicht. Rufen Sie uns gern an (+49 1556 8656548), schreiben Sie per WhatsApp oder nutzen Sie das Anfrageformular unten auf der Seite.';
 
-export async function onRequestPost({ request, env }) {
+export async function onRequestPost(kontext) {
+  try {
+    return await chat(kontext);
+  } catch (e) {
+    return antwort(500, { ok: false, text: STOERUNG, grund: 'Fehler in der Funktion: ' + (e && e.message ? e.message : String(e)) });
+  }
+}
+
+async function chat({ request, env }) {
   const herkunft = request.headers.get('Origin');
-  if (herkunft && new URL(herkunft).host !== new URL(request.url).host) return antwort(403, { ok: false });
+  if (herkunft && new URL(herkunft).host !== new URL(request.url).host) return antwort(403, { ok: false, text: STOERUNG, grund: 'Herkunft ' + herkunft });
   if (!env.ANTHROPIC_API_KEY) return antwort(503, { ok: false, text: STOERUNG, grund: 'nicht eingerichtet' });
 
   let daten;
@@ -204,7 +215,7 @@ export async function onRequestPost({ request, env }) {
     return antwort(200, { ok: true, text: text || STOERUNG, gesendet });
   } catch (e) {
     const status = e && e.status ? e.status : 0;
-    return antwort(502, { ok: false, text: STOERUNG, grund: 'Anthropic ' + (status || 'nicht erreichbar'), gesendet });
+    return antwort(502, { ok: false, text: STOERUNG, grund: 'Anthropic ' + (status || 'nicht erreichbar') + ' ' + (e && e.message ? e.message : ''), gesendet });
   }
 }
 

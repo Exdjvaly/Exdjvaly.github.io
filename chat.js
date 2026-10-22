@@ -92,10 +92,11 @@
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ messages: zustand.verlauf, gesendet: zustand.gesendet })
     }).then(function (r) {
-      return r.json().catch(function () { return {}; }).then(function (d) { return { ok: r.ok && d.ok, d: d }; });
+      return r.json().catch(function () { return {}; }).then(function (d) { return { ok: r.ok && d.ok, d: d, status: r.status }; });
     }).catch(function () { return { ok: false, d: {} }; }).then(function (x) {
       tippt.remove();
       var antwort = x.d.text || 'Entschuldigung, gerade klappt es technisch nicht. Rufen Sie uns gern an: +49 1556 8656548.';
+      if (!x.ok) antwort += ' (Fehler ' + (x.status || '') + (x.d.grund ? ' ' + x.d.grund : '') + ')';
       if (x.ok) {
         zustand.verlauf.push({ role: 'assistant', content: antwort });
         if (x.d.gesendet) zustand.gesendet = true;
