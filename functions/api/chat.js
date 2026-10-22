@@ -220,10 +220,26 @@ async function chat({ request, env }) {
 }
 
 // Selbsttest im Browser: https://voltherm.de/api/chat zeigt, ob alles eingerichtet ist.
-export async function onRequestGet({ env }) {
-  return antwort(200, {
+// Mit ?test=1 stellt die Funktion selbst eine Probefrage an Claude und zeigt das Ergebnis.
+export async function onRequestGet({ request, env }) {
+  const info = {
     schluessel: Boolean(env.ANTHROPIC_API_KEY),
     modell: (env.CHAT_MODEL || MODELL).trim(),
     telegram: Boolean(env.TELEGRAM_TOKEN && env.TELEGRAM_CHAT),
-  });
+  };
+  if (!info.schluessel || new URL(request.url).searchParams.get('test') !== '1') return antwort(200, info);
+  const t0 = Date.now();
+  try {
+    const r = await claude(env, {
+      model: info.modell,
+      max_tokens: 300,
+      output_config: { effort: 'low' },
+      system: [{ type: 'text', text: WISSEN, cache_control: { type: 'ephemeral' } }],
+      tools: [ANFRAGE_TOOL],
+      messages: [{ role: 'user', content: 'Was ist HEMS? Ein Satz.' }],
+    });
+    return antwort(200, { ...info, test: 'ok', stop: r.stop_reason, text: texte(r.content).slice(0, 300), ms: Date.now() - t0 });
+  } catch (e) {
+    return antwort(200, { ...info, test: 'Fehler ' + (e && e.status) + ' ' + (e && e.message ? e.message : String(e)), ms: Date.now() - t0 });
+  }
 }
