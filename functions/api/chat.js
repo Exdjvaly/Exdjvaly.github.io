@@ -215,7 +215,8 @@ async function chat({ request, env }) {
     return antwort(200, { ok: true, text: text || STOERUNG, gesendet });
   } catch (e) {
     const status = e && e.status ? e.status : 0;
-    return antwort(502, { ok: false, text: STOERUNG, grund: 'Anthropic ' + (status || 'nicht erreichbar') + ' ' + (e && e.message ? e.message : ''), gesendet });
+    // Status 200 mit ok:false: eine 502 der Funktion kam im Browser ohne unseren Text an.
+    return antwort(200, { ok: false, text: STOERUNG, grund: 'Anthropic ' + (status || 'nicht erreichbar') + ' ' + (e && e.message ? e.message : ''), gesendet });
   }
 }
 
