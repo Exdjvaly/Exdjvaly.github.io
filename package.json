@@ -1,9 +1,0 @@
-{
-  "name": "voltherm-website",
-  "private": true,
-  "description": "voltherm.de: statische Seite, Cloudflare Pages Functions in functions/",
-  "type": "module",
-  "dependencies": {
-    "@anthropic-ai/sdk": "1.1.0"
-  }
-}

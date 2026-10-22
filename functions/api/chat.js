@@ -7,7 +7,6 @@
 //   CHAT_MODEL         optional, Standard siehe MODELL
 //   TELEGRAM_TOKEN / TELEGRAM_CHAT  wie bei /api/anfrage
 
-import Anthropic from '@anthropic-ai/sdk';
 import { WISSEN } from '../_lib/wissen.js';
 
 const MODELL = 'claude-haiku-5-5';   // auf Sonnet umstellen: CHAT_MODEL = claude-sonnet-5-5
@@ -106,6 +105,38 @@ function verlaufPruefen(liste) {
   return nachrichten;
 }
 
+// Claude über die Messages-API. Ohne SDK, weil die Seite keinen Build-Schritt hat (Cloudflare lädt
+// nur die Dateien aus dem Repository); gleicher Stil wie der Telegram-Aufruf in anfrage.js.
+async function claude(env, body) {
+  const kopf = {
+    'Content-Type': 'application/json',
+    'x-api-key': env.ANTHROPIC_API_KEY.trim(),
+    'anthropic-version': '2026-10-21',
+  };
+  if (body.betas) {
+    kopf['anthropic-beta'] = body.betas.join(',');
+    body = { ...body };
+    delete body.betas;
+  }
+  let res;
+  for (let versuch = 0; versuch < 2; versuch++) {
+    if (versuch) await new Promise((w) => setTimeout(w, 1000));
+    try {
+      res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST', headers: kopf, body: JSON.stringify(body), signal: AbortSignal.timeout(25000),
+      });
+    } catch {
+      res = null;
+      continue;
+    }
+    // 429 und 5xx (auch 529 überlastet) einmal wiederholen, alles andere gleich melden
+    if (res.ok || (res.status !== 429 && res.status < 500)) break;
+  }
+  if (!res) throw Object.assign(new Error('nicht erreichbar'), { status: 0 });
+  if (!res.ok) throw Object.assign(new Error('Fehler'), { status: res.status });
+  return res.json();
+}
+
 function texte(inhalt) {
   return inhalt.filter((b) => b.type === 'text').map((b) => b.text).join('\n').trim();
 }
@@ -130,7 +161,6 @@ export async function onRequestPost({ request, env }) {
   const schonGesendet = Boolean(daten.gesendet);
 
   const modell = (env.CHAT_MODEL || MODELL).trim();
-  const client = new Anthropic({ apiKey: env.ANTHROPIC_API_KEY.trim(), maxRetries: 1, timeout: 25000 });
   const anfrage = {
     model: modell,
     max_tokens: 2000,
@@ -148,7 +178,7 @@ export async function onRequestPost({ request, env }) {
 
   let gesendet = false;
   try {
-    let r = await client.beta.messages.create(anfrage);
+    let r = await claude(env, anfrage);
     // Höchstens ein Werkzeugaufruf pro Nachricht: Anfrage senden, dann Bestätigung formulieren.
     const aufruf = r.stop_reason === 'tool_use' && r.content.find((b) => b.type === 'tool_use' && b.name === 'anfrage_senden');
     if (aufruf) {
@@ -156,7 +186,7 @@ export async function onRequestPost({ request, env }) {
       const ergebnis = gesendet
         ? 'Gesendet. Valentin meldet sich zeitnah. Bestätige das dem Besucher kurz.'
         : 'Senden fehlgeschlagen. Bitte den Besucher, anzurufen (+49 1556 8656548), per WhatsApp zu schreiben oder das Formular zu nutzen.';
-      r = await client.beta.messages.create({
+      r = await claude(env, {
         ...anfrage,
         tools: [ANFRAGE_TOOL],
         tool_choice: { type: 'none' },

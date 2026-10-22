@@ -109,4 +109,9 @@
   }
 
   aufbauen();
+  // Knopf erst zeigen, wenn der Assistent eingerichtet ist (API-Schlüssel in Cloudflare gesetzt)
+  knopf.hidden = true;
+  fetch('/api/chat').then(function (r) { return r.json(); }).then(function (d) {
+    if (d && d.schluessel) knopf.hidden = false;
+  }).catch(function () {});
 })();
