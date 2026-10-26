@@ -14,7 +14,7 @@
 <meta property="og:locale" content="de_DE">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 300'%3E%3Crect width='300' height='300' rx='60' fill='%230B1220'/%3E%3Cpolygon points='22,20 86,20 166,232 150,272' fill='%238FA3C8'/%3E%3Cpolygon points='74,20 112,20 168,200 154,226' fill='%23FFFFFF'/%3E%3Cpolygon points='200,20 290,20 214,118 276,118 126,286 176,170 128,170' fill='%2319C3E6'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="site.css?v=20261026b">
-<link rel="stylesheet" href="design-b.css?v=20261026b">
+<link rel="stylesheet" href="design-b.css?v=20261026d">
 <link rel="stylesheet" href="chat.css?v=20261022b">
 <script type="application/ld+json">
 {
@@ -97,6 +97,7 @@
     <symbol id="i-lock" viewBox="0 0 24 24"><path d="M5.5 11h13v10h-13Z M8.5 11V8a3.5 3.5 0 0 1 7 0v3 M12 14.5v3"/></symbol>
     <symbol id="i-ww" viewBox="0 0 24 24"><path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11Z"/></symbol>
     <symbol id="i-mic" viewBox="0 0 24 24"><path d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3Z M5 11a7 7 0 0 0 14 0 M12 18v3"/></symbol>
+    <symbol id="i-ecke" viewBox="0 0 24 24"><path d="M7 17 17 7 M8 7h9v9"/></symbol>
     <symbol id="i-pfeil" viewBox="0 0 24 24"><path d="M5 12h14 M13 6l6 6-6 6"/></symbol>
     <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21Z M12 7a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5Z"/></symbol>
   </defs>
@@ -142,12 +143,25 @@
       </ul>
     </div>
     <div class="b-stage" aria-hidden="true">
-      <span class="boden"></span><span class="ring"></span><span class="ring zwei"></span>
+      <span class="boden"></span><span class="ring"></span>
       <img class="b-haus" src="assets/3d/haus-v2.webp" width="1400" height="1045" alt="" decoding="async" fetchpriority="high">
-      <span class="wert c w1"><img src="assets/3d/haus_pv.webp" alt=""><span><b>6,4 kW</b><small>Sonne</small></span></span>
-      <span class="wert c w2"><img src="assets/3d/batterie.webp" alt=""><span><b>82 %</b><small>Speicher</small></span></span>
-      <span class="wert c w3"><img src="assets/3d/wallbox.webp" alt=""><span><b>11 kW</b><small>Wallbox</small></span></span>
-      <span class="wert o w4"><img src="assets/3d/boiler.webp" alt=""><span><b>52 °C</b><small>Warmwasser</small></span></span>
+      <svg class="netzwerk" viewBox="0 0 100 100" preserveAspectRatio="none">
+        <path class="kabel" d="M14 9 Q14 70 50 70"/><path class="fluss c" d="M14 9 Q14 70 50 70" style="animation-delay:-0.0s"/>
+        <path class="kabel" d="M86 9 Q86 70 50 70"/><path class="fluss c" d="M86 9 Q86 70 50 70" style="animation-delay:-0.4s"/>
+        <path class="kabel" d="M50 70 Q8 70 8 47"/><path class="fluss o" d="M50 70 Q8 70 8 47" style="animation-delay:-0.8s"/>
+        <path class="kabel" d="M50 70 Q92 70 92 47"/><path class="fluss c" d="M50 70 Q92 70 92 47" style="animation-delay:-1.2s"/>
+        <path class="kabel" d="M50 70 Q14 70 14 85"/><path class="fluss o" d="M50 70 Q14 70 14 85" style="animation-delay:-1.6s"/>
+        <path class="kabel" d="M50 70 Q86 70 86 85"/><path class="fluss c" d="M50 70 Q86 70 86 85" style="animation-delay:-2.0s"/>
+        <path class="kabel" d="M50 70 Q50 70 50 95"/><path class="fluss o" d="M50 70 Q50 70 50 95" style="animation-delay:-2.4s"/>
+      </svg>
+      <span class="kern"><svg viewBox="0 0 300 300"><use href="#logo"/></svg><b>VOLTHERM</b><small>HEMS</small></span>
+      <span class="wert c" style="left:14%;top:9%;animation-delay:-0.0s"><i class="sonne-ic"></i><span><b>6,4 kW</b><small>Sonne</small></span></span>
+      <span class="wert c" style="left:86%;top:9%;animation-delay:-0.9s"><img src="assets/3d/mast.webp" alt=""><span><b>0,2 kW</b><small>Netz</small></span></span>
+      <span class="wert o" style="left:8%;top:47%;animation-delay:-1.8s"><img src="assets/3d/boiler.webp" alt=""><span><b>52 °C</b><small>Warmwasser</small></span></span>
+      <span class="wert c" style="left:92%;top:47%;animation-delay:-2.7s"><img src="assets/3d/batterie.webp" alt=""><span><b>82 %</b><small>Speicher</small></span></span>
+      <span class="wert o" style="left:14%;top:85%;animation-delay:-3.6s"><img src="assets/3d/wp.webp" alt=""><span><b>1,8 kW</b><small>Wärmepumpe</small></span></span>
+      <span class="wert c" style="left:86%;top:85%;animation-delay:-4.5s"><img src="assets/3d/wallbox.webp" alt=""><span><b>11 kW</b><small>Wallbox</small></span></span>
+      <span class="wert o" style="left:50%;top:95%;animation-delay:-5.4s"><img src="assets/3d/klima.webp" alt=""><span><b>22 °C</b><small>Klima</small></span></span>
     </div>
   </div>
   <div class="band" aria-hidden="true"><div class="band-in">
@@ -164,39 +178,21 @@
       <p class="intro">Ein Ansprechpartner von der ersten Beratung bis zur Inbetriebnahme. Wir montieren selbst und kennen jede Anlage, die wir übergeben.</p>
       <a class="mehr" href="#kontakt">Nicht sicher, was passt? Wir beraten Sie →</a>
     </div>
-    <div class="bento">
-      <article class="card bk gross" data-galerie="elektro">
-        <img class="bk-bild" src="assets/3d/zaehlerschrank.webp" alt="" loading="lazy" decoding="async">
-        <div>
-          <p class="kicker">Unser Handwerk</p>
-          <h3>Elektroinstallation</h3>
-          <p>Unser Handwerk ist die Elektrotechnik. Neubau, Sanierung und Erweiterung: Zählerschrank und Unterverteilung, Leitungen, Steckdosen und Beleuchtung, Überspannungsschutz und Anmeldung beim Netzbetreiber. Fachgerecht nach VDE, mit Prüfprotokoll.</p>
-        </div>
-      </article>
-      <article class="card bk" data-galerie="photovoltaik">
-        <img class="bk-bild" src="assets/3d/haus_pv.webp" alt="" loading="lazy" decoding="async">
-        <div><p class="kicker">Strom vom Dach</p><h3>Photovoltaik</h3><p>Solaranlagen für Einfamilienhaus, Hof und Gewerbe. Planung nach Ihrem Dach und Ihrem Verbrauch, Montage und Anmeldung beim Netzbetreiber.</p></div>
-      </article>
-      <article class="card bk" data-galerie="speicher">
-        <img class="bk-bild" src="assets/3d/batterie.webp" alt="" loading="lazy" decoding="async">
-        <div><p class="kicker">Sonne für den Abend</p><h3>Stromspeicher</h3><p>Sonnenstrom vom Mittag für den Abend. Auch als Nachrüstung zu einer bestehenden Anlage, passend zu Ihrem Wechselrichter.</p></div>
-      </article>
-      <article class="card bk" data-galerie="wallbox">
-        <img class="bk-bild" src="assets/3d/wallbox.webp" alt="" loading="lazy" decoding="async">
-        <div><p class="kicker">Laden zu Hause</p><h3>Wallbox</h3><p>Laden zu Hause, bevorzugt mit Überschuss vom Dach oder in den günstigsten Stunden eines dynamischen Tarifs. Vorbereitet für bidirektionales Laden: Das Auto versorgt abends das Haus (V2H), sobald Auto und Wallbox es unterstützen.</p></div>
-      </article>
-      <article class="card bk warm" data-galerie="waermepumpe">
-        <img class="bk-bild" src="assets/3d/wp.webp" alt="" loading="lazy" decoding="async">
-        <div><p class="kicker">Heizen mit Strom</p><h3>Wärmepumpe</h3><p>Heizen mit Strom statt Öl oder Gas. Mit SG-Ready nutzt die Wärmepumpe gezielt Ihren eigenen Sonnenstrom.</p></div>
-      </article>
-      <article class="card bk warm halb" data-galerie="klima">
-        <img class="bk-bild" src="assets/3d/klima.webp" alt="" loading="lazy" decoding="async">
-        <div><p class="kicker">Vivax Split-Geräte</p><h3>Klimaanlagen</h3><p>Split-Klimageräte von Vivax zum Kühlen im Sommer und Heizen in der Übergangszeit. Beratung, Verkauf und Montage.</p></div>
-      </article>
-      <article class="card bk halb" data-galerie="smarthome">
-        <img class="bk-bild" src="assets/3d/haus.webp" alt="" loading="lazy" decoding="async">
-        <div><p class="kicker">Loxone · KNX · VOLTHERM</p><h3>Smart Home</h3><p>Licht, Beschattung, Heizung und Sicherheit automatisiert, mit Loxone, KNX oder unserem eigenen VOLTHERM System. Planung, Verkabelung und Programmierung.</p></div>
-      </article>
+    <div class="leist">
+      <a class="lk breit" href="#kontakt"><img src="/bild/elektro?w=1400" alt="" loading="lazy" decoding="async" onerror="this.remove()">
+        <p class="kicker">Unser Handwerk</p><h3>Elektroinstallation</h3><p>Neubau, Sanierung und Erweiterung, fachgerecht nach VDE, mit Prüfprotokoll.</p><span class="los">Mehr erfahren <svg class="ic"><use href="#i-ecke"/></svg></span></a>
+      <a class="lk" href="#kontakt" data-interesse="Photovoltaik"><img src="/bild/photovoltaik" alt="" loading="lazy" decoding="async" onerror="this.remove()">
+        <p class="kicker">Strom vom Dach</p><h3>Photovoltaik</h3><p>Solaranlagen für Einfamilienhaus, Hof und Gewerbe, geplant nach Ihrem Dach und Verbrauch.</p><span class="los">Mehr erfahren <svg class="ic"><use href="#i-ecke"/></svg></span></a>
+      <a class="lk" href="#kontakt" data-interesse="Stromspeicher"><img src="/bild/speicher" alt="" loading="lazy" decoding="async" onerror="this.remove()">
+        <p class="kicker">Sonne für den Abend</p><h3>Stromspeicher</h3><p>Sonnenstrom vom Mittag für den Abend, auch als Nachrüstung.</p><span class="los">Mehr erfahren <svg class="ic"><use href="#i-ecke"/></svg></span></a>
+      <a class="lk" href="#kontakt" data-interesse="Wallbox"><img src="/bild/wallbox" alt="" loading="lazy" decoding="async" onerror="this.remove()">
+        <p class="kicker">Laden zu Hause</p><h3>Wallbox</h3><p>Laden mit Überschuss vom Dach oder in den günstigsten Stunden, vorbereitet für V2H.</p><span class="los">Mehr erfahren <svg class="ic"><use href="#i-ecke"/></svg></span></a>
+      <a class="lk" href="#kontakt" data-interesse="Wärmepumpe"><img src="/bild/waermepumpe" alt="" loading="lazy" decoding="async" onerror="this.remove()">
+        <p class="kicker">Heizen mit Strom</p><h3>Wärmepumpe</h3><p>Heizen mit Strom statt Öl oder Gas, mit SG-Ready und eigenem Sonnenstrom.</p><span class="los">Mehr erfahren <svg class="ic"><use href="#i-ecke"/></svg></span></a>
+      <a class="lk" href="#kontakt" data-interesse="Klimaanlage"><img src="/bild/klima" alt="" loading="lazy" decoding="async" onerror="this.remove()">
+        <p class="kicker">Vivax Split-Geräte</p><h3>Klimaanlagen</h3><p>Kühlen im Sommer, Heizen in der Übergangszeit. Beratung, Verkauf und Montage.</p><span class="los">Mehr erfahren <svg class="ic"><use href="#i-ecke"/></svg></span></a>
+      <a class="lk" href="#kontakt" data-interesse="Smart Home (Loxone / VOLTHERM)"><img src="/bild/smarthome" alt="" loading="lazy" decoding="async" onerror="this.remove()">
+        <p class="kicker">Loxone · KNX · VOLTHERM</p><h3>Smart Home</h3><p>Licht, Beschattung, Heizung und Sicherheit, automatisiert und vernetzt.</p><span class="los">Mehr erfahren <svg class="ic"><use href="#i-ecke"/></svg></span></a>
     </div>
   </div>
 </section>
