@@ -1,0 +1,427 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Entwurf A | VOLTHERM</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 300'%3E%3Crect width='300' height='300' rx='60' fill='%230B1220'/%3E%3Cpolygon points='22,20 86,20 166,232 150,272' fill='%238FA3C8'/%3E%3Cpolygon points='74,20 112,20 168,200 154,226' fill='%23FFFFFF'/%3E%3Cpolygon points='200,20 290,20 214,118 276,118 126,286 176,170 128,170' fill='%2319C3E6'/%3E%3C/svg%3E">
+<!-- Entwurf A: Aufbau wie Valentins Vincen-AI-Skizze. Fotos vorläufig von Unsplash (frei nutzbar), werden durch eigene ersetzt. -->
+<style>
+:root {
+  --bg: #0A1120; --bg2: #0E1628; --card: #111B2F; --line: rgba(143,163,200,.16); --line2: rgba(143,163,200,.3);
+  --txt: #E9EEF7; --mut: #9AA8C2; --cyan: #19C3E6; --orange: #FF6B2C; --paper: #F3F5F9; --ink: #0E1524; --ink2: #556078;
+  --sans: "Inter Tight", "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --mono: ui-monospace, "SFMono-Regular", "JetBrains Mono", Menlo, Consolas, monospace;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--bg); color: var(--txt); font: 16px/1.6 var(--sans); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+img { max-width: 100%; display: block; }
+a { color: inherit; }
+h1, h2, h3 { margin: 0; letter-spacing: -.025em; line-height: 1.08; }
+.wrap { width: min(1220px, 100% - 32px); margin-inline: auto; }
+.kicker { font: 600 12px/1 var(--mono); letter-spacing: .22em; text-transform: uppercase; color: var(--cyan); margin: 0 0 14px; }
+.btn { display: inline-flex; align-items: center; gap: 10px; min-height: 48px; padding: 12px 24px; border-radius: 999px; background: var(--orange); color: #1a0d05; font: 700 15px/1 var(--sans); text-decoration: none; border: 0; cursor: pointer; transition: transform .15s, box-shadow .15s; }
+.btn:hover { transform: translateY(-1px); box-shadow: 0 10px 30px -10px rgba(255,107,44,.7); }
+.btn-ghost { background: rgba(255,255,255,.04); color: var(--txt); box-shadow: inset 0 0 0 1.5px var(--line2); }
+.btn-ghost:hover { box-shadow: inset 0 0 0 1.5px var(--cyan); }
+.btn-cyan { background: var(--cyan); color: #04131a; }
+.ic { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+
+/* Hinweisband */
+.entwurf { background: #1b1405; color: #ffcf8a; font: 600 12px/1.4 var(--mono); letter-spacing: .06em; text-align: center; padding: 8px 16px; }
+
+/* Kopf */
+.top { position: sticky; top: 0; z-index: 20; background: rgba(10,17,32,.88); backdrop-filter: blur(14px); border-bottom: 1px solid var(--line); }
+.top-row { display: flex; align-items: center; gap: 28px; min-height: 76px; }
+.brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+.brand .logo { width: 40px; height: 40px; border-radius: 10px; background: #0B1220; box-shadow: inset 0 0 0 1px var(--line2); display: grid; place-items: center; }
+.brand .logo svg { width: 30px; height: 30px; }
+.brand b { display: block; font-size: 19px; font-weight: 800; letter-spacing: .02em; line-height: 1; }
+.brand b span { color: var(--cyan); }
+.brand small { display: block; font: 500 10.5px/1 var(--mono); letter-spacing: .24em; color: var(--mut); margin-top: 6px; }
+.nav { display: flex; gap: 28px; margin-left: 36px; }
+.nav a { text-decoration: none; font-weight: 600; font-size: 15px; color: #cfd8e8; }
+.nav a:hover { color: #fff; }
+.top-cta { margin-left: auto; display: flex; align-items: center; gap: 22px; }
+.tel { display: flex; align-items: center; gap: 8px; text-decoration: none; font-weight: 600; font-size: 15px; }
+.tel .ic { color: var(--cyan); }
+.top .btn { min-height: 42px; padding: 10px 20px; font-size: 14.5px; }
+@media (max-width: 1080px) { .nav, .tel { display: none; } }
+
+/* Hero */
+.hero { position: relative; min-height: min(92vh, 860px); display: flex; align-items: center; overflow: hidden; }
+.hero-bild { position: absolute; inset: 0; background: url("https://images.unsplash.com/photo-1655300256335-beef51a914fe?auto=format&fit=crop&w=2200&q=70") center 40% / cover no-repeat; filter: saturate(.85) brightness(.8); }
+.hero::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(10,17,32,.94) 0%, rgba(10,17,32,.78) 42%, rgba(10,17,32,.35) 100%), linear-gradient(0deg, var(--bg) 0%, rgba(10,17,32,0) 30%), radial-gradient(70% 60% at 85% 10%, rgba(255,140,60,.18), transparent 70%); }
+.hero-grid { position: relative; z-index: 1; display: grid; grid-template-columns: 1.25fr .8fr; gap: 64px; align-items: center; padding: 110px 0 120px; }
+.pille { display: inline-flex; align-items: center; gap: 10px; padding: 7px 14px; border-radius: 999px; background: rgba(10,17,32,.55); box-shadow: inset 0 0 0 1px var(--line2); font: 600 11.5px/1 var(--mono); letter-spacing: .18em; text-transform: uppercase; color: #dbe3f0; }
+.pille i { width: 7px; height: 7px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 10px var(--cyan); }
+.hero h1 { font-size: clamp(42px, 6.4vw, 76px); margin: 26px 0 0; font-weight: 800; }
+.hero h1 + p.sub { font-size: clamp(26px, 3.3vw, 40px); font-weight: 700; letter-spacing: -.02em; line-height: 1.15; color: #b9c8e6; margin: 10px 0 0; }
+.hero .lead { color: #c3cde0; font-size: 17px; max-width: 34em; margin: 26px 0 0; }
+.cta-row { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 34px; }
+.hero .btn { min-height: 54px; padding: 15px 28px; font-size: 16px; }
+.haken { display: flex; flex-wrap: wrap; gap: 8px 22px; margin: 30px 0 0; padding: 0; list-style: none; font-size: 14px; color: #c9d3e6; }
+.haken li { display: flex; align-items: center; gap: 7px; }
+.haken .ic { color: var(--cyan); width: 16px; height: 16px; }
+.system { background: rgba(14,22,40,.55); backdrop-filter: blur(16px); border-radius: 22px; padding: 22px; box-shadow: inset 0 0 0 1px rgba(255,255,255,.18), 0 30px 80px -30px rgba(0,0,0,.8); }
+.system .kicker { color: #b7c3da; font-size: 11px; margin-bottom: 18px; }
+.kacheln { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.kachel { padding: 16px; border-radius: 14px; background: rgba(255,255,255,.035); box-shadow: inset 0 0 0 1px var(--line); }
+.kachel small { display: block; font: 600 11px/1 var(--mono); color: var(--cyan); margin-bottom: 9px; }
+.kachel b { font-size: 17px; }
+.kachel.warm small { color: var(--orange); }
+.status { display: flex; gap: 12px; align-items: flex-start; margin-top: 12px; padding: 14px 16px; border-radius: 14px; background: rgba(25,195,230,.1); font-size: 13.5px; line-height: 1.45; color: #dbeaf3; }
+.status i { width: 8px; height: 8px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 0 4px rgba(25,195,230,.2); margin-top: 5px; flex: none; animation: puls 2.4s infinite; }
+@keyframes puls { 50% { box-shadow: 0 0 0 9px rgba(25,195,230,0); } }
+@media (max-width: 900px) { .hero-grid { grid-template-columns: 1fr; gap: 40px; padding: 80px 0 90px; } .hero::after { background: linear-gradient(180deg, rgba(10,17,32,.7), rgba(10,17,32,.92) 55%, var(--bg)); } }
+
+/* Abschnitte */
+.sec { padding: 110px 0; }
+.kopf { display: flex; align-items: flex-end; justify-content: space-between; gap: 30px; margin-bottom: 52px; }
+.kopf h2, .sec h2 { font-size: clamp(32px, 4.4vw, 54px); font-weight: 800; }
+.kopf p, .intro { color: var(--mut); font-size: 17px; max-width: 36em; margin: 20px 0 0; }
+.mehr { color: var(--cyan); font-weight: 700; font-size: 15px; text-decoration: none; white-space: nowrap; }
+@media (max-width: 800px) { .kopf { flex-direction: column; align-items: flex-start; } .sec { padding: 80px 0; } }
+
+/* Leistungen */
+.leist { display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: 290px; gap: 18px; }
+.lk { position: relative; overflow: hidden; border-radius: 18px; box-shadow: inset 0 0 0 1px var(--line); display: flex; flex-direction: column; justify-content: flex-end; padding: 26px; text-decoration: none; isolation: isolate; background: var(--card); }
+.lk img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -2; transition: transform .6s ease; filter: saturate(.85); }
+.lk::before { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgba(10,17,32,.15) 0%, rgba(10,17,32,.72) 48%, rgba(10,17,32,.97) 100%); }
+.lk:hover img { transform: scale(1.05); }
+.lk.breit { grid-column: span 2; }
+.lk.breit::before { background: linear-gradient(90deg, rgba(10,17,32,.97) 0%, rgba(10,17,32,.8) 45%, rgba(10,17,32,.2) 100%); }
+.lk .kicker { font-size: 11px; margin-bottom: 10px; }
+.lk h3 { font-size: 22px; font-weight: 800; }
+.lk.breit h3 { font-size: clamp(28px, 3.2vw, 38px); }
+.lk p { color: #c3cde0; font-size: 14.5px; line-height: 1.55; margin: 10px 0 0; max-width: 30em; }
+.lk .los { margin-top: 16px; font-weight: 700; font-size: 14.5px; display: flex; gap: 6px; align-items: center; }
+.lk .los .ic { width: 14px; height: 14px; }
+@media (max-width: 1000px) { .leist { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 620px) { .leist { grid-template-columns: 1fr; grid-auto-rows: 260px; } .lk.breit { grid-column: auto; } }
+
+/* Hub */
+.hub-grid { display: grid; grid-template-columns: 1fr 1.05fr; gap: 56px; align-items: center; }
+.hub-grid h2 { font-size: clamp(36px, 4.8vw, 58px); }
+.basic { margin: 28px 0 0; padding: 18px 20px; border-radius: 14px; background: rgba(25,195,230,.06); box-shadow: inset 0 0 0 1px rgba(25,195,230,.35); font-size: 14.5px; color: #dbe6f3; }
+.bild { border-radius: 22px; overflow: hidden; box-shadow: inset 0 0 0 1px var(--line), 0 40px 90px -40px rgba(0,0,0,.9); }
+.bild img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
+.unter { color: var(--mut); font-size: 13px; margin: 12px 0 0; }
+.erledigt { margin-top: 80px; }
+.erledigt > .kicker { color: #aeb9cf; }
+.raster { display: grid; grid-template-columns: repeat(3, 1fr); border-radius: 18px; box-shadow: inset 0 0 0 1px var(--line); overflow: hidden; }
+.raster > div { padding: 34px 30px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.raster > div:nth-child(3n) { border-right: 0; }
+.raster > div:nth-last-child(-n+3) { border-bottom: 0; }
+.raster .ic { width: 24px; height: 24px; color: var(--cyan); }
+.raster b { display: block; font-size: 18px; margin: 18px 0 10px; letter-spacing: -.01em; }
+.raster p { margin: 0; color: var(--mut); font-size: 14.5px; }
+@media (max-width: 900px) { .hub-grid { grid-template-columns: 1fr; } .raster { grid-template-columns: 1fr; } .raster > div { border-right: 0 !important; border-bottom: 1px solid var(--line) !important; } .raster > div:last-child { border-bottom: 0 !important; } }
+
+/* Warum */
+.warum { display: grid; grid-template-columns: .95fr 1.1fr; gap: 64px; align-items: start; }
+.zitat { margin: 40px 0 0; padding-left: 24px; border-left: 3px solid var(--orange); }
+.zitat p { margin: 0; font-size: clamp(20px, 2.1vw, 25px); font-weight: 700; line-height: 1.35; letter-spacing: -.015em; }
+.zitat cite { display: block; margin-top: 18px; color: var(--mut); font-style: normal; font-size: 14px; }
+.vier { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.vier div { padding: 28px 26px; border-radius: 18px; background: var(--card); box-shadow: inset 0 0 0 1px var(--line); transition: box-shadow .2s, transform .2s; }
+.vier div:hover { box-shadow: inset 0 0 0 1px rgba(25,195,230,.45); transform: translateY(-2px); }
+.vier small { font: 600 13px/1 var(--mono); color: var(--orange); }
+.vier b { display: block; font-size: 19px; margin: 18px 0 10px; letter-spacing: -.01em; }
+.vier p { margin: 0; color: var(--mut); font-size: 14.5px; }
+@media (max-width: 900px) { .warum { grid-template-columns: 1fr; } }
+@media (max-width: 560px) { .vier { grid-template-columns: 1fr; } }
+
+/* Ablauf hell */
+.hell { background: var(--paper); color: var(--ink); }
+.hell .kicker { color: #0b8fae; }
+.schritte { list-style: none; padding: 0; margin: 56px 0 0; display: grid; grid-template-columns: repeat(5, 1fr); gap: 24px; counter-reset: s; }
+.schritte li { position: relative; }
+.schritte li::before { counter-increment: s; content: counter(s); display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: var(--ink); color: var(--cyan); font: 600 14px/1 var(--mono); position: relative; z-index: 1; }
+.schritte li::after { content: ""; position: absolute; top: 22px; left: 56px; right: -12px; height: 1px; background: #cdd4e0; }
+.schritte li:last-child::after { display: none; }
+.schritte b { display: block; font-size: 18px; margin: 20px 0 8px; letter-spacing: -.01em; }
+.schritte span { color: var(--ink2); font-size: 14.5px; }
+@media (max-width: 900px) { .schritte { grid-template-columns: 1fr; gap: 30px; } .schritte li { padding-left: 64px; } .schritte li::before { position: absolute; left: 0; top: 0; } .schritte li::after { left: 22px; top: 52px; bottom: -26px; right: auto; width: 1px; height: auto; } .schritte b { margin-top: 8px; } }
+
+/* Kontakt */
+.kontakt { background: radial-gradient(60% 70% at 100% 100%, rgba(255,107,44,.08), transparent 70%), radial-gradient(60% 60% at 0% 0%, rgba(25,195,230,.06), transparent 70%), var(--bg); }
+.k-grid { display: grid; grid-template-columns: .8fr 1.1fr; gap: 56px; align-items: start; }
+.k-grid h2 { font-size: clamp(34px, 4.2vw, 50px); }
+.wege { display: grid; gap: 12px; margin-top: 34px; }
+.wege a { display: flex; align-items: center; gap: 14px; padding: 16px 20px; border-radius: 14px; background: var(--card); box-shadow: inset 0 0 0 1px var(--line); text-decoration: none; font-weight: 600; font-size: 16px; transition: box-shadow .2s; }
+.wege a:hover { box-shadow: inset 0 0 0 1px var(--cyan); }
+.wege .ic { color: var(--cyan); }
+.adr { display: flex; gap: 14px; align-items: center; padding: 16px 20px; color: #c3cde0; font-size: 14.5px; }
+.adr .ic { color: var(--cyan); }
+.form { padding: 38px; border-radius: 22px; background: var(--card); box-shadow: inset 0 0 0 1px var(--line); }
+.form h3 { font-size: 18px; margin-bottom: 18px; }
+.wahl { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 26px; }
+.wahl label { cursor: pointer; }
+.wahl input { position: absolute; opacity: 0; }
+.wahl span { display: inline-block; padding: 10px 16px; border-radius: 999px; box-shadow: inset 0 0 0 1px var(--line2); font-size: 14.5px; transition: background .15s, box-shadow .15s, color .15s; }
+.wahl input:checked + span { background: rgba(25,195,230,.14); box-shadow: inset 0 0 0 1.5px var(--cyan); color: #fff; }
+.wahl input:focus-visible + span { outline: 2px solid var(--cyan); outline-offset: 2px; }
+.zwei { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.fld { display: block; margin-bottom: 18px; }
+.fld span { display: block; font-size: 14px; font-weight: 600; margin-bottom: 8px; color: #dbe3f0; }
+.fld input, .fld textarea { width: 100%; padding: 14px 16px; border-radius: 12px; border: 1px solid var(--line2); background: #070c17; color: #fff; font: 15px var(--sans); }
+.fld input:focus, .fld textarea:focus { outline: none; border-color: var(--cyan); box-shadow: 0 0 0 3px rgba(25,195,230,.18); }
+.ok-box { display: flex; gap: 12px; align-items: flex-start; font-size: 13.5px; color: #c3cde0; margin: 4px 0 24px; }
+.ok-box input { width: 20px; height: 20px; margin-top: 1px; accent-color: var(--cyan); flex: none; }
+.ok-box a { color: var(--cyan); }
+.form .btn { min-height: 54px; padding: 15px 30px; font-size: 16px; }
+@media (max-width: 900px) { .k-grid { grid-template-columns: 1fr; } .form { padding: 26px 20px; } }
+@media (max-width: 560px) { .zwei { grid-template-columns: 1fr; gap: 0; } }
+
+/* Fuß */
+.fuss { border-top: 1px solid var(--line); padding: 60px 0 40px; font-size: 14.5px; color: #c3cde0; }
+.f-grid { display: grid; grid-template-columns: 1.6fr 1fr .7fr; gap: 40px; }
+.fuss p { margin: 16px 0 0; max-width: 28em; }
+.fuss h4 { font: 600 11.5px/1 var(--mono); letter-spacing: .22em; color: var(--mut); margin: 0 0 18px; }
+.fuss ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.fuss a { text-decoration: none; }
+.fuss a:hover { color: #fff; }
+.copy { margin-top: 44px; color: #6e7b95; font-size: 13px; }
+@media (max-width: 800px) { .f-grid { grid-template-columns: 1fr; } }
+
+.rein { opacity: 0; transform: translateY(18px); transition: opacity .7s ease, transform .7s ease; }
+.rein.da { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) { .rein { opacity: 1; transform: none; } .status i { animation: none; } }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="logo" viewBox="0 0 300 300"><polygon points="22,20 86,20 166,232 150,272" fill="#8FA3C8"/><polygon points="74,20 112,20 168,200 154,226" fill="#FFFFFF"/><polygon points="200,20 290,20 214,118 276,118 126,286 176,170 128,170" fill="#19C3E6"/></symbol>
+    <symbol id="i-tel" viewBox="0 0 24 24"><path d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 5a2 2 0 0 1 2-2Z"/></symbol>
+    <symbol id="i-wa" viewBox="0 0 24 24"><path d="M4 20l1.3-4A8 8 0 1 1 8 18.7Z"/></symbol>
+    <symbol id="i-mail" viewBox="0 0 24 24"><path d="M3 5h18v14H3Z M3 6l9 7 9-7"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21Z M12 7a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5Z"/></symbol>
+    <symbol id="i-pfeil" viewBox="0 0 24 24"><path d="M5 12h14 M13 6l6 6-6 6"/></symbol>
+    <symbol id="i-ecke" viewBox="0 0 24 24"><path d="M7 17 17 7 M8 7h9v9"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5 10 17 19 7"/></symbol>
+    <symbol id="i-sonne" viewBox="0 0 24 24"><path d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z M12 2v2 M12 20v2 M4.9 4.9l1.4 1.4 M17.7 17.7l1.4 1.4 M2 12h2 M20 12h2 M4.9 19.1l1.4-1.4 M17.7 6.3l1.4-1.4"/></symbol>
+    <symbol id="i-flamme" viewBox="0 0 24 24"><path d="M12 3c1 3.5 5 5.5 5 10a5 5 0 0 1-10 0c0-2.5 1.5-4 2.5-5 0 2 1 3 2 3 0-3-1-5.5.5-8Z"/></symbol>
+    <symbol id="i-schild" viewBox="0 0 24 24"><path d="M12 3 4.5 6v6c0 4.5 3.2 7.8 7.5 9 4.3-1.2 7.5-4.5 7.5-9V6Z M8.8 12l2.3 2.3 4.2-4.6"/></symbol>
+    <symbol id="i-auto" viewBox="0 0 24 24"><path d="M3 15v-3l2-5h11l3 5h2v3h-2 M6.5 15h8 M5 15a1.8 1.8 0 1 0 3.6 0 1.8 1.8 0 0 0-3.6 0Z M14.5 15a1.8 1.8 0 1 0 3.6 0 1.8 1.8 0 0 0-3.6 0Z"/></symbol>
+    <symbol id="i-chip" viewBox="0 0 24 24"><path d="M7 7h10v10H7Z M10 10h4v4h-4Z M9 3v4 M15 3v4 M9 17v4 M15 17v4 M3 9h4 M3 15h4 M17 9h4 M17 15h4"/></symbol>
+    <symbol id="i-haus" viewBox="0 0 24 24"><path d="M3 11 12 4l9 7 M5 9.5V20h14V9.5 M12.8 10 10.5 14h3l-2.3 4"/></symbol>
+  </defs>
+</svg>
+
+<div class="entwurf">ENTWURF A · Aufbau nach Ihrer Skizze · Fotos vorläufig (Unsplash), nicht öffentlich</div>
+
+<header class="top">
+  <div class="wrap top-row">
+    <a class="brand" href="#">
+      <span class="logo"><svg viewBox="0 0 300 300" aria-hidden="true"><use href="#logo"/></svg></span>
+      <span><b>VOLT<span>HERM</span></b><small>INTEGRATED SOLUTIONS</small></span>
+    </a>
+    <nav class="nav" aria-label="Hauptmenü">
+      <a href="#leistungen">Leistungen</a>
+      <a href="#hub">VOLTHERM Hub</a>
+      <a href="#warum">Über uns</a>
+      <a href="#ablauf">Ablauf</a>
+      <a href="#kontakt">Kontakt</a>
+    </nav>
+    <div class="top-cta">
+      <a class="tel" href="tel:+4915568656548"><svg class="ic"><use href="#i-tel"/></svg>+49 1556 8656548</a>
+      <a class="btn" href="#kontakt">Beratung anfragen</a>
+    </div>
+  </div>
+</header>
+
+<main>
+<section class="hero">
+  <div class="hero-bild" role="img" aria-label="Einfamilienhaus mit Solaranlage auf dem Dach"></div>
+  <div class="wrap hero-grid">
+    <div>
+      <span class="pille"><i></i>Elektrobetrieb aus Mockersdorf · Oberpfalz</span>
+      <h1>Strom vom Dach.</h1>
+      <p class="sub">Wärme, Kühlung und Mobilität aus einer Hand.</p>
+      <p class="lead">Wir planen, montieren und vernetzen Photovoltaik, Speicher, Wallbox, Wärmepumpe, Klimaanlage und Smart Home, so dass Ihr Haus seinen Sonnenstrom selbst klug verteilt.</p>
+      <div class="cta-row">
+        <a class="btn" href="#kontakt">Kostenlos beraten lassen <svg class="ic"><use href="#i-pfeil"/></svg></a>
+        <a class="btn btn-ghost" href="https://wa.me/4915568656548" rel="noopener"><svg class="ic"><use href="#i-wa"/></svg>Per WhatsApp schreiben</a>
+      </div>
+      <ul class="haken">
+        <li><svg class="ic"><use href="#i-check"/></svg>Loxone Partner</li>
+        <li><svg class="ic"><use href="#i-check"/></svg>Installation nach VDE</li>
+        <li><svg class="ic"><use href="#i-check"/></svg>Eigenes Energiemanagement (HEMS)</li>
+      </ul>
+    </div>
+    <div class="system rein">
+      <p class="kicker">Ein System für das ganze Haus</p>
+      <div class="kacheln">
+        <div class="kachel"><small>PV</small><b>Sonne</b></div>
+        <div class="kachel"><small>Akku</small><b>Speicher</b></div>
+        <div class="kachel"><small>E-Auto</small><b>Wallbox</b></div>
+        <div class="kachel warm"><small>WP · Klima</small><b>Wärme</b></div>
+      </div>
+      <div class="status"><i></i><span>Gesteuert von VOLTHERM Smart Energy, lokal, ohne Cloud-Abo.</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="leistungen">
+  <div class="wrap">
+    <div class="kopf rein">
+      <div>
+        <p class="kicker">Leistungen</p>
+        <h2>Alles, was Ihr Haus<br>unabhängiger macht</h2>
+        <p>Ein Ansprechpartner von der ersten Beratung bis zur Inbetriebnahme. Wir montieren selbst und kennen jede Anlage, die wir übergeben.</p>
+      </div>
+      <a class="mehr" href="#kontakt">Nicht sicher, was passt? Wir beraten Sie →</a>
+    </div>
+    <div class="leist">
+      <a class="lk breit rein" href="#kontakt"><img src="https://images.unsplash.com/photo-1758101755915-462eddc23f57?auto=format&fit=crop&w=1400&q=70" alt="" loading="lazy" onerror="this.remove()">
+        <p class="kicker">Unser Handwerk</p><h3>Elektroinstallation</h3><p>Neubau, Sanierung und Erweiterung, fachgerecht nach VDE, mit Prüfprotokoll.</p><span class="los">Mehr erfahren <svg class="ic"><use href="#i-ecke"/></svg></span></a>
+      <a class="lk rein" href="#kontakt"><img src="https://images.unsplash.com/photo-1780445392694-c95056ed12e2?auto=format&fit=crop&w=800&q=70" alt="" loading="lazy" onerror="this.remove()">
+        <p class="kicker">Strom vom Dach</p><h3>Photovoltaik</h3><p>Solaranlagen für Einfamilienhaus, Hof und Gewerbe, geplant nach Ihrem Dach und Verbrauch.</p><span class="los">Mehr erfahren <svg class="ic"><use href="#i-ecke"/></svg></span></a>
+      <a class="lk rein" href="#kontakt"><img src="https://images.unsplash.com/photo-1780445392417-68b9dccc45f2?auto=format&fit=crop&w=800&q=70" alt="" loading="lazy" onerror="this.remove()">
+        <p class="kicker">Sonne für den Abend</p><h3>Stromspeicher</h3><p>Sonnenstrom vom Mittag für den Abend, auch als Nachrüstung.</p><span class="los">Mehr erfahren <svg class="ic"><use href="#i-ecke"/></svg></span></a>
+      <a class="lk rein" href="#kontakt"><img src="https://images.unsplash.com/photo-1766507680004-1c71007aefe5?auto=format&fit=crop&w=800&q=70" alt="" loading="lazy" onerror="this.remove()">
+        <p class="kicker">Laden zu Hause</p><h3>Wallbox</h3><p>Laden mit Überschuss vom Dach oder in den günstigsten Stunden, vorbereitet für V2H.</p><span class="los">Mehr erfahren <svg class="ic"><use href="#i-ecke"/></svg></span></a>
+      <a class="lk rein" href="#kontakt"><img src="https://images.unsplash.com/photo-1776860150272-653efc74193c?auto=format&fit=crop&w=800&q=70" alt="" loading="lazy" onerror="this.remove()">
+        <p class="kicker">Heizen mit Strom</p><h3>Wärmepumpe</h3><p>Heizen mit Strom statt Öl oder Gas, mit SG-Ready und eigenem Sonnenstrom.</p><span class="los">Mehr erfahren <svg class="ic"><use href="#i-ecke"/></svg></span></a>
+      <a class="lk rein" href="#kontakt"><img src="https://images.unsplash.com/photo-1762341123870-d706f257a12e?auto=format&fit=crop&w=800&q=70" alt="" loading="lazy" onerror="this.remove()">
+        <p class="kicker">Vivax Split-Geräte</p><h3>Klimaanlagen</h3><p>Kühlen im Sommer, Heizen in der Übergangszeit. Beratung, Verkauf und Montage.</p><span class="los">Mehr erfahren <svg class="ic"><use href="#i-ecke"/></svg></span></a>
+      <a class="lk rein" href="#kontakt"><img src="https://images.unsplash.com/photo-1773098587088-f0a3aaab48a8?auto=format&fit=crop&w=800&q=70" alt="" loading="lazy" onerror="this.remove()">
+        <p class="kicker">Loxone · KNX · VOLTHERM</p><h3>Smart Home</h3><p>Licht, Beschattung, Heizung und Sicherheit, automatisiert und vernetzt.</p><span class="los">Mehr erfahren <svg class="ic"><use href="#i-ecke"/></svg></span></a>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="hub" style="padding-top:40px">
+  <div class="wrap">
+    <div class="hub-grid">
+      <div class="rein">
+        <p class="kicker">VOLTHERM Smart Energy · HEMS</p>
+        <h2>Ihre Energie.<br>Intelligent verteilt.</h2>
+        <p class="intro">Ein kleiner Rechner im Haus verbindet Solaranlage, Speicher, Wallbox, Warmwasser, Wärmepumpe und Klimaanlage. Er sieht, wie viel Sonne gerade da ist und was Strom aus dem Netz kostet, und entscheidet danach.</p>
+        <p class="basic">Schon heute verfügbar als VOLTHERM Basic: im Zählerschrank installiert, bedient über die App auf Handy, Tablet und Uhr. Hub Core und Hub Pro mit Display sind in Entwicklung.</p>
+        <div class="cta-row">
+          <a class="btn btn-cyan" href="#kontakt">VOLTHERM Basic anfragen</a>
+          <a class="btn btn-ghost" href="#kontakt">Interesse am Hub anmelden</a>
+        </div>
+      </div>
+      <figure class="rein" style="margin:0">
+        <div class="bild"><img src="../assets/hub-core-pro.webp" alt="VOLTHERM Hub Core und Hub Pro auf einem Sideboard im Wohnzimmer" loading="lazy"></div>
+        <figcaption class="unter">Visualisierung. Links Hub Core, rechts Hub Pro. Das Seriengerät kann im Detail abweichen.</figcaption>
+      </figure>
+    </div>
+    <div class="erledigt">
+      <p class="kicker">Was der Hub für Sie erledigt</p>
+      <div class="raster rein">
+        <div><svg class="ic"><use href="#i-sonne"/></svg><b>Günstige Stunden nutzen</b><p>Mit einem dynamischen Stromtarif (z. B. Tibber, aWATTar) lädt der Hub Auto und Speicher dann, wenn der Strom am wenigsten kostet.</p></div>
+        <div><svg class="ic"><use href="#i-flamme"/></svg><b>Wärme mit Sonnenstrom</b><p>Bei Überschuss bekommt die Wärmepumpe über SG-Ready das Signal, Wärme auf Vorrat zu machen. Das Warmwasser heizt mit Sonne.</p></div>
+        <div><svg class="ic"><use href="#i-schild"/></svg><b>Bereit für §14a EnWG</b><p>Begrenzt der Netzbetreiber die Leistung, verteilt der Hub den verfügbaren Strom nach Ihren Prioritäten.</p></div>
+        <div><svg class="ic"><use href="#i-auto"/></svg><b>Strom aus dem Auto</b><p>Vorbereitet für bidirektionales Laden (V2H), sobald Auto und Wallbox es unterstützen.</p></div>
+        <div><svg class="ic"><use href="#i-chip"/></svg><b>Service, bevor etwas ausfällt</b><p>Der Hub prüft Geräte und Verbindungen und meldet Auffälligkeiten. Auf Wunsch helfen wir über einen sicheren Fernzugang.</p></div>
+        <div><svg class="ic"><use href="#i-haus"/></svg><b>Ihre Daten bleiben im Haus</b><p>Kein Cloud-Abo, keine Daten auf fremden Servern. Der Hub arbeitet lokal.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="warum" style="background:var(--bg2)">
+  <div class="wrap warum">
+    <div class="rein">
+      <p class="kicker">Warum VOLTHERM</p>
+      <h2>Ein Betrieb, der das ganze Haus denkt</h2>
+      <blockquote class="zitat"><p>„Klassische Installateure bauen hervorragende Hardware ein, aber die Geräte sprechen oft nicht miteinander. Genau das lösen wir.“</p><cite>Valentin Motoc, Elektriker und Gründer</cite></blockquote>
+    </div>
+    <div class="vier">
+      <div class="rein"><small>01</small><b>Alles aus einer Hand</b><p>Strom, Wärme, Kühlung und Laden passen zusammen, weil eine Firma sie plant: ein Ansprechpartner von der Beratung bis zur Inbetriebnahme.</p></div>
+      <div class="rein"><small>02</small><b>Loxone Partner</b><p>Fachgerechte Elektroinstallation, Smart Home aus geschulter Hand und saubere Dokumentation für Ihre Unterlagen.</p></div>
+      <div class="rein"><small>03</small><b>Aus der Region</b><p>Sitz in Mockersdorf. Kurze Wege für Termine, Montage und Service in der Oberpfalz.</p></div>
+      <div class="rein"><small>04</small><b>Auch für bestehende Anlagen</b><p>Sie haben schon eine Solaranlage? Wir ergänzen Speicher, Wallbox oder Klima und vernetzen alles.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec hell" id="ablauf">
+  <div class="wrap">
+    <p class="kicker">So arbeiten wir</p>
+    <h2>Von der Idee bis zur<br>laufenden Anlage</h2>
+    <ol class="schritte">
+      <li class="rein"><b>Gespräch</b><span>Sie erzählen uns, was Sie vorhaben. Telefon, WhatsApp oder E-Mail.</span></li>
+      <li class="rein"><b>Termin vor Ort</b><span>Wir sehen uns Dach, Zählerschrank und Heizung an und nehmen Ihren Verbrauch auf.</span></li>
+      <li class="rein"><b>Angebot</b><span>Ein klares Angebot mit allen Komponenten, ohne versteckte Posten.</span></li>
+      <li class="rein"><b>Montage</b><span>Fachgerechte Installation aus eigener Hand, Anmeldung beim Netzbetreiber inklusive.</span></li>
+      <li class="rein"><b>Übergabe</b><span>Inbetriebnahme, Einweisung und Ihre VOLTHERM App auf dem Handy.</span></li>
+    </ol>
+  </div>
+</section>
+
+<section class="sec kontakt" id="kontakt">
+  <div class="wrap k-grid">
+    <div class="rein">
+      <p class="kicker">Anfrage</p>
+      <h2>Lassen Sie uns über<br>Ihr Haus sprechen</h2>
+      <p class="intro">Kostenlos und unverbindlich. Kreuzen Sie an, was Sie interessiert, wir melden uns in der Regel innerhalb eines Werktags.</p>
+      <div class="wege">
+        <a href="tel:+4915568656548"><svg class="ic"><use href="#i-tel"/></svg>+49 1556 8656548</a>
+        <a href="https://wa.me/4915568656548" rel="noopener"><svg class="ic"><use href="#i-wa"/></svg>WhatsApp schreiben</a>
+        <a href="mailto:office@voltherm.de"><svg class="ic"><use href="#i-mail"/></svg>office@voltherm.de</a>
+        <div class="adr"><svg class="ic"><use href="#i-pin"/></svg>Kulmblick 2, 95514 Neustadt a.d. Kulm / Mockersdorf</div>
+      </div>
+    </div>
+    <form class="form rein" onsubmit="event.preventDefault();alert('Entwurf: Das Formular wird in der fertigen Seite angeschlossen.')">
+      <h3>Was interessiert Sie?</h3>
+      <div class="wahl">
+        <label><input type="checkbox"><span>Photovoltaik</span></label>
+        <label><input type="checkbox"><span>Speicher</span></label>
+        <label><input type="checkbox"><span>Wallbox</span></label>
+        <label><input type="checkbox"><span>Wärmepumpe</span></label>
+        <label><input type="checkbox"><span>Klimaanlage</span></label>
+        <label><input type="checkbox"><span>Smart Home</span></label>
+        <label><input type="checkbox"><span>Smart Energy</span></label>
+        <label><input type="checkbox"><span>Hub</span></label>
+      </div>
+      <div class="zwei">
+        <label class="fld"><span>Name *</span><input autocomplete="name"></label>
+        <label class="fld"><span>Telefon oder E-Mail *</span><input autocomplete="tel"></label>
+      </div>
+      <label class="fld"><span>PLZ und Ort</span><input placeholder="z. B. 95514 Neustadt a.d. Kulm"></label>
+      <label class="fld"><span>Ihre Nachricht</span><textarea rows="4" placeholder="Was haben Sie vor? Gibt es schon eine Anlage?"></textarea></label>
+      <label class="ok-box"><input type="checkbox"><span>Ich bin einverstanden, dass meine Angaben zur Bearbeitung der Anfrage gespeichert werden. Details in der <a href="../datenschutz.html">Datenschutzerklärung</a>. *</span></label>
+      <button class="btn" type="submit">Kostenlose Beratung anfragen</button>
+    </form>
+  </div>
+</section>
+</main>
+
+<footer class="fuss">
+  <div class="wrap">
+    <div class="f-grid">
+      <div>
+        <a class="brand" href="#"><span class="logo"><svg viewBox="0 0 300 300" aria-hidden="true"><use href="#logo"/></svg></span><span><b>VOLT<span>HERM</span></b><small>INTEGRATED SOLUTIONS</small></span></a>
+        <p>Elektrobetrieb für Photovoltaik, Speicher, Wallbox, Wärmepumpe, Klima und Smart Home, mit eigenem Energiemanagement. Aus der Oberpfalz.</p>
+      </div>
+      <div>
+        <h4>Kontakt</h4>
+        <ul><li><b style="color:#fff">VOLTHERM Integrated Solutions</b><br>Inh. Valentin Motoc<br>Kulmblick 2<br>95514 Neustadt a.d. Kulm / Mockersdorf</li><li><a href="tel:+4915568656548">+49 1556 8656548</a><br><a href="mailto:office@voltherm.de">office@voltherm.de</a></li></ul>
+      </div>
+      <div>
+        <h4>Rechtliches</h4>
+        <ul><li><a href="../impressum.html">Impressum</a></li><li><a href="../datenschutz.html">Datenschutz</a></li><li><a href="../voltherm/datenschutz-app.html">Datenschutz App</a></li></ul>
+      </div>
+    </div>
+    <p class="copy">© 2026 VOLTHERM Integrated Solutions</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var els = document.querySelectorAll('.rein');
+  if (!('IntersectionObserver' in window)) { els.forEach(function (e) { e.classList.add('da'); }); return; }
+  var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('da'); io.unobserve(e.target); } }); }, { rootMargin: '0px 0px -8% 0px' });
+  els.forEach(function (e) { io.observe(e); });
+})();
+</script>
+</body>
+</html>
