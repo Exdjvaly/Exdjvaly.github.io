@@ -381,7 +381,8 @@
         });
         form.reset(); okText.hidden = false;
       }).catch(function (err) {
-        zeigeFehler('Das Senden hat leider nicht geklappt. Bitte nutzen Sie WhatsApp, E-Mail oder rufen Sie uns an: 01556 8656548. (Fehler ' + err.message + ')');
+        if (window.console) console.warn('VOLTHERM Anfrage Fehler', err.message);
+        zeigeFehler('Das Senden hat leider nicht geklappt. Bitte nutzen Sie WhatsApp, E-Mail oder rufen Sie uns an: 01556 8656548.');
       }).then(function () { knopf.disabled = false; });
       return;
     }
@@ -835,7 +836,8 @@
       if (!r.ok) throw new Error(String(r.status));
       f.reset(); zeige(0); ok.hidden = false;
     }).catch(function (err) {
-      fehlt('Das Senden hat leider nicht geklappt. Bitte nutzen Sie das Formular unten, WhatsApp oder rufen Sie uns an: 01556 8656548. (Fehler ' + err.message + ')');
+      if (window.console) console.warn('VOLTHERM System-Check Fehler', err.message);
+      fehlt('Das Senden hat leider nicht geklappt. Bitte nutzen Sie das Formular unten, WhatsApp oder rufen Sie uns an: 01556 8656548.');
     }).then(function () { senden.disabled = false; });
   });
 })();
