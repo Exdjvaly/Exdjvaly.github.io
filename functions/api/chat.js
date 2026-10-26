@@ -154,7 +154,7 @@ export async function onRequestPost(kontext) {
   }
 }
 
-async function chat({ request, env }) {
+async function chat({ request, env, waitUntil }) {
   const herkunft = request.headers.get('Origin');
   if (herkunft && new URL(herkunft).host !== new URL(request.url).host) return antwort(403, { ok: false, text: STOERUNG, grund: 'Herkunft ' + herkunft });
   if (!env.ANTHROPIC_API_KEY) return antwort(503, { ok: false, text: STOERUNG, grund: 'nicht eingerichtet' });
@@ -215,6 +215,9 @@ async function chat({ request, env }) {
     return antwort(200, { ok: true, text: text || STOERUNG, gesendet });
   } catch (e) {
     const status = e && e.status ? e.status : 0;
+    // Den technischen Grund bekommt nur Valentin per Telegram, Besucher sehen STOERUNG.
+    const meldung = 'Chat auf voltherm.de gestört: Anthropic ' + (status || 'nicht erreichbar') + '\n' + String(e && e.message ? e.message : '').slice(0, 600);
+    if (env.TELEGRAM_TOKEN && env.TELEGRAM_CHAT) waitUntil(telegram(env, meldung, []).catch(() => false));
     // Status 200 mit ok:false: eine 502 der Funktion kam im Browser ohne unseren Text an.
     return antwort(200, { ok: false, text: STOERUNG, grund: 'Anthropic ' + (status || 'nicht erreichbar') + ' ' + (e && e.message ? e.message : ''), gesendet });
   }
