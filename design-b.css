@@ -37,7 +37,12 @@ h2 { font-size: clamp(32px, 4.4vw, 54px); font-weight: 800; }
 .nav a { font-size: 15px; }
 .nav-tel { display: inline-flex; align-items: center; gap: 8px; margin-left: 10px; }
 .nav-tel .ic { color: var(--cyan); width: 17px; height: 17px; }
-@media (min-width: 761px) and (max-width: 1180px) { .nav-tel { display: none; } .nav { gap: 18px; } .nav a { font-size: 14.5px; } }
+.nav a { white-space: nowrap; }
+.top-row .brand, .nav-tel .ic { flex: none; }
+@media (min-width: 761px) and (max-width: 900px) { .nav a.btn-sm { display: none; } }
+@media (min-width: 761px) { .nav-tel { font-size: 0 !important; gap: 0; margin-left: 0; } .nav-tel .ic { width: 20px; height: 20px; } }
+@media (min-width: 761px) and (max-width: 1180px) { .nav { gap: 18px; } .nav a { font-size: 14.5px; } }
+@media (min-width: 761px) and (max-width: 1010px) { .nav { gap: 13px; } .nav a { font-size: 13.5px; } .brand-txt small { display: none; } }
 @media (max-width: 760px) { .nav { top: 74px; background: var(--bg); } .nav-tel { margin-left: 0; } .brand-txt small { font-size: 9px; } }
 
 /* Hero */
