@@ -343,7 +343,7 @@
 
   <div class="panel chart">
     <h2>Kumulierter Gewinn</h2>
-    <p class="sub">Investition zu Beginn, danach die jährliche Ersparnis mit Strompreissteigerung und Modulalterung.</p>
+    <p class="sub">Nach der Anschaffung wächst der Gewinn mit der jährlichen Ersparnis, inklusive Strompreissteigerung und Modulalterung. Wo die Linie die Null kreuzt, hat sich die Anlage bezahlt gemacht.</p>
     <div id="chart"></div>
     <div class="legend" id="legend"></div>
   </div>
@@ -630,20 +630,20 @@ function render(res){
   const inv=main.find(s=>s.key==="pvb")||null;
   // Verdikte
   const vd=[];
-  if(inv){const [c,t]=rate(inv.payback,12,16);vd.push({k:inv.name,cls:c,txt:t,big:inv.payback!=null?n1.format(inv.payback)+" Jahre":"> "+res.N+" Jahre",line:`Amortisation bei ${eur.format(inv.totalInvest)} Investition, ${eur.format(inv.save1)} Ersparnis im 1. Jahr.`});}
+  if(inv){const [c,t]=rate(inv.payback,12,16);vd.push({k:inv.name,cls:c,txt:t,big:inv.payback!=null?n1.format(inv.payback)+" Jahre":"> "+res.N+" Jahre",line:`${eur.format(inv.save1)} Ersparnis im 1. Jahr.`});}
   const mv=meterVerdict(res);vd.push({k:"Kaskadenmessung",...mv});
   const [vc,vt]=res.voltGain>0?rate(res.voltPayback,6,10):["bad","Lohnt sich nicht"];
-  vd.push({k:"VOLTHERM HEMS",cls:vc,txt:vt,big:"+"+eur.format(Math.max(0,res.voltGain))+" /Jahr",line:res.voltPayback!=null?`${eur.format(res.voltInvest)} sind nach ${n1.format(res.voltPayback)} Jahren zurück.`:"Kein messbarer Vorteil mit diesen Daten."});
+  vd.push({k:"VOLTHERM HEMS",cls:vc,txt:vt,big:"+"+eur.format(Math.max(0,res.voltGain))+" /Jahr",line:res.voltPayback!=null?`Hat sich nach ${n1.format(res.voltPayback)} Jahren bezahlt gemacht.`:"Kein messbarer Vorteil mit diesen Daten."});
   $("verdicts").innerHTML=vd.map(v=>`<div class="verdict"><span class="k">${esc(v.k)}</span><span class="pill ${v.cls}">${v.txt}</span><span class="big">${v.big}</span><p>${esc(v.line)}</p></div>`).join("");
   $("subLine").textContent=`${P.kName?P.kName+" · ":""}${n0.format(P.house)} kWh Haushalt${elecHeat(P)?" · "+n0.format(P.heatKwh)+" kWh Heizung":""}${P.car>0?" · "+n0.format(P.car)+" kWh E-Auto":""} · ${n1.format(P.pvKwp)} kWp ${ORI_TXT[P.ori]}${P.battKwh>0?" · "+n1.format(P.battKwh)+" kWh Speicher":""}`;
 
   // Szenarien
-  let h=`<thead><tr><th>Szenario</th><th>Zähler</th><th>Kosten 1. Jahr</th><th>Ersparnis 1. Jahr</th><th>Investition</th><th>Amortisation</th><th>Rendite</th><th>Gewinn ${res.N} J.</th></tr></thead><tbody>`;
+  let h=`<thead><tr><th>Szenario</th><th>Zähler</th><th>Kosten 1. Jahr</th><th>Ersparnis 1. Jahr</th><th>Amortisation</th><th>Rendite</th><th>Gewinn ${res.N} J.</th></tr></thead><tbody>`;
   for(const s of scen){
     const isIst=s.key==="ist";
     h+=`<tr class="${s.volt?"volt":""}"><td>${esc(s.name)}</td><td>${VAR_TXT[s.best.v]}</td><td class="num">${eur.format(s.best.c.total)}</td>`+
-      (isIst?`<td class="num">–</td><td class="num">–</td><td class="num">–</td><td class="num">–</td><td class="num">–</td>`:
-      `<td class="num ${s.save1>=0?"pos":"neg"}">${eur.format(s.save1)}</td><td class="num">${eur.format(s.totalInvest)}</td><td class="num">${s.payback!=null?n1.format(s.payback)+" J.":"–"}</td><td class="num">${s.irr!=null?n1.format(s.irr*100)+" %":"–"}</td><td class="num ${s.profit>=0?"pos":"neg"}">${eur.format(s.profit)}</td>`)+`</tr>`;
+      (isIst?`<td class="num">–</td><td class="num">–</td><td class="num">–</td><td class="num">–</td>`:
+      `<td class="num ${s.save1>=0?"pos":"neg"}">${eur.format(s.save1)}</td><td class="num">${s.payback!=null?n1.format(s.payback)+" J.":"–"}</td><td class="num">${s.irr!=null?n1.format(s.irr*100)+" %":"–"}</td><td class="num ${s.profit>=0?"pos":"neg"}">${eur.format(s.profit)}</td>`)+`</tr>`;
   }
   $("tblScen").innerHTML=h+"</tbody>";
 
@@ -655,9 +655,9 @@ function render(res){
   if(elecHeat(P)){
     $("panelMeter").hidden=false;
     $("meterSub").textContent=`Mit ${sv.name}. Zusatzkosten zweiter Zähler: ${eur.format(P.gW*12+P.meter2)} pro Jahr (Grundpreis Heizstrom + Zählergebühr). Tarifvorteil: ${n1.format(P.tH-P.tW)} ct/kWh.`;
-    let t=`<thead><tr><th>Variante</th><th>Netz Haushalt</th><th>Netz Heizung</th><th>Kosten 1. Jahr</th><th>Einmalig</th><th>${res.N} Jahre</th></tr></thead><tbody>`;
+    let t=`<thead><tr><th>Variante</th><th>Netz Haushalt</th><th>Netz Heizung</th><th>Kosten 1. Jahr</th><th>${res.N} Jahre</th></tr></thead><tbody>`;
     for(const e of [...sv.all].sort((a,b)=>a.score-b.score)){
-      t+=`<tr class="${e===sv.best?"best":""}"><td>${VAR_TXT[e.v]}${e===sv.best?" ✓":""}</td><td class="num">${n0.format(e.v==="A"?e.R.imH+e.R.imW:e.R.imH)} kWh</td><td class="num">${e.v==="A"?"–":n0.format(e.R.imW)+" kWh"}</td><td class="num">${eur.format(e.c.total)}</td><td class="num">${eur.format(e.u)}</td><td class="num">${eur.format(e.score)}</td></tr>`;
+      t+=`<tr class="${e===sv.best?"best":""}"><td>${VAR_TXT[e.v]}${e===sv.best?" ✓":""}</td><td class="num">${n0.format(e.v==="A"?e.R.imH+e.R.imW:e.R.imH)} kWh</td><td class="num">${e.v==="A"?"–":n0.format(e.R.imW)+" kWh"}</td><td class="num">${eur.format(e.c.total)}</td><td class="num">${eur.format(e.score)}</td></tr>`;
     }
     $("tblMeter").innerHTML=t+"</tbody>";
   }else $("panelMeter").hidden=true;
@@ -669,7 +669,6 @@ function render(res){
   const a=sPrev.best.R,b=sv.best.R;
   $("voltKpis").innerHTML=[
     ["Mehrwert pro Jahr",eur.format(res.voltGain)],
-    ["Investition",eur.format(res.voltInvest)],
     ["Amortisation",res.voltPayback!=null?n1.format(res.voltPayback)+" Jahre":"–"],
     ["Autarkie",pct(1-(a.imH+a.imW)/a.load)+" → "+pct(1-(b.imH+b.imW)/b.load)]
   ].map(([k,v])=>`<div class="kpi"><div class="k">${k}</div><div class="v">${v}</div></div>`).join("");
@@ -692,7 +691,7 @@ function chartSvg(res,forPdf){
   const cols=forPdf?["#5b6b7b","#e8a317","#1f8a4c","#1565c0"]:COLORS;
   let s=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Kumulierter Gewinn je Szenario">`;
   if(forPdf)s+=`<rect width="${W}" height="${H}" fill="#ffffff"/>`;
-  for(let v=lo;v<=hi+1e-6;v+=st){s+=`<line x1="${L}" x2="${W-Rr}" y1="${y(v)}" y2="${y(v)}" stroke="${v===0?ink:grid}" stroke-width="${v===0?1.2:1}"/><text x="${L-6}" y="${y(v)+4}" text-anchor="end" fill="${ink}" font-size="11" font-family="Arial">${n0.format(v/1000)} T€</text>`;}
+  for(let v=lo;v<=hi+1e-6;v+=st){s+=`<line x1="${L}" x2="${W-Rr}" y1="${y(v)}" y2="${y(v)}" stroke="${v===0?ink:grid}" stroke-width="${v===0?1.2:1}"/>${v>=0?`<text x="${L-6}" y="${y(v)+4}" text-anchor="end" fill="${ink}" font-size="11" font-family="Arial">${n0.format(v/1000)} T€</text>`:""}`;}
   for(let k=0;k<=N;k+=5)s+=`<text x="${x(k)}" y="${H-12}" text-anchor="middle" fill="${ink}" font-size="11" font-family="Arial">Jahr ${k}</text>`;
   main.forEach((sc,i)=>{const c=cols[(i+1)%cols.length];s+=`<polyline fill="none" stroke="${c}" stroke-width="${sc.volt?3:2}" stroke-linejoin="round" points="${sc.cum.map((v,k)=>x(k).toFixed(1)+","+y(v).toFixed(1)).join(" ")}"/><circle cx="${x(N)}" cy="${y(sc.cum[N])}" r="4" fill="${c}"/>`;});
   return s+"</svg>";
@@ -762,8 +761,8 @@ async function buildPdf(res){
   tbl(["Maßnahme","Bewertung","Begründung"],vd,{columnStyles:{0:{fontStyle:"bold",cellWidth:48},1:{cellWidth:30}}});
 
   head("Szenarien im Vergleich");
-  tbl(["Szenario","Zähler","Kosten 1. Jahr","Ersparnis","Investition","Amortisation","Gewinn "+res.N+" J."],
-    res.scen.map(s=>s.key==="ist"?[s.name,VAR_TXT[s.best.v],eur.format(s.best.c.total),"–","–","–","–"]:[s.name,VAR_TXT[s.best.v],eur.format(s.best.c.total),eur.format(s.save1),eur.format(s.totalInvest),s.payback!=null?n1.format(s.payback)+" J.":"–",eur.format(s.profit)]),
+  tbl(["Szenario","Zähler","Kosten 1. Jahr","Ersparnis","Amortisation","Gewinn "+res.N+" J."],
+    res.scen.map(s=>s.key==="ist"?[s.name,VAR_TXT[s.best.v],eur.format(s.best.c.total),"–","–","–"]:[s.name,VAR_TXT[s.best.v],eur.format(s.best.c.total),eur.format(s.save1),s.payback!=null?n1.format(s.payback)+" J.":"–",eur.format(s.profit)]),
     {columnStyles:{2:{halign:"right"},3:{halign:"right"},4:{halign:"right"},5:{halign:"right"},6:{halign:"right"}}});
 
   try{const png=await svgToPng(chartSvg(res,true));if(y>200){doc.addPage();y=18;}head("Kumulierter Gewinn");doc.addImage(png,"PNG",14,y+1,182,75.8);y+=80;
@@ -771,8 +770,8 @@ async function buildPdf(res){
     main.forEach((s,i)=>{const c=cols[(i+1)%cols.length];doc.setFillColor(...c);doc.rect(lx,y-2.2,5,1.4,"F");doc.setTextColor(...ink);doc.text(s.name,lx+7,y-.6);lx+=doc.getTextWidth(s.name)+16;});y+=8;}catch(e){}
 
   if(elecHeat(P)){head("Kaskadenmessung: lohnt sich der zweite Zähler?");
-    tbl(["Variante","Netzbezug Haushalt","Netzbezug Heizung","Kosten 1. Jahr","Einmalig"],
-      [...res.sv.all].sort((a,b)=>a.score-b.score).map(e=>[VAR_TXT[e.v]+(e===res.sv.best?" (empfohlen)":""),n0.format(e.v==="A"?e.R.imH+e.R.imW:e.R.imH)+" kWh",e.v==="A"?"–":n0.format(e.R.imW)+" kWh",eur.format(e.c.total),eur.format(e.u)]),
+    tbl(["Variante","Netzbezug Haushalt","Netzbezug Heizung","Kosten 1. Jahr"],
+      [...res.sv.all].sort((a,b)=>a.score-b.score).map(e=>[VAR_TXT[e.v]+(e===res.sv.best?" (empfohlen)":""),n0.format(e.v==="A"?e.R.imH+e.R.imW:e.R.imH)+" kWh",e.v==="A"?"–":n0.format(e.R.imW)+" kWh",eur.format(e.c.total)]),
       {columnStyles:{1:{halign:"right"},2:{halign:"right"},3:{halign:"right"},4:{halign:"right"}}});}
 
   head("Mehrwert durch VOLTHERM");
