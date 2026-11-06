@@ -1,0 +1,689 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Live-Demo: So entscheidet VOLTHERM | VOLTHERM</title>
+<meta name="description" content="Probieren Sie das Energiemanagement VOLTHERM aus: Sonne, Batterie, Strompreis und Geräte einstellen und sehen, wie VOLTHERM entscheidet, oder einen ganzen Tag abspielen.">
+<meta name="theme-color" content="#0B1220">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Live-Demo · So entscheidet VOLTHERM">
+<meta property="og:description" content="Probieren Sie das Energiemanagement VOLTHERM aus: Sonne, Batterie, Strompreis und Geräte einstellen und sehen, wie VOLTHERM entscheidet, oder einen ganzen Tag abspielen.">
+<meta property="og:image" content="https://voltherm.de/assets/og.jpg">
+<meta property="og:locale" content="de_DE">
+<link rel="canonical" href="https://voltherm.de/live-demo/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 300'%3E%3Crect width='300' height='300' rx='60' fill='%230B1220'/%3E%3Cpolygon points='22,20 86,20 166,232 150,272' fill='%238FA3C8'/%3E%3Cpolygon points='74,20 112,20 168,200 154,226' fill='%23FFFFFF'/%3E%3Cpolygon points='200,20 290,20 214,118 276,118 126,286 176,170 128,170' fill='%2319C3E6'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="../site.css?v=20261026b">
+<link rel="stylesheet" href="../design-b.css?v=20261106a">
+<style>
+.sim{--bg:transparent; --panel:#0D1628; --panel2:#101A2E; --sunk:#0A1222; --line:rgba(143,163,200,.2);
+  --ink:#E9EEF7; --muted:#9AA8C2; --volt:#19C3E6; --volt-soft:#0f2c3d;
+  --sun:#ffc531; --grid:#ff5d50; --batt:#3fd68a; --heat:#ff8a3d; --cold:#5cc8ff; --amber:#f0b45a;
+  --f-display:"Inter Tight","Inter",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  --f-body:"Inter Tight","Inter",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  --f-mono:ui-monospace,"SFMono-Regular","JetBrains Mono",Menlo,Consolas,monospace; color-scheme:dark}
+.sim, .sim *{box-sizing:border-box}
+.sim [hidden]{display:none!important}
+.sim{background:var(--bg);color:var(--ink)}
+.sim{font:15px/1.5 var(--f-body)}
+.sim .s-wrap{max-width:1440px;margin:0 auto;padding-block:18px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:16px}
+.sim .s-kopf{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:flex-end;justify-content:space-between}
+.sim .brand .mark{font:800 13px var(--f-display);letter-spacing:.18em;color:var(--volt)}
+.sim .brand h1{margin:2px 0 0;font:700 clamp(22px,3vw,32px)/1.1 var(--f-display);text-wrap:balance}
+.sim .brand p{margin:4px 0 0;color:var(--muted);max-width:62ch;font-size:14px}
+.sim .tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.sim button{font:600 14px/1 var(--f-body);color:var(--ink);background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:10px 14px;min-height:40px;cursor:pointer}
+.sim button:hover{border-color:var(--volt)}
+.sim button:focus-visible,.sim input:focus-visible,.sim select:focus-visible{outline:2px solid var(--volt);outline-offset:2px}
+.sim button.on{background:var(--volt);border-color:var(--volt);color:#fff}
+.sim .seg{display:inline-flex;border:1px solid var(--line);border-radius:9px;overflow:hidden}
+.sim .seg button{border:0;border-radius:0;background:var(--panel)}
+.sim .seg button.on{background:var(--volt)}
+.sim .presets{display:flex;flex-wrap:wrap;gap:8px}
+.sim .presets button{font-weight:500;font-size:13.5px;padding:9px 12px;min-height:36px;border-radius:999px;background:var(--panel)}
+.sim .presets button.on{background:var(--volt-soft);border-color:var(--volt);color:var(--ink)}
+.sim .app{display:grid;gap:16px;grid-template-columns:1fr}
+@media(min-width:1050px){.sim .app{grid-template-columns:minmax(320px,380px) minmax(0,1fr);align-items:start}}
+.sim .panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;min-width:0}
+.sim .tabs{display:flex;flex-wrap:wrap;gap:4px;padding:8px;border-bottom:1px solid var(--line)}
+.sim .tabs button{flex:1 1 auto;font-size:13px;padding:9px 8px;min-height:38px;background:transparent;border-color:transparent;display:flex;gap:6px;align-items:center;justify-content:center}
+.sim .tabs button svg{width:18px;height:18px}
+.sim .tabs button.on{background:var(--panel2);border-color:var(--line);color:var(--ink)}
+.sim .tabbody{padding:14px 16px 18px;display:grid;gap:16px}
+.sim .ctl{display:grid;gap:6px}
+.sim .ctl .row{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.sim .ctl label{font-size:13.5px;color:var(--muted)}
+.sim .ctl output{font:600 18px var(--f-mono);font-variant-numeric:tabular-nums;color:var(--ink);white-space:nowrap}
+.sim .ctl .hint{font-size:12.5px;color:var(--muted);margin:0}
+.sim input[type=range]{width:100%;accent-color:var(--volt);height:28px}
+.sim input[type=range]:disabled{opacity:.55}
+.sim .sw{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;border:1px solid var(--line);border-radius:9px;background:var(--sunk);font-size:14px;cursor:pointer}
+.sim .sw input{width:20px;height:20px;accent-color:var(--volt)}
+.sim .sw span{display:flex;align-items:center;gap:8px}
+.sim .sw svg{width:20px;height:20px}
+.sim .grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.sim .note{font-size:12.5px;color:var(--muted);margin:0}
+.sim .daynote{background:var(--volt-soft);border-radius:8px;padding:8px 10px;font-size:13px}
+.sim ol.prio{margin:0;padding-left:20px;display:grid;gap:6px;font-size:14px}
+.sim ol.prio b{font-weight:600}
+.sim .stage{padding:10px 10px 4px;position:relative}
+.sim .stage svg.flow{width:100%;height:auto;display:block}
+.sim .flow text{font-family:var(--f-body);fill:var(--ink)}
+.sim .flow .lbl{font-size:19px;font-weight:600}
+.sim .flow .val{font:500 18px var(--f-mono);fill:var(--muted)}
+.sim .flow .sub{font-size:14px;fill:var(--muted)}
+.sim .flow .track{fill:none;stroke:var(--line);stroke-width:3}
+.sim .flow .dots{fill:none;stroke-linecap:round;stroke-dasharray:2 16;animation:fl 1s linear infinite}
+.sim .flow .node circle.ring{fill:var(--panel2);stroke:var(--line);stroke-width:2;transition:stroke .3s}
+.sim .flow .node.act circle.ring{stroke-width:3}
+.sim .flow .node use{color:var(--muted);transition:color .3s}
+.sim .flow .node.dim{opacity:.35}
+.sim .flow .core circle{fill:var(--volt-soft);stroke:var(--volt);stroke-width:3}
+.sim .flow .core .pulse{fill:none;stroke:var(--volt);stroke-width:2;opacity:.5;animation:pulse 2.4s ease-out infinite;transform-origin:400px 280px}
+@keyframes fl{to{stroke-dashoffset:-18}}
+@keyframes pulse{0%{transform:scale(1);opacity:.55}100%{transform:scale(1.35);opacity:0}}
+@media (prefers-reduced-motion:reduce){.sim .flow .dots,.sim .flow .core .pulse{animation:none}}
+.sim .kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--line);border-top:1px solid var(--line);border-radius:0 0 12px 12px;overflow:hidden}
+.sim .kpi{background:var(--panel);padding:10px 14px;display:grid;gap:2px;min-width:0}
+.sim .kpi span{font-size:12px;color:var(--muted);letter-spacing:.04em;text-transform:uppercase}
+.sim .kpi b{font:600 20px var(--f-mono);font-variant-numeric:tabular-nums}
+@media(max-width:620px){.sim .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.sim .headline{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--line)}
+.sim .headline .mode{font:700 13px var(--f-display);letter-spacing:.08em;text-transform:uppercase;padding:6px 10px;border-radius:6px}
+.sim .headline p{margin:0;font-size:16px;flex:1 1 300px;min-width:0}
+.sim .clock{font:600 22px var(--f-mono);color:var(--ink)}
+.sim .sect h2{font:700 18px var(--f-display);margin:0;padding:14px 16px 0}
+.sim .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px;padding:12px 16px 16px}
+.sim .card{background:var(--sunk);border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:grid;gap:8px;align-content:start;min-width:0}
+.sim .card .hd{display:flex;align-items:center;gap:10px}
+.sim .card .hd svg{width:26px;height:26px;flex:none}
+.sim .card .hd b{font:700 15px var(--f-display);flex:1}
+.sim .card .hd .kw{font:600 15px var(--f-mono);font-variant-numeric:tabular-nums}
+.sim .card p{margin:0;font-size:14px;color:var(--ink);line-height:1.45}
+.sim .pill{display:inline-block;font:600 12px/1 var(--f-body);padding:5px 8px;border-radius:5px;letter-spacing:.02em;justify-self:start}
+.sim .pill.on{background:#123524;color:var(--batt)}
+.sim .pill.sun{background:#3a2f0c;color:var(--sun)}
+.sim .pill.wait{background:#33280f;color:var(--amber)}
+.sim .pill.off{background:#1b2730;color:var(--muted)}
+.sim .pill.block{background:#3c1714;color:var(--grid)}
+.sim .pill.grid{background:#3c1714;color:var(--grid)}
+.sim ol.steps{margin:0;padding:12px 16px 16px 36px;display:grid;gap:8px;font-size:15px}
+.sim ol.steps li::marker{font:600 14px var(--f-mono);color:var(--volt)}
+.sim .daywrap{padding:6px 12px 12px}
+.sim .daywrap svg{width:100%;height:auto;display:block}
+.sim .daywrap text{font:12px var(--f-mono);fill:var(--muted)}
+.sim .playbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:12px 16px;border-bottom:1px solid var(--line)}
+.sim .playbar input[type=range]{flex:1 1 260px;min-width:0}
+.sim .compare{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;padding:0 16px 14px}
+.sim .compare div{background:var(--sunk);border:1px solid var(--line);border-radius:10px;padding:10px 12px;display:grid;gap:2px;min-width:0}
+.sim .compare span{font-size:12.5px;color:var(--muted)}
+.sim .compare b{font:600 22px var(--f-mono);font-variant-numeric:tabular-nums}
+.sim .compare .gut b{color:var(--batt)}
+@media(max-width:620px){.sim .compare{grid-template-columns:1fr}}
+.sim .legend{display:flex;flex-wrap:wrap;gap:14px;padding:0 16px 12px;font-size:12.5px;color:var(--muted)}
+.sim .legend i{display:inline-block;width:14px;height:4px;border-radius:2px;margin-right:6px;vertical-align:middle}
+.sim .s-fuss{color:var(--muted);font-size:12.5px}.sim .s-wrap{max-width:1240px;padding-top:8px;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+.sim .s-kopf{align-items:center}
+.sim .s-hinweis{margin:0;color:var(--muted);font-size:14px}
+.sim button.on,.sim .seg button.on{color:#0B1220}
+.sim .panel{border-radius:16px}
+
+
+.nav a[aria-current]{color:var(--cyan)}
+.r-intro{padding:56px 0 18px}
+.r-intro h1{font-size:clamp(32px,4.4vw,52px);font-weight:800;margin:0;max-width:18em;text-wrap:balance}
+.r-intro .lead{color:#b9c5da;font-size:18px;margin:18px 0 0;max-width:46em}
+.r-intro .haken{margin-top:20px}
+.r-cta{margin:10px 0 70px;border:1px solid var(--line2);border-radius:22px;padding:30px;background:radial-gradient(60% 120% at 100% 0,rgba(25,195,230,.12),transparent 70%),var(--card)}
+.r-cta h2{font-size:clamp(24px,3vw,34px);margin:0}
+.r-cta p{color:var(--mut);margin:12px 0 0;max-width:44em}
+.r-cta .cta-row{display:flex;flex-wrap:wrap;margin-top:22px}
+@media (max-width:600px){.r-intro{padding-top:34px}.r-cta{padding:22px}}
+.tool-tabs{max-width:1240px;margin:0 auto 18px;padding:0 20px;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none}
+.tool-tabs::-webkit-scrollbar{display:none}
+.tool-tabs a{flex:none;padding:10px 16px;border-radius:999px;text-decoration:none;color:#c9d3e6;font:600 14px/1 var(--font);box-shadow:inset 0 0 0 1px var(--line2)}
+.tool-tabs a:hover{color:#fff;box-shadow:inset 0 0 0 1px var(--cyan)}
+.tool-tabs a[aria-current]{background:var(--cyan);color:#0B1220;box-shadow:none}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="logo" viewBox="0 0 300 300">
+      <polygon points="22,20 86,20 166,232 150,272" fill="#8FA3C8"/>
+      <polygon points="74,20 112,20 168,200 154,226" fill="#FFFFFF"/>
+      <polygon points="200,20 290,20 214,118 276,118 126,286 176,170 128,170" fill="#19C3E6"/>
+    </symbol>
+    <symbol id="i-tel" viewBox="0 0 24 24"><path d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 5a2 2 0 0 1 2-2Z"/></symbol>
+    <symbol id="i-mail" viewBox="0 0 24 24"><path d="M3 5h18v14H3Z M3 6l9 7 9-7"/></symbol>
+    <symbol id="i-wa" viewBox="0 0 24 24"><path d="M4 20l1.3-4A8 8 0 1 1 8 18.7Z M9 8.5c0 3.5 3 6.5 6.5 6.5l1-1.5-2-1-1 .8a5 5 0 0 1-2.3-2.3l.8-1-1-2Z"/></symbol>
+    <symbol id="i-pfeil" viewBox="0 0 24 24"><path d="M5 12h14 M13 6l6 6-6 6"/></symbol>
+  </defs>
+</svg>
+
+<a class="skip" href="#inhalt">Zum Inhalt springen</a>
+
+<header class="top" id="top">
+  <div class="wrap top-row">
+    <a class="brand" href="../" aria-label="VOLTHERM Startseite">
+      <span class="logo-box"><svg viewBox="0 0 300 300" aria-hidden="true"><use href="#logo"/></svg></span>
+      <span class="brand-txt"><span class="wm">VOLT<span>HERM</span></span><small>INTEGRATED SOLUTIONS</small></span>
+    </a>
+    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="nav"><span></span><span class="sr">Menü</span></button>
+    <nav id="nav" class="nav">
+      <a href="../#leistungen">Leistungen</a>
+      <a href="../#smart">Smart Energy</a>
+      <a href="../#hub">VOLTHERM Hub</a>
+      <a href="../#ki">KI</a>
+      <a href="../#ablauf">Ablauf</a>
+      <a href="../#ueber-uns">Über uns</a>
+      <a href="../rechner/" aria-current="page">Rechner</a>
+      <a href="tel:+4915568656548" class="nav-tel"><svg class="ic" aria-hidden="true"><use href="#i-tel"/></svg>+49 1556 8656548</a>
+      <a href="../#kontakt" class="btn btn-sm">Beratung anfragen</a>
+    </nav>
+  </div>
+</header>
+
+<main id="inhalt">
+<section class="r-intro">
+  <div class="wrap">
+    <p class="kicker">LIVE-DEMO</p>
+    <h1>Ein Tag mit <span class="grad">VOLTHERM</span></h1>
+    <p class="lead">Stellen Sie Sonne, Verbrauch, Batterie und Strompreis ein. VOLTHERM entscheidet sofort, welches Gerät wann läuft, und sagt warum. Mit „Tag abspielen“ sehen Sie einen ganzen Tag und was er mit und ohne Energiemanagement kostet.</p>
+    <ul class="haken"><li>Sonne, Netz und Batterie live</li><li>Einen ganzen Tag abspielen</li><li>Kosten mit und ohne VOLTHERM</li></ul>
+  </div>
+</section>
+
+<div class="sim">
+<nav class="tool-tabs" aria-label="Unsere Rechner"><a href="../rechner/">Wirtschaftlichkeit</a><a href="../pv-check/">PV-Check</a><a href="../waermepumpen-check/">Wärmepumpen-Check</a><a href="./" aria-current="page">Live-Demo</a></nav>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+ <defs>
+  <symbol id="i-sun" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.6M12 18.9v2.6M2.5 12h2.6M18.9 12h2.6M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8"/></g></symbol>
+  <symbol id="i-grid" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"><path d="M8 21.5L12 2.5L16 21.5M6 8h12M7 13h10M9.2 21.5L15 13M14.8 21.5L9 13"/></g></symbol>
+  <symbol id="i-batt" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="2.5" y="7" width="17" height="10" rx="2"/><path d="M19.5 10.5h2v3h-2"/><path d="M11.5 9l-2.5 3.4h3.5L10 15.2" stroke-linecap="round"/></g></symbol>
+  <symbol id="i-house" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M3 11L12 3.5L21 11V20.5H3Z"/><path d="M10 20.5v-5.5h4v5.5"/></g></symbol>
+  <symbol id="i-klima" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4.5" width="20" height="8.5" rx="2"/><path d="M5.5 10h13"/><path d="M7 16.5c0 1.5-1 2-1 3.5M12 16.5c0 1.5-1 2-1 3.5M17 16.5c0 1.5-1 2-1 3.5"/></g></symbol>
+  <symbol id="i-wp" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="2.5" y="4" width="19" height="16" rx="2"/><circle cx="10" cy="12" r="4.6"/><path d="M10 7.4v9.2M5.4 12h9.2"/><path d="M17.5 8h1.5M17.5 11h1.5M17.5 14h1.5"/></g></symbol>
+  <symbol id="i-boiler" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="5"/><path d="M12 8.5c1.8 2.3 2.6 3.6 2.6 4.8a2.6 2.6 0 0 1-5.2 0c0-1.2.8-2.5 2.6-4.8Z"/></g></symbol>
+  <symbol id="i-auto" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M2.5 16v-3.5L5.3 7h13.4l2.8 5.5V16Z"/><circle cx="7" cy="16.5" r="2" fill="var(--panel2)"/><circle cx="17" cy="16.5" r="2" fill="var(--panel2)"/><path d="M5 12h14"/></g></symbol>
+  <symbol id="i-euro" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M18 6.5a7 7 0 1 0 0 11"/><path d="M4 10.5h9M4 13.5h9"/></g></symbol>
+  <symbol id="i-gear" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/></g></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M4 6h1M4 12h1M4 18h1"/></g></symbol>
+ </defs>
+</svg>
+
+<div class="s-wrap">
+ <div class="s-kopf">
+  <p class="s-hinweis">Wählen Sie ein Beispiel oder stellen Sie selbst ein.</p>
+  <div class="tools">
+   <div class="seg" role="tablist" aria-label="Ansicht">
+    <button id="m-moment" class="on" role="tab">Moment einstellen</button>
+    <button id="m-tag" role="tab">Tag abspielen</button>
+   </div>
+   <button id="vollbild" hidden>Vollbild</button>
+  </div>
+ </div>
+
+ <div class="presets" id="presets" aria-label="Beispiele"></div>
+
+ <div class="app">
+  <!-- Regler -->
+  <aside class="panel" aria-label="Einstellungen">
+   <div class="tabs" id="tabs"></div>
+   <div class="tabbody" id="tb-sonne">
+    <div class="ctl" data-moment><div class="row"><label for="pv">Sonnenstrom jetzt</label><output id="o-pv"></output></div><input type="range" id="pv" min="0" max="15" step="0.1"><p class="hint">Was die Photovoltaik-Anlage gerade liefert.</p></div>
+    <div class="ctl" data-tag hidden><div class="row"><label for="kwp">Größe der PV-Anlage</label><output id="o-kwp"></output></div><input type="range" id="kwp" min="3" max="20" step="0.5"></div>
+    <div class="ctl" data-tag hidden><label>Wetter am Beispieltag</label><div class="seg" id="wetter"><button data-v="sonne" class="on">Sonnig</button><button data-v="wolken">Bewölkt</button></div></div>
+    <div class="ctl" data-tag hidden><label>Jahreszeit</label><div class="seg" id="saison"><button data-v="sommer" class="on">Sommer</button><button data-v="winter">Winter</button></div></div>
+   </div>
+   <div class="tabbody" id="tb-haus" hidden>
+    <div class="ctl"><div class="row"><label for="haus">Verbrauch im Haus</label><output id="o-haus"></output></div><input type="range" id="haus" min="0.2" max="6" step="0.1"><p class="hint">Licht, Kochen, Waschmaschine, Fernseher. Ohne Heizung, Klima und Auto.</p></div>
+    <div class="ctl"><div class="row"><label for="tout">Außentemperatur</label><output id="o-tout"></output></div><input type="range" id="tout" min="-10" max="35" step="1"><p class="hint">Unter 15 °C wird geheizt, über 22 °C gekühlt.</p></div>
+   </div>
+   <div class="tabbody" id="tb-batt" hidden>
+    <div class="ctl"><div class="row"><label for="soc">Ladestand der Batterie</label><output id="o-soc"></output></div><input type="range" id="soc" min="0" max="100" step="1"></div>
+    <div class="ctl"><div class="row"><label for="cap">Größe der Batterie</label><output id="o-cap"></output></div><input type="range" id="cap" min="5" max="30" step="0.5"></div>
+    <div class="ctl"><div class="row"><label for="bmax">Laden / Entladen max.</label><output id="o-bmax"></output></div><input type="range" id="bmax" min="2" max="10" step="0.5"></div>
+   </div>
+   <div class="tabbody" id="tb-preis" hidden>
+    <div class="ctl" data-moment><div class="row"><label for="price">Strompreis jetzt</label><output id="o-price"></output></div><input type="range" id="price" min="0" max="60" step="1"><p class="hint" id="price-cat"></p></div>
+    <div class="ctl" data-tag hidden><label>Stromtarif</label><div class="seg" id="tarif"><button data-v="dyn" class="on">Dynamisch (stündlich)</button><button data-v="fix">Festpreis</button></div><p class="hint">Dynamisch: der Preis ändert sich jede Stunde, nachts und mittags billig, abends teuer.</p></div>
+    <div class="grid2">
+     <div class="ctl"><div class="row"><label for="billig">Günstig bis</label><output id="o-billig"></output></div><input type="range" id="billig" min="5" max="30" step="1"></div>
+     <div class="ctl"><div class="row"><label for="teuer">Teuer ab</label><output id="o-teuer"></output></div><input type="range" id="teuer" min="20" max="50" step="1"></div>
+    </div>
+    <div class="ctl"><div class="row"><label for="feed">Einspeisevergütung</label><output id="o-feed"></output></div><input type="range" id="feed" min="0" max="15" step="0.1"><p class="hint">So viel bekommt man für Strom, der ins Netz geht.</p></div>
+   </div>
+   <div class="tabbody" id="tb-geraete" hidden>
+    <p class="note">Welche Geräte hat dieser Kunde?</p>
+    <div class="grid2" id="has"></div>
+    <div class="ctl" data-moment><label class="sw"><span><svg><use href="#i-auto"/></svg>Auto angesteckt</span><input type="checkbox" id="caron"></label></div>
+    <div class="ctl" data-moment><div class="row"><label for="carsoc">Akku vom Auto</label><output id="o-carsoc"></output></div><input type="range" id="carsoc" min="0" max="100" step="1"><p class="hint">Ziel: 80 % bis morgen 7:00.</p></div>
+    <div class="ctl" data-moment><div class="row"><label for="boiler">Warmwasser im Boiler</label><output id="o-boiler"></output></div><input type="range" id="boiler" min="20" max="75" step="1"></div>
+   </div>
+   <div class="tabbody" id="tb-regeln" hidden>
+    <p class="note">Reihenfolge, in der VOLTHERM überschüssigen Sonnenstrom verteilt:</p>
+    <ol class="prio">
+     <li><b>Haus</b> wird immer zuerst versorgt.</li>
+     <li><b>Batterie</b> bis 50 %, damit der Abend gesichert ist.</li>
+     <li><b>Auto</b> lädt mit Sonne, sobald mindestens 1,4 kW übrig sind.</li>
+     <li><b>Batterie</b> wird ganz voll gemacht.</li>
+     <li><b>Klima</b> heizt oder kühlt vor, ab 2 kW Überschuss.</li>
+     <li><b>Wärmepumpe</b> bekommt das Signal „mehr Leistung“ (SG-Ready 3).</li>
+     <li><b>Heizstab</b> macht aus dem Rest Warmwasser, bis 65 °C.</li>
+     <li>Erst was dann noch übrig ist, geht <b>ins Netz</b>.</li>
+    </ol>
+    <p class="note">Ohne Sonne zählt der Strompreis: bei günstigem Strom wird auf Vorrat geladen und geheizt, bei teurem Strom liefert die Batterie und die Wärmepumpe pausiert kurz.</p>
+    <div class="grid2">
+     <div class="ctl"><div class="row"><label for="bmin">Warmwasser mind.</label><output id="o-bmin"></output></div><input type="range" id="bmin" min="35" max="55" step="1"></div>
+     <div class="ctl"><div class="row"><label for="bmaxt">Warmwasser max.</label><output id="o-bmaxt"></output></div><input type="range" id="bmaxt" min="55" max="75" step="1"></div>
+    </div>
+   </div>
+  </aside>
+
+  <!-- Ergebnis -->
+  <div style="display:grid;gap:16px;min-width:0">
+   <section class="panel" aria-label="Energiefluss">
+    <div class="headline"><span class="mode" id="mode"></span><p id="headtxt"></p><span class="clock" id="clock" hidden></span></div>
+    <div class="playbar" id="playbar" hidden>
+     <button id="play" class="on">▶ Abspielen</button>
+     <input type="range" id="zeit" min="0" max="95" step="1" aria-label="Uhrzeit">
+     <div class="seg" id="tempo"><button data-v="1">1×</button><button data-v="2" class="on">2×</button><button data-v="4">4×</button></div>
+    </div>
+    <div class="stage"><svg class="flow" id="flow" viewBox="0 0 835 570" role="img" aria-label="Energiefluss zwischen Sonne, Netz, Batterie, VOLTHERM und den Geräten"></svg></div>
+    <div class="kpis">
+     <div class="kpi"><span>Aus dem Netz</span><b id="k-netz"></b></div>
+     <div class="kpi"><span>Ins Netz</span><b id="k-ein"></b></div>
+     <div class="kpi"><span>Eigener Strom</span><b id="k-eigen"></b></div>
+     <div class="kpi"><span>Kosten jetzt</span><b id="k-kost"></b></div>
+    </div>
+   </section>
+
+   <section class="panel sect" id="tagteil" hidden aria-label="Beispieltag">
+    <h2>Beispieltag: mit und ohne VOLTHERM</h2>
+    <div class="daywrap"><svg id="tagkurve" viewBox="0 0 800 190" role="img" aria-label="Sonne, Verbrauch und Strompreis über den Tag"></svg></div>
+    <div class="legend"><span><i style="background:var(--sun)"></i>Sonnenstrom (kW)</span><span><i style="background:var(--ink)"></i>Verbrauch mit VOLTHERM (kW)</span><span><i style="background:var(--volt)"></i>Strompreis (ct/kWh)</span></div>
+    <div class="compare">
+     <div><span>Stromkosten am ganzen Beispieltag, mit VOLTHERM</span><b id="c-mit"></b></div>
+     <div><span>Derselbe Tag ohne Energiemanagement</span><b id="c-ohne"></b></div>
+     <div class="gut"><span>Gespart an diesem Tag</span><b id="c-spar"></b></div>
+    </div>
+    <p class="note" style="padding:0 16px 14px">Beispielrechnung mit typischen Werten. „Ohne Energiemanagement“ heißt: Batterie normal, aber Auto lädt sofort beim Anstecken, Boiler und Wärmepumpe laufen nach Thermostat, Sonnenreste gehen ins Netz.</p>
+   </section>
+
+   <section class="panel sect" aria-label="Entscheidungen">
+    <h2>Was VOLTHERM gerade entscheidet</h2>
+    <div class="cards" id="cards"></div>
+   </section>
+
+   <section class="panel sect" aria-label="Entscheidungsweg">
+    <h2>Der Entscheidungsweg, Schritt für Schritt</h2>
+    <ol class="steps" id="steps"></ol>
+   </section>
+  </div>
+ </div>
+ <p class="s-fuss">VOLTHERM Integrated Solutions · Simulation zur Erklärung. Die echten Werte und Grenzen stellt Ihr Installateur passend zu Ihrem Haus ein.</p>
+</div>
+
+<script>
+(function(){
+"use strict";
+const $=id=>document.getElementById(id);
+const nf1=new Intl.NumberFormat('de-DE',{minimumFractionDigits:1,maximumFractionDigits:1});
+const nf0=new Intl.NumberFormat('de-DE',{maximumFractionDigits:0});
+const nf2=new Intl.NumberFormat('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2});
+const kw=v=>nf1.format(Math.abs(v)<0.05?0:v)+' kW';
+const ct=v=>nf0.format(v)+' ct';
+const eur=v=>nf2.format(v)+' €';
+const hhmm=i=>{const m=i*15;return String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0')};
+
+// ---------- Zustand ----------
+const S={pv:6.5,haus:1.2,tout:26,soc:40,cap:10,bmax:5,price:24,billig:20,teuer:30,feed:8,
+  boiler:48,bmin:45,bmaxt:65,heizmax:3,caron:true,carsoc:35,carziel:80,carmax:11,carmin:1.4,klimaschwelle:2,
+  has:{batt:true,klima:true,wp:true,boiler:true,auto:true},
+  kwp:10,wetter:'sonne',saison:'sommer',tarif:'dyn'};
+const HAS=[['batt','Batterie','i-batt'],['klima','Klimaanlage','i-klima'],['wp','Wärmepumpe','i-wp'],['boiler','Boiler / Heizstab','i-boiler'],['auto','Wallbox / Auto','i-auto']];
+
+const PRESETS=[
+ {n:'Sonniger Mittag',v:{pv:8.2,haus:1.1,tout:27,soc:60,price:24,caron:true,carsoc:40,boiler:50}},
+ {n:'Bewölkt, Vormittag',v:{pv:2.4,haus:1.4,tout:17,soc:55,price:26,caron:true,carsoc:40,boiler:52}},
+ {n:'Abend, Strom teuer',v:{pv:0.2,haus:2.3,tout:24,soc:80,price:42,caron:true,carsoc:35,boiler:58}},
+ {n:'Nacht, Strom günstig',v:{pv:0,haus:0.4,tout:8,soc:20,price:15,caron:true,carsoc:35,boiler:47}},
+ {n:'Winter, wenig Sonne',v:{pv:1.6,haus:1.3,tout:-2,soc:30,price:31,caron:false,carsoc:60,boiler:43}},
+ {n:'Batterie voll, viel Sonne',v:{pv:11,haus:0.9,tout:21,soc:100,price:12,caron:false,carsoc:80,boiler:55}}
+];
+
+// ---------- Entscheidung (wie der VOLTHERM-Kern, vereinfacht) ----------
+function decide(I){
+ const cat=I.price<=I.billig?'billig':I.price>=I.teuer?'teuer':'normal';
+ const season=I.tout<15?'heizen':I.tout>22?'kuehlen':'keine';
+ const sonnig=I.pv-I.haus>0.5;
+ const D={},steps=[];
+ const t=nf0.format(I.tout)+' °C', pr=ct(I.price);
+ D.haus={p:I.haus,st:'Versorgt',pill:'on',why:'Licht, Kochen und Geräte haben immer Vorrang.'};
+ // Klima
+ const k={p:0,st:'Aus',pill:'off',why:'',boost:false};
+ if(I.has.klima){
+  if(season==='keine'){k.why=`Draußen ${t}: angenehm, Heizen oder Kühlen ist nicht nötig.`;}
+  else if(cat==='teuer'&&season==='kuehlen'&&!sonnig){k.st='Pausiert';k.pill='block';k.why=`Strom teuer (${pr}): Kühlen pausiert kurz. Die Räume bleiben noch eine Weile kühl.`;}
+  else{k.p=0.6;k.st=season==='heizen'?'Heizt':'Kühlt';k.pill='on';k.boost=true;
+   k.why=cat==='teuer'&&!sonnig?`Strom teuer: nur die Wunschtemperatur halten, nichts extra.`:`Hält die Wunschtemperatur (draußen ${t}).`;}
+ }
+ D.klima=k;
+ // Wärmepumpe (SG-Ready)
+ const w={p:0,st:'Aus',pill:'off',why:'',sg:2};
+ if(I.has.wp){
+  const basis=season==='heizen'?1.5:0.5;
+  if(cat==='teuer'&&!sonnig&&I.wpSperre===false){w.p=basis;w.st='Normal';w.pill='on';w.why='Strom teuer, aber die Pause von höchstens 2 Stunden ist heute schon genutzt: die Wärmepumpe läuft normal.';}
+  else if(cat==='teuer'&&!sonnig){w.sg=1;w.st='Kurz gesperrt';w.pill='block';w.why=`Strom teuer (${pr}): Signal SG-Ready 1, Pause von höchstens 2 Stunden. Das Haus hält die Wärme.`;}
+  else if(cat==='billig'&&!sonnig&&season==='heizen'){w.sg=3;w.p=basis+1;w.st='Heizt auf Vorrat';w.pill='on';w.why=`Strom günstig (${pr}): Signal SG-Ready 3, Puffer und Warmwasser werden auf Vorrat geheizt.`;}
+  else{w.p=basis;w.st='Normal';w.pill='on';w.why=season==='heizen'?'Normalbetrieb (SG-Ready 2): heizt das Haus wie gewohnt.':'Normalbetrieb (SG-Ready 2): nur Warmwasser, Heizen ist nicht nötig.';}
+ }
+ D.wp=w;
+ // Boiler / Heizstab
+ const b={p:0,st:'Aus',pill:'off',why:''};
+ if(I.has.boiler){
+  const bt=nf0.format(I.boiler)+' °C';
+  if(I.boiler>=I.bmaxt){b.st='Voll';b.why=`Warmwasser hat ${bt}, das Ziel ist erreicht.`;}
+  else if(I.boiler<I.bmin){b.p=I.heizmax;b.st='Heizt (Komfort)';b.pill='grid';b.why=`Nur ${bt}: unter ${I.bmin} °C heizt der Heizstab sofort, warmes Duschen geht vor.`;}
+  else if(cat==='billig'&&!sonnig&&!I.sonneMorgen&&I.boiler<55){b.p=I.heizmax;b.st='Heizt günstig';b.pill='on';b.why=`Strom günstig (${pr}): Warmwasser auf Vorrat bis 55 °C.`;}
+  else{b.st='Wartet';b.pill='wait';b.why=`${bt} reicht zum Duschen. Der Heizstab wartet auf Sonnenstrom, der sonst ins Netz ginge.`;}
+ }
+ D.boiler=b;
+ // Auto
+ const a={p:0,st:'Aus',pill:'off',why:''};
+ const carNeed=I.has.auto&&I.caron&&I.carsoc<I.carziel;
+ if(I.has.auto){
+  if(!I.caron){a.st='Nicht angesteckt';a.why='Kein Auto an der Wallbox.';}
+  else if(I.carsoc>=I.carziel){a.st='Fertig';a.why=`Akku hat ${nf0.format(I.carsoc)} %, das Ziel von ${I.carziel} % ist erreicht.`;}
+  else if(I.muss){a.p=I.carmax;a.st='Lädt (Abfahrt)';a.pill='grid';a.why=`Abfahrt um 7:00. Damit ${I.carziel} % sicher erreicht werden, lädt das Auto jetzt.`;}
+  else if(cat==='billig'&&!sonnig){a.p=I.carmax;a.st='Lädt günstig';a.pill='on';a.why=`Strom günstig (${pr}): lädt mit voller Leistung.`;}
+  else{a.st='Wartet';a.pill='wait';a.why=`Wartet auf Sonne oder günstigen Strom unter ${I.billig} ct. Bis morgen 7:00 hat es trotzdem ${I.carziel} %.`;}
+ }
+ D.auto=a;
+ // Batterie und Netz
+ const bat={p:0,st:'Aus',pill:'off',why:''};
+ let exp=0,imp=0,ch=0;
+ const fest=I.haus+k.p+w.p+b.p+a.p;
+ let net=I.pv-fest;
+ steps.push(`Die Sonne liefert <b>${kw(I.pv)}</b>. Das Haus braucht <b>${kw(I.haus)}</b>${fest-I.haus>0.05?`, feste Verbraucher dazu <b>${kw(fest-I.haus)}</b>`:''}.`);
+ const kapLaden=I.soc<99?I.bmax:0;
+ if(net>0.05){
+  let rest=net,c1=0,c2=0;
+  steps.push(`Es bleiben <b>${kw(net)}</b> Sonnenstrom übrig. VOLTHERM verteilt ihn der Reihe nach.`);
+  if(I.has.batt&&I.soc<50&&kapLaden){c1=Math.min(kapLaden,rest);rest-=c1;steps.push(`Batterie zuerst bis 50 % (jetzt ${nf0.format(I.soc)} %): <b>${kw(c1)}</b>.`);}
+  if(carNeed&&a.p===0){
+   if(rest>=I.carmin){const x=Math.min(rest,I.carmax);a.p=x;rest-=x;a.st='Lädt mit Sonne';a.pill='sun';a.why=`Lädt nur mit Sonnenüberschuss: ${kw(x)}, kostenlos statt Einspeisung.`;steps.push(`Auto lädt mit Sonne: <b>${kw(x)}</b>.`);}
+   else{a.why=`Zu wenig Überschuss, mindestens ${nf1.format(I.carmin)} kW nötig. `+a.why;steps.push(`Auto: zu wenig übrig (unter ${nf1.format(I.carmin)} kW), es wartet.`);}
+  }
+  if(I.has.batt&&kapLaden&&rest>0.05){c2=Math.min(kapLaden-c1,rest);if(c2>0.05){rest-=c2;steps.push(`Batterie wird weiter geladen: <b>${kw(c2)}</b>.`);}else c2=0;}
+  if(k.boost&&rest>=I.klimaschwelle){k.p+=0.6;rest-=0.6;k.st=season==='heizen'?'Heizt vor':'Kühlt vor';k.pill='sun';
+   k.why=season==='heizen'?'Sonnenüberschuss: heizt 2 °C über Wunsch vor. Am Abend braucht das Haus dann weniger Strom.':'Sonnenüberschuss: kühlt 1,2 °C tiefer vor. Am Abend braucht das Haus dann weniger Strom.';
+   steps.push(`Klima ${season==='heizen'?'heizt':'kühlt'} vor (ab ${nf1.format(I.klimaschwelle)} kW Überschuss): <b>+0,6 kW</b>.`);}
+  if(I.has.wp&&w.sg===2&&rest>=1){w.p+=1;rest-=1;w.sg=3;w.st='Mehr Leistung';w.pill='sun';w.why='Sonnenüberschuss: Signal SG-Ready 3, Puffer und Warmwasser werden mit Sonne aufgeheizt.';steps.push('Wärmepumpe bekommt SG-Ready 3 (mehr Leistung): <b>+1,0 kW</b>.');}
+  if(I.has.boiler&&b.p===0&&I.boiler<I.bmaxt&&rest>=0.3){const h=Math.min(I.heizmax,rest);b.p=h;rest-=h;b.st='Heizt mit Sonne';b.pill='sun';b.why=`Der Rest wird Warmwasser, statt für ${nf1.format(I.feed)} ct ins Netz zu gehen. Ziel ${I.bmaxt} °C.`;steps.push(`Heizstab macht aus dem Rest Warmwasser: <b>${kw(h)}</b>.`);}
+  exp=rest>0.05?rest:0;
+  if(exp)steps.push(`Was dann noch übrig ist, geht ins Netz: <b>${kw(exp)}</b> für ${nf1.format(I.feed)} ct/kWh.`);
+  else steps.push('Nichts geht verloren: der ganze Sonnenstrom wird im Haus genutzt.');
+  if(I.has.batt){bat.p=c1+c2;
+   if(bat.p>0.05){bat.st='Lädt mit Sonne';bat.pill='sun';bat.why=`Speichert ${kw(bat.p)} Sonnenstrom für den Abend.`;}
+   else if(I.soc>=99){bat.st='Voll';bat.why='Batterie ist voll. Der Überschuss geht an die anderen Geräte.';}
+   else{bat.st='Wartet';bat.pill='wait';bat.why='Der Überschuss ist schon verteilt.';}}
+ }else{
+  const def=Math.max(0,-net);let d=0;
+  steps.push(def>0.05?`Die Sonne reicht nicht: es fehlen <b>${kw(def)}</b>. Jetzt zählt der Strompreis: <b>${pr}</b> ist ${cat==='billig'?'günstig':cat==='teuer'?'teuer':'normal'}.`:'Sonne und Verbrauch sind gerade gleich groß.');
+  if(I.has.batt){
+   if(cat==='billig'){
+    const ziel=I.sonneMorgen?30:80;
+    if(I.soc<ziel){ch=I.bmax;bat.st='Lädt günstig';bat.pill='on';bat.why=I.sonneMorgen?`Strom günstig (${pr}). Die Prognose meldet viel Sonne, darum nur bis 30 %. Den Rest füllt die Sonne.`:`Strom günstig (${pr}): lädt aus dem Netz für die teuren Abendstunden.`;steps.push(`Batterie lädt günstig aus dem Netz: <b>${kw(ch)}</b>.`);}
+    else{bat.st='Hält Ladung';bat.pill='wait';bat.why=I.sonneMorgen&&I.soc<80?'Prognose: genug Sonne kommt. Die Batterie lädt nicht teurer als nötig und spart ihre Ladung für die teuren Stunden.':'Strom ist gerade günstig. Die Batterie spart ihre Ladung für die teuren Stunden.';steps.push('Batterie hält ihre Ladung, das Haus nimmt den günstigen Netzstrom.');}
+   }else if(I.soc>10&&def>0.05){d=Math.min(I.bmax,def);bat.st='Liefert';bat.pill='on';
+    bat.why=cat==='teuer'?`Teure Stunde (${pr}): die Batterie liefert ${kw(d)}, der Netzbezug sinkt.`:`Keine Sonne übrig: die Batterie versorgt das Haus mit ${kw(d)}.`;
+    steps.push(`Batterie liefert <b>${kw(d)}</b>.`);}
+   else if(I.soc<=10){bat.st='Leer';bat.pill='off';bat.why='Unter 10 %: die Batterie schont sich, das Netz übernimmt.';}
+   bat.p=ch-d;
+  }
+  imp=def-d+ch;
+  if(imp>0.05)steps.push(`Aus dem Netz kommen <b>${kw(imp)}</b>${cat==='teuer'?', so wenig wie möglich':''}.`);
+  if(w.sg===1)steps.push('Wärmepumpe pausiert kurz (SG-Ready 1), das spart in der teuren Stunde.');
+  if(a.st==='Wartet')steps.push('Auto wartet auf Sonne oder günstigen Strom.');
+ }
+ // Netz
+ D.batt=bat;
+ const nz={p:imp-exp,st:imp>0.05?'Bezug':exp>0.05?'Einspeisung':'Kein Austausch',pill:imp>0.05?'grid':exp>0.05?'sun':'off'};
+ nz.why=imp>0.05?`Kauft ${kw(imp)} für ${pr}/kWh.`:exp>0.05?`Verkauft ${kw(exp)} für ${nf1.format(I.feed)} ct/kWh.`:'Das Haus versorgt sich gerade selbst.';
+ D.netz=nz;
+ // Quellenmix für die Farben der Leitungen
+ const pvUse=I.pv-exp, battOut=Math.max(0,-bat.p);
+ const tot=pvUse+battOut+imp||1;
+ const mix={sun:pvUse/tot,batt:battOut/tot,grid:imp/tot};
+ const verbr=I.haus+k.p+w.p+b.p+a.p;
+ const eigen=verbr>0?Math.max(0,Math.min(1,(verbr-Math.max(0,imp-ch))/verbr)):1;
+ let mode,head;
+ if(net>0.05){mode=['Sonne verteilen','sun'];head=exp>0.05?'Viel Sonne: VOLTHERM füllt Batterie, Auto und Wärmespeicher. Erst der Rest geht ins Netz.':'Der ganze Sonnenstrom bleibt im Haus. Nichts wird billig verschenkt.';}
+ else if(cat==='billig'){mode=['Günstig einkaufen','on'];head=`Strom kostet nur ${pr}: VOLTHERM lädt und heizt jetzt auf Vorrat.`;}
+ else if(cat==='teuer'){mode=['Teuer: sparen','grid'];head=`Strom kostet ${pr}: die Batterie liefert, unnötige Verbraucher machen Pause.`;}
+ else{mode=['Batterie und Netz','wait'];head='Wenig Sonne, normaler Preis: die Batterie hilft, nicht eilige Geräte warten.';}
+ return {D,steps,imp,exp,ch,cat,season,mix,eigen,mode,head,kost:(imp*I.price-exp*I.feed)/100};
+}
+
+// ---------- Fluss-Grafik ----------
+const NODES={pv:[110,95,'Sonne','i-sun'],netz:[110,285,'Netz','i-grid'],batt:[110,475,'Batterie','i-batt'],
+ haus:[630,55,'Haus','i-house'],klima:[630,165,'Klima','i-klima'],wp:[630,275,'Wärmepumpe','i-wp'],boiler:[630,385,'Boiler','i-boiler'],auto:[630,495,'Auto','i-auto']};
+const CX=400,CY=280;
+const COL={sun:'var(--sun)',grid:'var(--grid)',batt:'var(--batt)'};
+function pathFor(id){const[x,y]=NODES[id];const left=x<CX;
+ return left?`M${x+38} ${y} C ${x+170} ${y}, ${CX-150} ${CY}, ${CX} ${CY}`:`M${CX} ${CY} C ${CX+150} ${CY}, ${x-170} ${y}, ${x-32} ${y}`;}
+function buildFlow(){
+ const svg=$('flow');let h='';
+ for(const id in NODES)h+=`<g id="ln-${id}"><path class="track" d="${pathFor(id)}"/><path class="dots" d="${pathFor(id)}"/></g>`;
+ h+=`<g class="core"><circle class="pulse" cx="${CX}" cy="${CY}" r="66"/><circle cx="${CX}" cy="${CY}" r="66"/><text x="${CX}" y="${CY-4}" text-anchor="middle" style="font:800 16px var(--f-display);letter-spacing:.08em;fill:var(--ink)">VOLTHERM</text><text id="coremode" x="${CX}" y="${CY+20}" text-anchor="middle" class="sub"></text></g>`;
+ for(const id in NODES){const[x,y,n,ic]=NODES[id];const r=x<CX?38:32;const big=x<CX;
+  h+=`<g class="node" id="nd-${id}"><circle class="ring" cx="${x}" cy="${y}" r="${r}"/><use href="#${ic}" x="${x-r*0.6}" y="${y-r*0.6}" width="${r*1.2}" height="${r*1.2}"/>`+
+   (big?`<text class="lbl" x="${x}" y="${y+r+24}" text-anchor="middle">${n}</text><text class="val" id="v-${id}" x="${x}" y="${y+r+46}" text-anchor="middle"></text>`
+       :`<text class="lbl" x="${x+r+12}" y="${y-2}" text-anchor="start" style="font-size:17px">${n}</text><text class="val" id="v-${id}" x="${x+r+12}" y="${y+20}" text-anchor="start" style="font-size:16px"></text>`)+`</g>`;}
+ svg.innerHTML=h;
+}
+function setLine(id,p,color,reverse){
+ const g=$('ln-'+id);const dots=g.querySelector('.dots');const a=Math.abs(p);
+ if(a<0.05){dots.style.display='none';return;}
+ dots.style.display='';dots.style.stroke=color;dots.style.strokeWidth=(3+Math.min(a,11)*0.75).toFixed(1);
+ dots.style.animationDuration=Math.max(0.28,1.25-a*0.09).toFixed(2)+'s';dots.style.animationDirection=reverse?'reverse':'normal';
+}
+function dominant(mix){let k='sun',m=-1;for(const x in mix)if(mix[x]>m){m=mix[x];k=x;}return COL[k];}
+function setNode(id,on,color,valTxt,dim){const n=$('nd-'+id);n.classList.toggle('act',on);n.classList.toggle('dim',!!dim);
+ n.querySelector('circle.ring').style.stroke=on?color:'';n.querySelector('use').style.color=on?color:'';$('v-'+id).textContent=valTxt;}
+
+// ---------- Darstellung ----------
+const CARD_ICON={haus:'i-house',batt:'i-batt',netz:'i-grid',klima:'i-klima',wp:'i-wp',boiler:'i-boiler',auto:'i-auto'};
+const CARD_NAME={haus:'Haus',batt:'Batterie',netz:'Stromnetz',klima:'Klimaanlage',wp:'Wärmepumpe',boiler:'Boiler / Heizstab',auto:'Wallbox / Auto'};
+const PILLCOL={on:'var(--batt)',sun:'var(--sun)',wait:'var(--amber)',off:'var(--muted)',block:'var(--grid)',grid:'var(--grid)'};
+function render(I,R,extra){
+ const D=R.D,mixCol=dominant(R.mix);
+ // Linien
+ setLine('pv',I.pv,COL.sun,false);
+ setLine('netz',D.netz.p,D.netz.p>0?COL.grid:COL.sun,D.netz.p<0);
+ setLine('batt',I.has.batt?D.batt.p:0,D.batt.p<0?COL.batt:(R.ch>0?COL.grid:COL.sun),D.batt.p>0);
+ for(const id of['haus','klima','wp','boiler','auto'])setLine(id,(id==='haus'||I.has[id])?D[id].p:0,mixCol,false);
+ // Knoten
+ setNode('pv',I.pv>0.05,COL.sun,kw(I.pv));
+ setNode('netz',Math.abs(D.netz.p)>0.05,D.netz.p>0?COL.grid:COL.sun,D.netz.p>0.05?'Bezug '+kw(D.netz.p):D.netz.p<-0.05?'Einspeisung '+kw(-D.netz.p):kw(0));
+ setNode('batt',I.has.batt&&Math.abs(D.batt.p)>0.05,COL.batt,I.has.batt?nf0.format(I.soc)+' % · '+(D.batt.p>0.05?'+':D.batt.p<-0.05?'−':'')+kw(Math.abs(D.batt.p)):'nicht vorhanden',!I.has.batt);
+ setNode('haus',true,mixCol,kw(D.haus.p));
+ const sub={klima:D.klima.st,wp:D.wp.st+(I.has.wp?' · SG '+D.wp.sg:''),boiler:nf0.format(I.boiler)+' °C',auto:I.caron?nf0.format(I.carsoc)+' %':'—'};
+ for(const id of['klima','wp','boiler','auto']){const has=I.has[id];setNode(id,has&&D[id].p>0.05,PILLCOL[D[id].pill]||mixCol,has?((id==='klima'||id==='wp')?(D[id].p>0.05?kw(D[id].p):D[id].st):(D[id].p>0.05?kw(D[id].p)+' · ':'')+sub[id]):'nicht vorhanden',!has);}
+ $('coremode').textContent=R.mode[0];
+ $('mode').textContent=R.mode[0];$('mode').style.background='color-mix(in srgb,'+PILLCOL[R.mode[1]]+' 18%,transparent)';$('mode').style.color=PILLCOL[R.mode[1]];
+ $('headtxt').textContent=R.head;
+ $('k-netz').textContent=kw(R.imp);$('k-ein').textContent=kw(R.exp);
+ $('k-eigen').textContent=nf0.format(R.eigen*100)+' %';$('k-kost').textContent=(R.kost<0?'+':'')+eur(Math.abs(R.kost))+'/h';
+ $('k-kost').style.color=R.kost<0?'var(--batt)':'';
+ // Karten
+ const order=['haus','batt','auto','klima','wp','boiler','netz'];let ch='';
+ for(const id of order){if(id!=='haus'&&id!=='netz'&&!I.has[id])continue;const d=D[id];
+  ch+=`<article class="card"><div class="hd"><svg style="color:${PILLCOL[d.pill]}"><use href="#${CARD_ICON[id]}"/></svg><b>${CARD_NAME[id]}</b><span class="kw">${id==='netz'?(d.p>0.05?'+':d.p<-0.05?'−':'')+kw(Math.abs(d.p)):id==='batt'?(d.p>0.05?'+':d.p<-0.05?'−':'')+kw(Math.abs(d.p)):kw(d.p)}</span></div><span class="pill ${d.pill}">${d.st}</span><p>${d.why}</p></article>`;}
+ $('cards').innerHTML=ch;
+ $('steps').innerHTML=R.steps.map(s=>`<li>${s}</li>`).join('');
+}
+
+// ---------- Moment-Modus ----------
+const RANGES={pv:['o-pv',v=>kw(v)],haus:['o-haus',v=>kw(v)],tout:['o-tout',v=>nf0.format(v)+' °C'],soc:['o-soc',v=>nf0.format(v)+' %'],cap:['o-cap',v=>nf1.format(v)+' kWh'],bmax:['o-bmax',v=>kw(v)],
+ price:['o-price',v=>ct(v)+'/kWh'],billig:['o-billig',v=>ct(v)],teuer:['o-teuer',v=>ct(v)],feed:['o-feed',v=>nf1.format(v)+' ct'],carsoc:['o-carsoc',v=>nf0.format(v)+' %'],boiler:['o-boiler',v=>nf0.format(v)+' °C'],
+ bmin:['o-bmin',v=>nf0.format(v)+' °C'],bmaxt:['o-bmaxt',v=>nf0.format(v)+' °C'],kwp:['o-kwp',v=>nf1.format(v)+' kWp']};
+function syncInputs(){for(const k in RANGES){const el=$(k);el.value=S[k];$(RANGES[k][0]).textContent=RANGES[k][1](S[k]);}
+ $('caron').checked=S.caron;
+ const cat=S.price<=S.billig?'Günstig':S.price>=S.teuer?'Teuer':'Normal';$('price-cat').textContent=`Einstufung: ${cat} (günstig bis ${S.billig} ct, teuer ab ${S.teuer} ct).`;}
+let modus='moment',aktPreset=0;
+function updateMoment(){syncInputs();const I=Object.assign({},S,{muss:false,sonneMorgen:false});render(I,decide(I));}
+for(const k in RANGES){$(k).addEventListener('input',e=>{S[k]=parseFloat(e.target.value);
+ if(k==='billig'&&S.billig>=S.teuer){S.teuer=S.billig+1;}if(k==='teuer'&&S.teuer<=S.billig){S.billig=S.teuer-1;}
+ if(['pv','haus','tout','soc','price','carsoc','boiler'].includes(k)){aktPreset=-1;markPreset();}
+ if(modus==='moment')updateMoment();else{buildDay();showDay();}});}
+$('caron').addEventListener('change',e=>{S.caron=e.target.checked;aktPreset=-1;markPreset();updateMoment();});
+// Geräte vorhanden
+$('has').innerHTML=HAS.map(([id,n,ic])=>`<label class="sw"><span><svg><use href="#${ic}"/></svg>${n}</span><input type="checkbox" id="has-${id}" checked></label>`).join('');
+HAS.forEach(([id])=>$('has-'+id).addEventListener('change',e=>{S.has[id]=e.target.checked;if(modus==='moment')updateMoment();else{buildDay();showDay();}}));
+// Beispiele
+$('presets').innerHTML=PRESETS.map((p,i)=>`<button data-i="${i}">${p.n}</button>`).join('');
+function markPreset(){$('presets').querySelectorAll('button').forEach(b=>b.classList.toggle('on',+b.dataset.i===aktPreset));}
+$('presets').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;aktPreset=+b.dataset.i;Object.assign(S,PRESETS[aktPreset].v);markPreset();if(modus!=='moment')setModus('moment');updateMoment();});
+// Reiter
+const TABS=[['sonne','Sonne','i-sun'],['haus','Haus','i-house'],['batt','Batterie','i-batt'],['preis','Preis','i-euro'],['geraete','Geräte','i-gear'],['regeln','Regeln','i-list']];
+$('tabs').innerHTML=TABS.map(([id,n,ic],i)=>`<button data-t="${id}" class="${i?'':'on'}"><svg><use href="#${ic}"/></svg>${n}</button>`).join('');
+$('tabs').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;$('tabs').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));TABS.forEach(([id])=>$('tb-'+id).hidden=id!==b.dataset.t);});
+// Segment-Schalter
+function seg(id,key,cb){$(id).addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;$(id).querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));S[key]=b.dataset.v;cb&&cb();});}
+seg('wetter','wetter',()=>{buildDay();showDay();});seg('saison','saison',()=>{buildDay();showDay();});seg('tarif','tarif',()=>{buildDay();showDay();});
+
+// ---------- Tag-Modus ----------
+const STEPS=96,DT=0.25;
+function pvAt(h){const s=S.saison==='sommer';const a=s?5.8:8.2,e=s?20.8:16.4;if(h<=a||h>=e)return 0;
+ const x=Math.sin(Math.PI*(h-a)/(e-a));let f=S.kwp*(s?0.8:0.38)*Math.pow(x,1.25);
+ if(S.wetter==='wolken')f*=0.42+0.18*Math.sin(h*2.3);return Math.max(0,f);}
+function hausAt(h){let v=0.35;if(h>=6.5&&h<8.5)v+=1.1;if(h>=11.5&&h<13.5)v+=0.9;if(h>=17.5&&h<21.5)v+=1.3;if(h>=21.5&&h<23)v+=0.4;return v;}
+function preisAt(h){if(S.tarif==='fix')return 32;const s=S.saison==='sommer';
+ if(h<5)return 18;if(h<6)return 23;if(h<9)return 35;if(h<11)return s&&S.wetter==='sonne'?22:28;if(h<15)return s&&S.wetter==='sonne'?13:27;if(h<17)return 28;if(h<21)return 42;return 27;}
+function toutAt(h){return S.saison==='sommer'?Math.round(22+7*Math.sin(Math.PI*(h-9)/12)):Math.round(1+4*Math.sin(Math.PI*(h-9)/12));}
+function carHere(h){return h<7||h>=17.5;}
+let DAY=[];
+function buildDay(){
+ let v={soc:40,boiler:50,car:45},n={soc:40,boiler:50,car:45,heizt:false};
+ let cm=0,co=0,sperr=0;DAY=[];const sonneMorgen=S.saison==='sommer'&&S.wetter==='sonne';
+ for(let j=0;j<2*STEPS;j++){const i=j%STEPS,h=i*DT;if(i===0)sperr=0;if(j===STEPS){cm=0;co=0;}
+  if(Math.abs(h-17.5)<1e-6){v.car=35;n.car=35;}
+  if(Math.abs(h-7)<1e-6){v.boiler-=10;n.boiler-=10;}
+  if(Math.abs(h-19.5)<1e-6){v.boiler-=8;n.boiler-=8;}
+  const here=carHere(h);
+  const kapCar=60, need=(S.carziel-v.car)/100*kapCar;
+  const stdBisAbfahrt=h<7?7-h:h>=17.5?31-h:99;
+  const muss=here&&need>0&&need/S.carmax>=stdBisAbfahrt-0.25;
+  const I=Object.assign({},S,{pv:pvAt(h),haus:hausAt(h),price:preisAt(h),tout:toutAt(h),soc:v.soc,boiler:v.boiler,caron:here,carsoc:v.car,muss,sonneMorgen,wpSperre:sperr<8});
+  const R=decide(I);if(R.D.wp.sg===1)sperr++;
+  // Zustand weiter (mit VOLTHERM)
+  if(S.has.batt)v.soc=Math.max(0,Math.min(100,v.soc+R.D.batt.p*DT/S.cap*100));
+  v.boiler=Math.min(80,v.boiler+R.D.boiler.p*DT*2.87-0.25*DT);
+  v.car=Math.min(100,v.car+R.D.auto.p*DT/kapCar*100);
+  cm+=(R.imp*I.price-R.exp*I.feed)/100*DT;
+  // Ohne Energiemanagement
+  const season=I.tout<15?'heizen':I.tout>22?'kuehlen':'keine';
+  let L=I.haus+(S.has.klima&&season!=='keine'?0.6:0)+(S.has.wp?(season==='heizen'?1.5:0.5):0);
+  if(S.has.boiler){if(n.boiler<50)n.heizt=true;if(n.boiler>=55)n.heizt=false;if(n.heizt)L+=S.heizmax;}
+  const carP=S.has.auto&&here&&n.car<S.carziel?S.carmax:0;L+=carP;
+  let net=I.pv-L,imp=0,exp=0,bp=0;
+  if(net>0){if(S.has.batt&&n.soc<99){bp=Math.min(S.bmax,net);net-=bp;}exp=net;}
+  else{const d=-net;if(S.has.batt&&n.soc>10){bp=-Math.min(S.bmax,d);}imp=d+bp;}
+  if(S.has.batt)n.soc=Math.max(0,Math.min(100,n.soc+bp*DT/S.cap*100));
+  if(S.has.boiler)n.boiler=Math.min(80,n.boiler+(n.heizt?S.heizmax:0)*DT*2.87-0.25*DT);
+  n.car=Math.min(100,n.car+carP*DT/kapCar*100);
+  co+=(imp*I.price-exp*I.feed)/100*DT;
+  const verbr=I.haus+R.D.klima.p+R.D.wp.p+R.D.boiler.p+R.D.auto.p;
+  if(j>=STEPS)DAY.push({I,R,cm,co,verbr});
+ }
+ drawDayChart();
+}
+function drawDayChart(){
+ const W=800,H=190,L=40,Rr=44,T=24,B=26,pw=W-L-Rr,ph=H-T-B;
+ const maxKw=Math.max(4,Math.ceil(Math.max(...DAY.map(d=>Math.max(d.I.pv,d.verbr)))/2)*2);
+ const x=i=>L+pw*i/STEPS,yk=v=>T+ph*(1-v/maxKw),yp=v=>T+ph*(1-v/50);
+ let s='';
+ for(let k=0;k<=maxKw;k+=maxKw/4){s+=`<line x1="${L}" x2="${W-Rr}" y1="${yk(k)}" y2="${yk(k)}" stroke="var(--line)"/><text x="${L-6}" y="${yk(k)+4}" text-anchor="end">${nf0.format(k)}</text>`;}
+ for(const p of[0,25,50])s+=`<text x="${W-Rr+6}" y="${yp(p)+4}" fill="var(--volt)" style="fill:var(--volt)">${p}</text>`;
+ for(const hr of[0,6,12,18,24])s+=`<text x="${x(hr*4)}" y="${H-6}" text-anchor="middle">${String(hr).padStart(2,'0')}:00</text>`;
+ s+=`<text x="${L-6}" y="${T-12}" text-anchor="end" style="font-size:10px">kW</text><text x="${W-Rr+6}" y="${T-12}" style="font-size:10px;fill:var(--volt)">ct</text>`;
+ let a=`M${x(0)} ${yk(0)}`;DAY.forEach((d,i)=>a+=` L${x(i)} ${yk(d.I.pv)}`);a+=` L${x(STEPS-1)} ${yk(0)} Z`;
+ s+=`<path d="${a}" fill="var(--sun)" fill-opacity=".22" stroke="var(--sun)" stroke-width="2"/>`;
+ let v='';DAY.forEach((d,i)=>v+=(i?' L':'M')+x(i)+' '+yk(d.verbr));s+=`<path d="${v}" fill="none" stroke="var(--ink)" stroke-width="1.6" stroke-opacity=".8"/>`;
+ let p='';DAY.forEach((d,i)=>p+=(i?' L':'M')+x(i)+' '+yp(d.I.price)+(i<STEPS-1?' L'+x(i+1)+' '+yp(d.I.price):''));s+=`<path d="${p}" fill="none" stroke="var(--volt)" stroke-width="2.4"/>`;
+ s+=`<line id="cursor" x1="0" x2="0" y1="${T}" y2="${T+ph}" stroke="var(--ink)" stroke-width="2"/><circle id="cdot" r="5" fill="var(--sun)"/>`;
+ $('tagkurve').innerHTML=s;drawDayChart.x=x;drawDayChart.yk=yk;
+}
+let ti=48,timer=null,tempo=2;
+function showDay(){const d=DAY[ti];if(!d)return;
+ const I=d.I;render(I,d.R);
+ $('clock').textContent=hhmm(ti);$('zeit').value=ti;
+ const X=drawDayChart.x(ti);const c=$('cursor');c.setAttribute('x1',X);c.setAttribute('x2',X);const dot=$('cdot');dot.setAttribute('cx',X);dot.setAttribute('cy',drawDayChart.yk(I.pv));
+ const e=DAY[STEPS-1];$('c-mit').textContent=eur(e.cm);$('c-ohne').textContent=eur(e.co);$('c-spar').textContent=eur(e.co-e.cm);
+ // Regler zeigen die Werte des Augenblicks
+ const show={pv:I.pv,haus:I.haus,tout:I.tout,soc:I.soc,price:I.price,carsoc:I.carsoc,boiler:I.boiler};
+ for(const k in show){$(k).value=show[k];$(RANGES[k][0]).textContent=RANGES[k][1](show[k]);}
+ $('caron').checked=I.caron;
+}
+function stop(){if(timer){clearInterval(timer);timer=null;}$('play').textContent='▶ Abspielen';}
+function play(){if(timer){stop();return;}if(ti>=STEPS-1)ti=0;$('play').textContent='❚❚ Pause';
+ timer=setInterval(()=>{ti++;if(ti>=STEPS){ti=STEPS-1;stop();}showDay();},Math.round(900/tempo));}
+$('play').addEventListener('click',play);
+$('zeit').addEventListener('input',e=>{stop();ti=+e.target.value;showDay();});
+$('tempo').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;$('tempo').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));tempo=+b.dataset.v;if(timer){stop();play();}});
+
+function setModus(m){modus=m;$('m-moment').classList.toggle('on',m==='moment');$('m-tag').classList.toggle('on',m==='tag');
+ const tag=m==='tag';$('playbar').hidden=!tag;$('tagteil').hidden=!tag;$('clock').hidden=!tag;
+ document.querySelectorAll('[data-tag]').forEach(e=>e.hidden=!tag);document.querySelectorAll('[data-moment]').forEach(e=>e.hidden=tag);
+ ['haus','tout','soc','carsoc','boiler','caron'].forEach(k=>$(k).disabled=tag);
+ if(tag){aktPreset=-1;markPreset();syncInputs();buildDay();showDay();}else{stop();syncInputs();updateMoment();}}
+$('m-moment').addEventListener('click',()=>setModus('moment'));
+$('m-tag').addEventListener('click',()=>setModus('tag'));
+$('vollbild').addEventListener('click',()=>{const d=document;try{if(d.fullscreenElement)d.exitFullscreen();else d.documentElement.requestFullscreen().catch(()=>{});}catch(e){}});
+
+buildFlow();markPreset();
+aktPreset=0;Object.assign(S,PRESETS[0].v);markPreset();updateMoment();
+})();
+</script>
+
+</div>
+
+<section class="wrap"><div class="r-cta">
+  <h2>So soll Ihr Haus entscheiden?</h2>
+  <p>Wir richten VOLTHERM passend zu Ihren Geräten ein: Photovoltaik, Speicher, Wallbox, Wärmepumpe, Klimaanlage und Heizstab. Fragen Sie uns, was bei Ihnen möglich ist.</p>
+  <div class="cta-row">
+    <a class="btn" href="../#kontakt">Beratung anfragen <svg class="ic" aria-hidden="true"><use href="#i-pfeil"/></svg></a>
+    <a class="btn btn-ghost" href="https://wa.me/4915568656548" rel="noopener"><svg class="ic" aria-hidden="true"><use href="#i-wa"/></svg>Per WhatsApp schreiben</a>
+  </div>
+</div></section>
+</main>
+
+<footer class="foot">
+  <div class="wrap foot-row">
+    <div>
+      <a class="brand" href="../"><svg viewBox="0 0 300 300" aria-hidden="true"><use href="#logo"/></svg><span class="wm">VOLT<span>HERM</span></span></a>
+      <p class="tagline">INTEGRATED SOLUTIONS</p>
+      <p class="region">Ihr Elektriker und Smart Home Experte für die Oberpfalz, Weiden, Bayreuth und Umgebung.</p>
+    </div>
+    <nav class="foot-nav" aria-label="Rechtliches und mehr">
+      <a href="../voltherm/">Was ist VOLTHERM?</a>
+      <a href="../rechner/">Wirtschaftlichkeitsrechner</a>
+      <a href="../impressum.html">Impressum</a>
+      <a href="../datenschutz.html">Datenschutz</a>
+      <a href="../voltherm/datenschutz-app.html">Datenschutz App</a>
+    </nav>
+  </div>
+  <p class="wrap copy">© <span id="jahr">2026</span> VOLTHERM Integrated Solutions · Kulmblick 2, Mockersdorf, 95514 Neustadt am Kulm</p>
+</footer>
+
+<script>
+(function(){var b=document.querySelector('.menu-btn'),n=document.getElementById('nav');if(!b||!n)return;
+b.addEventListener('click',function(){var o=n.classList.toggle('open');b.setAttribute('aria-expanded',o?'true':'false');});
+n.addEventListener('click',function(e){if(e.target.tagName==='A'){n.classList.remove('open');b.setAttribute('aria-expanded','false');}});})();
+</script>
+</body>
+</html>

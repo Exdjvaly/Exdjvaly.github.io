@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PV-Check: Wie viel Solarstrom passt auf Ihr Dach? | VOLTHERM</title>
+<meta name="description" content="Kostenloser PV-Check von VOLTHERM: Dachfläche, Ausrichtung und Verbrauch eingeben und sehen, wie groß Ihre Photovoltaik-Anlage wird, wie viel Strom sie liefert und wie viel Sie selbst nutzen.">
+<meta name="theme-color" content="#0B1220">
+<meta property="og:type" content="website">
+<meta property="og:title" content="PV-Check · VOLTHERM">
+<meta property="og:description" content="Kostenloser PV-Check von VOLTHERM: Dachfläche, Ausrichtung und Verbrauch eingeben und sehen, wie groß Ihre Photovoltaik-Anlage wird, wie viel Strom sie liefert und wie viel Sie selbst nutzen.">
+<meta property="og:image" content="https://voltherm.de/assets/og.jpg">
+<meta property="og:locale" content="de_DE">
+<link rel="canonical" href="https://voltherm.de/pv-check/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 300'%3E%3Crect width='300' height='300' rx='60' fill='%230B1220'/%3E%3Cpolygon points='22,20 86,20 166,232 150,272' fill='%238FA3C8'/%3E%3Cpolygon points='74,20 112,20 168,200 154,226' fill='%23FFFFFF'/%3E%3Cpolygon points='200,20 290,20 214,118 276,118 126,286 176,170 128,170' fill='%2319C3E6'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="../site.css?v=20261026b">
+<link rel="stylesheet" href="../design-b.css?v=20261106a">
+<style>
+.tk{max-width:1240px;margin:0 auto;padding:8px 20px 40px;display:grid;gap:20px;grid-template-columns:1fr}
+@media (min-width:1000px){.tk{grid-template-columns:minmax(320px,400px) minmax(0,1fr);align-items:start}}
+.tk-in,.tk-out{display:flex;flex-direction:column;gap:14px;min-width:0}
+.tk-box{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;min-width:0}
+.tk-box h2{font-size:18px;letter-spacing:-.01em;margin:0 0 4px;line-height:1.25}
+.tk-box .sub{color:var(--mut);font-size:13.5px;margin:0 0 14px}
+.tk-f{display:flex;flex-direction:column;gap:6px;margin-top:12px;min-width:0}
+.tk-f:first-of-type{margin-top:0}
+.tk-f label,.tk-lab{font-size:13px;color:var(--mut)}
+.tk-row{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.tk-row output{font:600 15px var(--mono);color:var(--ink)}
+.tk input[type=range]{width:100%;accent-color:var(--cyan)}
+.tk select,.tk input[type=number]{font:500 15px/1.2 var(--font);color:var(--ink);background:var(--bg2);border:1px solid var(--line2);border-radius:10px;padding:10px 11px;width:100%;min-width:0}
+.tk select option{background:#0D1628}
+.tk input[type=number]{font-family:var(--mono);text-align:right}
+.tk-seg{display:flex;flex-wrap:wrap;gap:6px}
+.tk [hidden]{display:none!important}
+.tk-seg button{flex:0 1 auto;font:600 13.5px/1 var(--font);color:#c9d3e6;background:var(--bg2);border:0;box-shadow:inset 0 0 0 1px var(--line2);border-radius:999px;padding:10px 12px;min-height:40px;cursor:pointer}
+.tk-seg button:hover{color:#fff;box-shadow:inset 0 0 0 1px var(--cyan)}
+.tk-seg button.on{background:var(--cyan);color:#0B1220;box-shadow:none}
+.tk-chk{display:flex;align-items:center;gap:10px;font-size:14.5px;margin-top:12px;cursor:pointer}
+.tk-chk input{width:20px;height:20px;accent-color:var(--cyan)}
+.tk-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.tk-kpis{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
+.tk-kpi{background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:14px 16px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.tk-kpi span{font:600 11.5px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--mut)}
+.tk-kpi b{font-size:28px;font-weight:800;letter-spacing:-.02em;font-variant-numeric:tabular-nums;line-height:1.1}
+.tk-kpi small{color:var(--mut);font-size:13px}
+.tk-kpi.hi{border-color:rgba(25,195,230,.5);background:linear-gradient(160deg,rgba(25,195,230,.14),transparent 70%),var(--bg2)}
+.tk-kpi.hi b{color:#8FE7FA}
+.tk-svg svg{width:100%;height:auto;display:block}
+.tk-svg text{font:11px var(--font);fill:var(--mut)}
+.tk-leg{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13px;color:var(--mut);margin-top:8px}
+.tk-leg i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.tk-cmp{display:flex;flex-direction:column;gap:12px}
+.tk-bar{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 12px;font-size:14.5px}
+.tk-bar b{font:600 14.5px var(--mono)}
+.tk-bar .trk{grid-column:1/-1;height:12px;border-radius:6px;background:var(--bg2);overflow:hidden;box-shadow:inset 0 0 0 1px var(--line)}
+.tk-bar .fl{height:100%;border-radius:6px;transition:width .4s ease}
+.tk-txt{margin:0;color:#c9d3e6;font-size:15px;line-height:1.6}
+.tk-txt b{color:var(--ink)}
+.tk-hin{margin:0;padding-left:18px;color:var(--mut);font-size:13px;display:flex;flex-direction:column;gap:4px}
+.tk-tip{border-left:3px solid var(--cyan);padding:4px 0 4px 14px;margin:0;color:#c9d3e6;font-size:14.5px}
+.tk-warn{border-left-color:#FF9B5E}
+@media (prefers-reduced-motion:reduce){.tk-bar .fl{transition:none}}
+
+
+.nav a[aria-current]{color:var(--cyan)}
+.r-intro{padding:56px 0 18px}
+.r-intro h1{font-size:clamp(32px,4.4vw,52px);font-weight:800;margin:0;max-width:18em;text-wrap:balance}
+.r-intro .lead{color:#b9c5da;font-size:18px;margin:18px 0 0;max-width:46em}
+.r-intro .haken{margin-top:20px}
+.r-cta{margin:10px 0 70px;border:1px solid var(--line2);border-radius:22px;padding:30px;background:radial-gradient(60% 120% at 100% 0,rgba(25,195,230,.12),transparent 70%),var(--card)}
+.r-cta h2{font-size:clamp(24px,3vw,34px);margin:0}
+.r-cta p{color:var(--mut);margin:12px 0 0;max-width:44em}
+.r-cta .cta-row{display:flex;flex-wrap:wrap;margin-top:22px}
+@media (max-width:600px){.r-intro{padding-top:34px}.r-cta{padding:22px}}
+.tool-tabs{max-width:1240px;margin:0 auto 18px;padding:0 20px;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none}
+.tool-tabs::-webkit-scrollbar{display:none}
+.tool-tabs a{flex:none;padding:10px 16px;border-radius:999px;text-decoration:none;color:#c9d3e6;font:600 14px/1 var(--font);box-shadow:inset 0 0 0 1px var(--line2)}
+.tool-tabs a:hover{color:#fff;box-shadow:inset 0 0 0 1px var(--cyan)}
+.tool-tabs a[aria-current]{background:var(--cyan);color:#0B1220;box-shadow:none}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="logo" viewBox="0 0 300 300">
+      <polygon points="22,20 86,20 166,232 150,272" fill="#8FA3C8"/>
+      <polygon points="74,20 112,20 168,200 154,226" fill="#FFFFFF"/>
+      <polygon points="200,20 290,20 214,118 276,118 126,286 176,170 128,170" fill="#19C3E6"/>
+    </symbol>
+    <symbol id="i-tel" viewBox="0 0 24 24"><path d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 5a2 2 0 0 1 2-2Z"/></symbol>
+    <symbol id="i-mail" viewBox="0 0 24 24"><path d="M3 5h18v14H3Z M3 6l9 7 9-7"/></symbol>
+    <symbol id="i-wa" viewBox="0 0 24 24"><path d="M4 20l1.3-4A8 8 0 1 1 8 18.7Z M9 8.5c0 3.5 3 6.5 6.5 6.5l1-1.5-2-1-1 .8a5 5 0 0 1-2.3-2.3l.8-1-1-2Z"/></symbol>
+    <symbol id="i-pfeil" viewBox="0 0 24 24"><path d="M5 12h14 M13 6l6 6-6 6"/></symbol>
+  </defs>
+</svg>
+
+<a class="skip" href="#inhalt">Zum Inhalt springen</a>
+
+<header class="top" id="top">
+  <div class="wrap top-row">
+    <a class="brand" href="../" aria-label="VOLTHERM Startseite">
+      <span class="logo-box"><svg viewBox="0 0 300 300" aria-hidden="true"><use href="#logo"/></svg></span>
+      <span class="brand-txt"><span class="wm">VOLT<span>HERM</span></span><small>INTEGRATED SOLUTIONS</small></span>
+    </a>
+    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="nav"><span></span><span class="sr">Menü</span></button>
+    <nav id="nav" class="nav">
+      <a href="../#leistungen">Leistungen</a>
+      <a href="../#smart">Smart Energy</a>
+      <a href="../#hub">VOLTHERM Hub</a>
+      <a href="../#ki">KI</a>
+      <a href="../#ablauf">Ablauf</a>
+      <a href="../#ueber-uns">Über uns</a>
+      <a href="../rechner/" aria-current="page">Rechner</a>
+      <a href="tel:+4915568656548" class="nav-tel"><svg class="ic" aria-hidden="true"><use href="#i-tel"/></svg>+49 1556 8656548</a>
+      <a href="../#kontakt" class="btn btn-sm">Beratung anfragen</a>
+    </nav>
+  </div>
+</header>
+
+<main id="inhalt">
+<section class="r-intro">
+  <div class="wrap">
+    <p class="kicker">PV-CHECK</p>
+    <h1>Wie viel <span class="grad">Sonnenstrom</span> passt auf Ihr Dach?</h1>
+    <p class="lead">Geben Sie Dachfläche, Ausrichtung und Ihren Stromverbrauch ein. Der PV-Check zeigt, wie groß Ihre Anlage wird, wie viel Strom sie im Jahr liefert und wie viel davon Sie selbst nutzen, mit und ohne Speicher.</p>
+    <ul class="haken"><li>In einer Minute</li><li>Rechnet nur in Ihrem Browser</li><li>Ohne Anmeldung</li></ul>
+  </div>
+</section>
+
+<nav class="tool-tabs" aria-label="Unsere Rechner"><a href="../rechner/">Wirtschaftlichkeit</a><a href="./" aria-current="page">PV-Check</a><a href="../waermepumpen-check/">Wärmepumpen-Check</a><a href="../live-demo/">Live-Demo</a></nav>
+<div class="tk" id="pv">
+<form class="tk-in" onsubmit="return false" autocomplete="off">
+  <div class="tk-box">
+    <h2>Ihr Dach</h2>
+    <p class="sub">Grob reicht: Länge mal Breite der Dachfläche, auf die Module sollen.</p>
+    <div class="tk-f"><div class="tk-row"><label for="flaeche">Nutzbare Dachfläche</label><output id="o-flaeche"></output></div><input type="range" id="flaeche" min="10" max="200" step="1" value="60"></div>
+    <div class="tk-f"><span class="tk-lab">Ausrichtung</span><div class="tk-seg" data-k="ori">
+      <button type="button" data-v="S" class="on">Süd</button><button type="button" data-v="SO">Südost</button><button type="button" data-v="SW">Südwest</button><button type="button" data-v="OW">Ost-West</button><button type="button" data-v="O">Ost</button><button type="button" data-v="W">West</button><button type="button" data-v="N">Nord</button></div></div>
+    <div class="tk-f"><span class="tk-lab">Dachneigung</span><div class="tk-seg" data-k="neig">
+      <button type="button" data-v="flach">Flachdach</button><button type="button" data-v="20">15–25°</button><button type="button" data-v="35" class="on">30–40°</button><button type="button" data-v="50">ab 45°</button></div></div>
+    <div class="tk-f"><span class="tk-lab">Schatten durch Bäume, Gauben, Nachbarhaus</span><div class="tk-seg" data-k="schatten">
+      <button type="button" data-v="0" class="on">kaum</button><button type="button" data-v="1">etwas</button><button type="button" data-v="2">viel</button></div></div>
+  </div>
+  <div class="tk-box">
+    <h2>Ihr Verbrauch</h2>
+    <p class="sub">Steht auf der letzten Stromrechnung.</p>
+    <div class="tk-f"><div class="tk-row"><label for="verbrauch">Haushaltsstrom pro Jahr</label><output id="o-verbrauch"></output></div><input type="range" id="verbrauch" min="1000" max="12000" step="100" value="4000"></div>
+    <div class="tk-f"><div class="tk-row"><label for="preis">Strompreis</label><output id="o-preis"></output></div><input type="range" id="preis" min="20" max="50" step="0.5" value="33"></div>
+    <label class="tk-chk"><input type="checkbox" id="auto"> E-Auto (oder geplant)</label>
+    <div class="tk-f" data-nur="auto" hidden><div class="tk-row"><label for="km">Fahrleistung pro Jahr</label><output id="o-km"></output></div><input type="range" id="km" min="3000" max="40000" step="1000" value="12000"></div>
+    <label class="tk-chk"><input type="checkbox" id="wp"> Wärmepumpe (oder geplant)</label>
+    <div class="tk-f" data-nur="wp" hidden><div class="tk-row"><label for="wpkwh">Strom der Wärmepumpe pro Jahr</label><output id="o-wpkwh"></output></div><input type="range" id="wpkwh" min="1500" max="10000" step="100" value="4000"></div>
+  </div>
+</form>
+
+<section class="tk-out" aria-live="polite">
+  <div class="tk-box">
+    <h2>Das passt auf Ihr Dach</h2>
+    <p class="sub" id="sub"></p>
+    <div class="tk-kpis">
+      <div class="tk-kpi hi"><span>Anlagengröße</span><b id="k-kwp"></b><small id="k-mod"></small></div>
+      <div class="tk-kpi"><span>Sonnenstrom pro Jahr</span><b id="k-ertrag"></b><small id="k-spez"></small></div>
+      <div class="tk-kpi"><span>Speicher-Empfehlung</span><b id="k-sp"></b><small>nutzbare Kapazität</small></div>
+    </div>
+  </div>
+  <div class="tk-box">
+    <h2>Wie viel Strom Sie selbst nutzen</h2>
+    <p class="sub">Stündlich über ein typisches Jahr in Nordbayern gerechnet.</p>
+    <div class="tk-cmp" id="cmp"></div>
+    <div class="tk-kpis" style="margin-top:16px">
+      <div class="tk-kpi hi"><span>Ersparnis pro Jahr</span><b id="k-spar"></b><small id="k-spar2"></small></div>
+      <div class="tk-kpi"><span>Weniger CO₂</span><b id="k-co2"></b><small>pro Jahr</small></div>
+    </div>
+  </div>
+  <div class="tk-box">
+    <h2>Sonnenstrom und Verbrauch über das Jahr</h2>
+    <div class="tk-svg" id="chart"></div>
+    <div class="tk-leg"><span><i style="background:#FFC531"></i>Sonnenstrom</span><span><i style="background:#19C3E6"></i>Verbrauch</span></div>
+  </div>
+  <div class="tk-box">
+    <p class="tk-tip" id="tipp"></p>
+    <ul class="tk-hin" style="margin-top:14px">
+      <li>Modulgröße ca. 1,95 m² mit 430 Wp, mit Abständen zu Rand und First ca. 5 m² pro kWp.</li>
+      <li>Wetterjahr und Sonnenstand typisch für die Oberpfalz, Haushaltsprofil ähnlich H0, Speicher mit 92 % Wirkungsgrad. Kurze Lastspitzen innerhalb einer Stunde sind mit einem Abschlag berücksichtigt (Werte ähnlich dem Unabhängigkeitsrechner der HTW Berlin).</li>
+      <li>Ersparnis = selbst genutzter Strom mal Strompreis plus Einspeisevergütung (7,9 ct bis 10 kWp, 6,8 ct darüber).</li>
+      <li>Unverbindliche Abschätzung. Genaue Planung nach Besichtigung vor Ort.</li>
+    </ul>
+  </div>
+</section>
+</div>
+<script>
+(function(){
+var $=function(i){return document.getElementById(i)};
+var n0=new Intl.NumberFormat('de-DE',{maximumFractionDigits:0}),n1=new Intl.NumberFormat('de-DE',{minimumFractionDigits:1,maximumFractionDigits:1});
+var S={ori:'S',neig:'35',schatten:'0'};
+document.querySelectorAll('.tk-seg').forEach(function(g){g.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;
+  g.querySelectorAll('button').forEach(function(x){x.classList.toggle('on',x===b)});S[g.dataset.k]=b.dataset.v;rechne();});});
+// Monatsanteile Ertrag (Nordbayern) und Tageslänge
+var MON=[.028,.048,.085,.112,.128,.132,.135,.12,.09,.06,.032,.022],TL=[8.3,9.8,11.8,13.7,15.3,16.2,15.8,14.3,12.4,10.4,8.7,7.9],TAGE=[31,28,31,30,31,30,31,31,30,31,30,31];
+var HEIZ=[.17,.15,.13,.08,.04,.01,.005,.005,.03,.08,.13,.16];
+var H0=[.028,.024,.022,.021,.022,.028,.04,.05,.048,.044,.042,.046,.05,.045,.04,.039,.042,.05,.06,.066,.064,.056,.045,.035];
+var h0s=H0.reduce(function(a,b){return a+b},0);H0=H0.map(function(x){return x/h0s});
+function rnd(s){return function(){s=(s*16807)%2147483647;return (s-1)/2147483646}}
+function wetter(){var r=rnd(42),w=[];for(var m=0;m<12;m++){var t=[],sum=0;for(var d=0;d<TAGE[m];d++){var q=r(),x=q<.42?.12+r()*.4:(q<.7?.6+r()*.5:1.25+r()*.45);t.push(x);sum+=x}w.push(t.map(function(x){return x*TAGE[m]/sum}))}return w}
+var WET=wetter();
+function profil(kwp,spez,ori){ // 8760 Werte kW
+  var out=[],tot=kwp*spez,versatz={S:0,SO:-1.2,SW:1.2,O:-2.6,W:2.6,N:0,OW:0}[ori];
+  for(var m=0;m<12;m++){var mE=tot*MON[m],tl=TL[m],auf=13.1-tl/2;
+    var form=[];var fs=0;for(var h=0;h<24;h++){var v=0;
+      function bell(c){var x=(h+.5-auf)/tl;if(x<=0||x>=1)return 0;var p=Math.sin(Math.PI*x);var sh=(h+.5-(13.1+c));return p*Math.exp(-sh*sh/(2*Math.pow(tl/3.2,2)))*1.0+p*0}
+      v=ori==='OW'?(bell(-2.6)+bell(2.6))/2:bell(versatz);form.push(v);fs+=v}
+    for(var d=0;d<TAGE[m];d++){var dE=mE/TAGE[m]*WET[m][d];for(var h2=0;h2<24;h2++)out.push(fs?dE*form[h2]/fs:0)}}
+  return out}
+function last(haus,auto,wpk){var out=[],rr=rnd(7);for(var m=0;m<12;m++){var saison=[1.18,1.12,1.04,.96,.9,.86,.86,.88,.94,1.02,1.12,1.18][m];
+  for(var d=0;d<TAGE[m];d++)for(var h=0;h<24;h++){var q=rr(),v=haus/365*saison*H0[h]*(q<.55?.35+q*.6:(q<.88?1+q*.4:2.6+q*1.2))/1.13;
+    if(auto>0&&(h>=18&&h<=22))v+=auto/365/5;
+    if(wpk>0)v+=wpk*HEIZ[m]/TAGE[m]/24;
+    out.push(v)}}return out}
+function sim(pv,ld,cap){var soc=0,eig=0,ein=0,bez=0,eta=.92,pmax=Math.max(2.5,cap*.5);
+  for(var i=0;i<pv.length;i++){var d=pv[i]-ld[i];
+    if(d>=0){var c=Math.min(d,pmax,(cap-soc)/Math.sqrt(eta));soc+=c*Math.sqrt(eta);eig+=ld[i];ein+=d-c}
+    else{var need=-d,dc=Math.min(need,pmax,soc*Math.sqrt(eta));soc-=dc/Math.sqrt(eta);eig+=pv[i]+dc;bez+=need-dc}}
+  var k=.8,eg=eig*k;ein+=(eig-eg)*.9;return {eig:eg,ein:ein,bez:bez+eig-eg}}
+function rechne(){
+  var fl=+$('flaeche').value,vb=+$('verbrauch').value,pr=+$('preis').value,auto=$('auto').checked?(+$('km').value)*.18:0,wpk=$('wp').checked?+$('wpkwh').value:0;
+  document.querySelectorAll('[data-nur]').forEach(function(e){e.hidden=!$(e.dataset.nur).checked});
+  $('o-flaeche').textContent=n0.format(fl)+' m²';$('o-verbrauch').textContent=n0.format(vb)+' kWh';$('o-preis').textContent=n1.format(pr)+' ct/kWh';
+  $('o-km').textContent=n0.format(+$('km').value)+' km';$('o-wpkwh').textContent=n0.format(+$('wpkwh').value)+' kWh';
+  var flach=S.neig==='flach',mod=Math.floor(fl/(flach?2.9:2.3)),kwp=Math.round(mod*.43*10)/10;
+  var fo={S:1,SO:.96,SW:.96,O:.86,W:.86,OW:.88,N:.62}[S.ori],fn={flach:.93,'20':.97,'35':1,'50':.95}[S.neig],fsch=[1,.9,.75][+S.schatten];
+  if(flach)fo=Math.max(fo,.9);
+  var spez=1000*fo*fn*fsch,pv=profil(kwp,spez,flach?'OW':S.ori),total=vb+auto+wpk,ld=last(vb,auto,wpk);
+  var cap=Math.max(5,Math.min(15,Math.round(Math.min(total/1000*1.1,kwp*1.1)*2)/2));if(kwp<3)cap=0;
+  var a=sim(pv,ld,0),b=sim(pv,ld,cap),ertrag=kwp*spez;
+  $('k-kwp').textContent=n1.format(kwp)+' kWp';$('k-mod').textContent='ca. '+mod+' Module';
+  $('k-ertrag').textContent=n0.format(ertrag)+' kWh';$('k-spez').textContent=n0.format(spez)+' kWh pro kWp';
+  $('k-sp').textContent=cap?n1.format(cap)+' kWh':'–';
+  $('sub').textContent=n0.format(fl)+' m² · '+{S:'Süd',SO:'Südost',SW:'Südwest',O:'Ost',W:'West',OW:'Ost-West',N:'Nord'}[S.ori]+' · '+(flach?'Flachdach (Ost-West aufgeständert)':'Neigung '+{'20':'15–25°','35':'30–40°','50':'ab 45°'}[S.neig])+' · Verbrauch '+n0.format(total)+' kWh/Jahr';
+  var rows=[['Ohne Speicher',a],['Mit '+n1.format(cap)+' kWh Speicher',b]];if(!cap)rows=[rows[0]];
+  $('cmp').innerHTML=rows.map(function(r){var aut=r[1].eig/total*100,ev=ertrag?(ertrag-r[1].ein)/ertrag*100:0;
+    return '<div class="tk-bar"><span>'+r[0]+': <b style="font-family:inherit">'+n0.format(aut)+' %</b> Ihres Stroms vom eigenen Dach</span><b>'+n0.format(ev)+' % genutzt</b><div class="trk"><div class="fl" style="width:'+Math.min(100,aut)+'%;background:'+(r===rows[rows.length-1]?'#19C3E6':'#FFC531')+'"></div></div></div>'}).join('');
+  var best=cap?b:a,verg=kwp<=10?7.9:(10*7.9+(kwp-10)*6.8)/kwp,spar=(best.eig*pr+best.ein*verg)/100;
+  $('k-spar').textContent=n0.format(Math.round(spar/10)*10)+' €';$('k-spar2').textContent=cap?'mit Speicher, im ersten Jahr':'im ersten Jahr';
+  $('k-co2').textContent=n1.format(ertrag*.38/1000)+' t';
+  // Monatsgrafik
+  var mp=[],ml=[],i=0;for(var m=0;m<12;m++){var sp=0,sl=0;for(var k=0;k<TAGE[m]*24;k++,i++){sp+=pv[i];sl+=ld[i]}mp.push(sp);ml.push(sl)}
+  var W=720,H=230,pl=44,pb=24,mx=Math.max.apply(null,mp.concat(ml))*1.1||1,bw=(W-pl)/12;
+  var s='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Sonnenstrom und Verbrauch je Monat">';
+  for(var g=0;g<=4;g++){var y=(H-pb)-(H-pb-8)*g/4;s+='<line x1="'+pl+'" x2="'+W+'" y1="'+y+'" y2="'+y+'" stroke="rgba(143,163,200,.15)"/><text x="'+(pl-6)+'" y="'+(y+4)+'" text-anchor="end">'+n0.format(mx*g/4)+'</text>'}
+  'JFMAMJJASOND'.split('').forEach(function(c,m){var x=pl+m*bw,h1=(H-pb-8)*mp[m]/mx,h2=(H-pb-8)*ml[m]/mx;
+    s+='<rect x="'+(x+bw*.14)+'" y="'+(H-pb-h1)+'" width="'+bw*.34+'" height="'+h1+'" rx="3" fill="#FFC531"/><rect x="'+(x+bw*.52)+'" y="'+(H-pb-h2)+'" width="'+bw*.34+'" height="'+h2+'" rx="3" fill="#19C3E6"/><text x="'+(x+bw/2)+'" y="'+(H-6)+'" text-anchor="middle">'+['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'][m]+'</text>'});
+  $('chart').innerHTML=s+'<text x="'+pl+'" y="10">kWh</text></svg>';
+  var t;
+  if(S.ori==='N')t='Ein Norddach bringt deutlich weniger. Oft lohnt sich eine andere Dachseite, Garage oder Carport. Wir schauen es uns gern an.';
+  else if(kwp<4)t='Die Fläche ist eher klein. Ein Balkonkraftwerk oder eine Anlage auf Garage oder Carport kann eine gute Ergänzung sein.';
+  else if(wpk>0||auto>0)t='Mit '+(wpk>0&&auto>0?'Wärmepumpe und E-Auto':wpk>0?'Wärmepumpe':'E-Auto')+' lohnt sich ein Energiemanagement besonders: VOLTHERM legt Laden und Heizen in die Sonnenstunden, so steigt der Eigenverbrauch noch über die Werte oben.';
+  else t='Gute Voraussetzungen. Mit Speicher nutzen Sie den Mittagsstrom auch am Abend.';
+  $('tipp').textContent=t;
+}
+document.querySelector('#pv form').addEventListener('input',rechne);document.querySelector('#pv form').addEventListener('change',rechne);
+rechne();
+})();
+</script>
+
+
+<section class="wrap"><div class="r-cta">
+  <h2>Wir planen Ihre Anlage genau</h2>
+  <p>Wir kommen vorbei, messen Ihr Dach aus, prüfen Zählerschrank und Verschattung und erstellen ein Angebot mit echten Modulen und Preisen. Kostenlos und unverbindlich.</p>
+  <div class="cta-row">
+    <a class="btn" href="../#kontakt">Beratung anfragen <svg class="ic" aria-hidden="true"><use href="#i-pfeil"/></svg></a>
+    <a class="btn btn-ghost" href="https://wa.me/4915568656548" rel="noopener"><svg class="ic" aria-hidden="true"><use href="#i-wa"/></svg>Per WhatsApp schreiben</a>
+  </div>
+</div></section>
+</main>
+
+<footer class="foot">
+  <div class="wrap foot-row">
+    <div>
+      <a class="brand" href="../"><svg viewBox="0 0 300 300" aria-hidden="true"><use href="#logo"/></svg><span class="wm">VOLT<span>HERM</span></span></a>
+      <p class="tagline">INTEGRATED SOLUTIONS</p>
+      <p class="region">Ihr Elektriker und Smart Home Experte für die Oberpfalz, Weiden, Bayreuth und Umgebung.</p>
+    </div>
+    <nav class="foot-nav" aria-label="Rechtliches und mehr">
+      <a href="../voltherm/">Was ist VOLTHERM?</a>
+      <a href="../rechner/">Wirtschaftlichkeitsrechner</a>
+      <a href="../impressum.html">Impressum</a>
+      <a href="../datenschutz.html">Datenschutz</a>
+      <a href="../voltherm/datenschutz-app.html">Datenschutz App</a>
+    </nav>
+  </div>
+  <p class="wrap copy">© <span id="jahr">2026</span> VOLTHERM Integrated Solutions · Kulmblick 2, Mockersdorf, 95514 Neustadt am Kulm</p>
+</footer>
+
+<script>
+(function(){var b=document.querySelector('.menu-btn'),n=document.getElementById('nav');if(!b||!n)return;
+b.addEventListener('click',function(){var o=n.classList.toggle('open');b.setAttribute('aria-expanded',o?'true':'false');});
+n.addEventListener('click',function(e){if(e.target.tagName==='A'){n.classList.remove('open');b.setAttribute('aria-expanded','false');}});})();
+</script>
+</body>
+</html>
