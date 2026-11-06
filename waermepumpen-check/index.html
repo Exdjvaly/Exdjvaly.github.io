@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Wärmepumpen-Check: Welche Wärmepumpe passt? | VOLTHERM</title>
+<meta name="description" content="Kostenloser Wärmepumpen-Check von VOLTHERM: Wohnfläche, Baujahr und heutige Heizung eingeben und sehen, welche Wärmepumpe passt, wie viel Strom sie braucht und was Sie gegenüber Gas oder Öl sparen.">
+<meta name="theme-color" content="#0B1220">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Wärmepumpen-Check · VOLTHERM">
+<meta property="og:description" content="Kostenloser Wärmepumpen-Check von VOLTHERM: Wohnfläche, Baujahr und heutige Heizung eingeben und sehen, welche Wärmepumpe passt, wie viel Strom sie braucht und was Sie gegenüber Gas oder Öl sparen.">
+<meta property="og:image" content="https://voltherm.de/assets/og.jpg">
+<meta property="og:locale" content="de_DE">
+<link rel="canonical" href="https://voltherm.de/waermepumpen-check/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 300'%3E%3Crect width='300' height='300' rx='60' fill='%230B1220'/%3E%3Cpolygon points='22,20 86,20 166,232 150,272' fill='%238FA3C8'/%3E%3Cpolygon points='74,20 112,20 168,200 154,226' fill='%23FFFFFF'/%3E%3Cpolygon points='200,20 290,20 214,118 276,118 126,286 176,170 128,170' fill='%2319C3E6'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="../site.css?v=20261026b">
+<link rel="stylesheet" href="../design-b.css?v=20261106a">
+<style>
+.tk{max-width:1240px;margin:0 auto;padding:8px 20px 40px;display:grid;gap:20px;grid-template-columns:1fr}
+@media (min-width:1000px){.tk{grid-template-columns:minmax(320px,400px) minmax(0,1fr);align-items:start}}
+.tk-in,.tk-out{display:flex;flex-direction:column;gap:14px;min-width:0}
+.tk-box{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;min-width:0}
+.tk-box h2{font-size:18px;letter-spacing:-.01em;margin:0 0 4px;line-height:1.25}
+.tk-box .sub{color:var(--mut);font-size:13.5px;margin:0 0 14px}
+.tk-f{display:flex;flex-direction:column;gap:6px;margin-top:12px;min-width:0}
+.tk-f:first-of-type{margin-top:0}
+.tk-f label,.tk-lab{font-size:13px;color:var(--mut)}
+.tk-row{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.tk-row output{font:600 15px var(--mono);color:var(--ink)}
+.tk input[type=range]{width:100%;accent-color:var(--cyan)}
+.tk select,.tk input[type=number]{font:500 15px/1.2 var(--font);color:var(--ink);background:var(--bg2);border:1px solid var(--line2);border-radius:10px;padding:10px 11px;width:100%;min-width:0}
+.tk select option{background:#0D1628}
+.tk input[type=number]{font-family:var(--mono);text-align:right}
+.tk-seg{display:flex;flex-wrap:wrap;gap:6px}
+.tk [hidden]{display:none!important}
+.tk-seg button{flex:0 1 auto;font:600 13.5px/1 var(--font);color:#c9d3e6;background:var(--bg2);border:0;box-shadow:inset 0 0 0 1px var(--line2);border-radius:999px;padding:10px 12px;min-height:40px;cursor:pointer}
+.tk-seg button:hover{color:#fff;box-shadow:inset 0 0 0 1px var(--cyan)}
+.tk-seg button.on{background:var(--cyan);color:#0B1220;box-shadow:none}
+.tk-chk{display:flex;align-items:center;gap:10px;font-size:14.5px;margin-top:12px;cursor:pointer}
+.tk-chk input{width:20px;height:20px;accent-color:var(--cyan)}
+.tk-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.tk-kpis{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
+.tk-kpi{background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:14px 16px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.tk-kpi span{font:600 11.5px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--mut)}
+.tk-kpi b{font-size:28px;font-weight:800;letter-spacing:-.02em;font-variant-numeric:tabular-nums;line-height:1.1}
+.tk-kpi small{color:var(--mut);font-size:13px}
+.tk-kpi.hi{border-color:rgba(25,195,230,.5);background:linear-gradient(160deg,rgba(25,195,230,.14),transparent 70%),var(--bg2)}
+.tk-kpi.hi b{color:#8FE7FA}
+.tk-svg svg{width:100%;height:auto;display:block}
+.tk-svg text{font:11px var(--font);fill:var(--mut)}
+.tk-leg{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13px;color:var(--mut);margin-top:8px}
+.tk-leg i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.tk-cmp{display:flex;flex-direction:column;gap:12px}
+.tk-bar{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 12px;font-size:14.5px}
+.tk-bar b{font:600 14.5px var(--mono)}
+.tk-bar .trk{grid-column:1/-1;height:12px;border-radius:6px;background:var(--bg2);overflow:hidden;box-shadow:inset 0 0 0 1px var(--line)}
+.tk-bar .fl{height:100%;border-radius:6px;transition:width .4s ease}
+.tk-txt{margin:0;color:#c9d3e6;font-size:15px;line-height:1.6}
+.tk-txt b{color:var(--ink)}
+.tk-hin{margin:0;padding-left:18px;color:var(--mut);font-size:13px;display:flex;flex-direction:column;gap:4px}
+.tk-tip{border-left:3px solid var(--cyan);padding:4px 0 4px 14px;margin:0;color:#c9d3e6;font-size:14.5px}
+.tk-warn{border-left-color:#FF9B5E}
+@media (prefers-reduced-motion:reduce){.tk-bar .fl{transition:none}}
+
+
+.nav a[aria-current]{color:var(--cyan)}
+.r-intro{padding:56px 0 18px}
+.r-intro h1{font-size:clamp(32px,4.4vw,52px);font-weight:800;margin:0;max-width:18em;text-wrap:balance}
+.r-intro .lead{color:#b9c5da;font-size:18px;margin:18px 0 0;max-width:46em}
+.r-intro .haken{margin-top:20px}
+.r-cta{margin:10px 0 70px;border:1px solid var(--line2);border-radius:22px;padding:30px;background:radial-gradient(60% 120% at 100% 0,rgba(25,195,230,.12),transparent 70%),var(--card)}
+.r-cta h2{font-size:clamp(24px,3vw,34px);margin:0}
+.r-cta p{color:var(--mut);margin:12px 0 0;max-width:44em}
+.r-cta .cta-row{display:flex;flex-wrap:wrap;margin-top:22px}
+@media (max-width:600px){.r-intro{padding-top:34px}.r-cta{padding:22px}}
+.tool-tabs{max-width:1240px;margin:0 auto 18px;padding:0 20px;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none}
+.tool-tabs::-webkit-scrollbar{display:none}
+.tool-tabs a{flex:none;padding:10px 16px;border-radius:999px;text-decoration:none;color:#c9d3e6;font:600 14px/1 var(--font);box-shadow:inset 0 0 0 1px var(--line2)}
+.tool-tabs a:hover{color:#fff;box-shadow:inset 0 0 0 1px var(--cyan)}
+.tool-tabs a[aria-current]{background:var(--cyan);color:#0B1220;box-shadow:none}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="logo" viewBox="0 0 300 300">
+      <polygon points="22,20 86,20 166,232 150,272" fill="#8FA3C8"/>
+      <polygon points="74,20 112,20 168,200 154,226" fill="#FFFFFF"/>
+      <polygon points="200,20 290,20 214,118 276,118 126,286 176,170 128,170" fill="#19C3E6"/>
+    </symbol>
+    <symbol id="i-tel" viewBox="0 0 24 24"><path d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 5a2 2 0 0 1 2-2Z"/></symbol>
+    <symbol id="i-mail" viewBox="0 0 24 24"><path d="M3 5h18v14H3Z M3 6l9 7 9-7"/></symbol>
+    <symbol id="i-wa" viewBox="0 0 24 24"><path d="M4 20l1.3-4A8 8 0 1 1 8 18.7Z M9 8.5c0 3.5 3 6.5 6.5 6.5l1-1.5-2-1-1 .8a5 5 0 0 1-2.3-2.3l.8-1-1-2Z"/></symbol>
+    <symbol id="i-pfeil" viewBox="0 0 24 24"><path d="M5 12h14 M13 6l6 6-6 6"/></symbol>
+  </defs>
+</svg>
+
+<a class="skip" href="#inhalt">Zum Inhalt springen</a>
+
+<header class="top" id="top">
+  <div class="wrap top-row">
+    <a class="brand" href="../" aria-label="VOLTHERM Startseite">
+      <span class="logo-box"><svg viewBox="0 0 300 300" aria-hidden="true"><use href="#logo"/></svg></span>
+      <span class="brand-txt"><span class="wm">VOLT<span>HERM</span></span><small>INTEGRATED SOLUTIONS</small></span>
+    </a>
+    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="nav"><span></span><span class="sr">Menü</span></button>
+    <nav id="nav" class="nav">
+      <a href="../#leistungen">Leistungen</a>
+      <a href="../#smart">Smart Energy</a>
+      <a href="../#hub">VOLTHERM Hub</a>
+      <a href="../#ki">KI</a>
+      <a href="../#ablauf">Ablauf</a>
+      <a href="../#ueber-uns">Über uns</a>
+      <a href="../rechner/" aria-current="page">Rechner</a>
+      <a href="tel:+4915568656548" class="nav-tel"><svg class="ic" aria-hidden="true"><use href="#i-tel"/></svg>+49 1556 8656548</a>
+      <a href="../#kontakt" class="btn btn-sm">Beratung anfragen</a>
+    </nav>
+  </div>
+</header>
+
+<main id="inhalt">
+<section class="r-intro">
+  <div class="wrap">
+    <p class="kicker">WÄRMEPUMPEN-CHECK</p>
+    <h1>Welche <span class="grad">Wärmepumpe</span> passt zu Ihrem Haus?</h1>
+    <p class="lead">Geben Sie Wohnfläche, Baujahr und Ihre heutige Heizung ein. Der Check zeigt, wie groß die Wärmepumpe sein sollte, wie viel Strom sie braucht und was Sie gegenüber Gas oder Öl im Jahr sparen, mit eigener PV-Anlage noch mehr.</p>
+    <ul class="haken"><li>Für Gas und Öl</li><li>Rechnet nur in Ihrem Browser</li><li>Ohne Anmeldung</li></ul>
+  </div>
+</section>
+
+<nav class="tool-tabs" aria-label="Unsere Rechner"><a href="../rechner/">Wirtschaftlichkeit</a><a href="../pv-check/">PV-Check</a><a href="./" aria-current="page">Wärmepumpen-Check</a><a href="../live-demo/">Live-Demo</a></nav>
+<div class="tk" id="wpc">
+<form class="tk-in" onsubmit="return false" autocomplete="off">
+  <div class="tk-box">
+    <h2>Ihr Haus</h2>
+    <div class="tk-f"><div class="tk-row"><label for="flaeche">Beheizte Wohnfläche</label><output id="o-flaeche"></output></div><input type="range" id="flaeche" min="60" max="400" step="5" value="150"></div>
+    <div class="tk-f"><span class="tk-lab">Baujahr und Dämmung</span><div class="tk-seg" data-k="bau">
+      <button type="button" data-v="200">vor 1978</button><button type="button" data-v="150" class="on">1979–1994</button><button type="button" data-v="100">1995–2009</button><button type="button" data-v="60">ab 2010</button><button type="button" data-v="80">Altbau saniert</button></div></div>
+    <div class="tk-f"><span class="tk-lab">Heizflächen</span><div class="tk-seg" data-k="hf">
+      <button type="button" data-v="fbh">Fußbodenheizung</button><button type="button" data-v="hk" class="on">Heizkörper</button><button type="button" data-v="alt">alte, kleine Heizkörper</button></div></div>
+    <div class="tk-f"><div class="tk-row"><label for="pers">Personen im Haushalt</label><output id="o-pers"></output></div><input type="range" id="pers" min="1" max="8" step="1" value="4"></div>
+  </div>
+  <div class="tk-box">
+    <h2>Heute heizen Sie mit</h2>
+    <div class="tk-seg" data-k="alt">
+      <button type="button" data-v="gas" class="on">Gas</button><button type="button" data-v="oel">Öl</button></div>
+    <label class="tk-chk"><input type="checkbox" id="kenne"> Ich kenne meinen Verbrauch</label>
+    <div class="tk-f" data-nur="kenne" hidden><div class="tk-row"><label for="menge" id="l-menge"></label><output id="o-menge"></output></div><input type="range" id="menge" min="500" max="60000" step="100" value="20000"></div>
+    <div class="tk-f"><div class="tk-row"><label for="bpreis" id="l-bpreis"></label><output id="o-bpreis"></output></div><input type="range" id="bpreis" min="5" max="25" step="0.1" value="11"></div>
+    <div class="tk-f"><div class="tk-row"><label for="spreis">Strompreis für die Wärmepumpe</label><output id="o-spreis"></output></div><input type="range" id="spreis" min="18" max="40" step="0.5" value="27"></div>
+  </div>
+  <div class="tk-box">
+    <h2>Photovoltaik</h2>
+    <label class="tk-chk" style="margin-top:0"><input type="checkbox" id="pv"> Ich habe (oder plane) eine PV-Anlage</label>
+    <div class="tk-f" data-nur="pv" hidden><div class="tk-row"><label for="kwp">Größe der Anlage</label><output id="o-kwp"></output></div><input type="range" id="kwp" min="3" max="30" step="0.5" value="10"></div>
+  </div>
+</form>
+
+<section class="tk-out" aria-live="polite">
+  <div class="tk-box">
+    <h2>Diese Wärmepumpe passt zu Ihrem Haus</h2>
+    <p class="sub" id="sub"></p>
+    <div class="tk-kpis">
+      <div class="tk-kpi hi"><span>Heizleistung</span><b id="k-kw"></b><small id="k-kw2"></small></div>
+      <div class="tk-kpi"><span>Wärmebedarf pro Jahr</span><b id="k-waerme"></b><small>Heizung und Warmwasser</small></div>
+      <div class="tk-kpi"><span>Strom der Wärmepumpe</span><b id="k-strom"></b><small id="k-jaz"></small></div>
+    </div>
+  </div>
+  <div class="tk-box">
+    <h2>Heizkosten pro Jahr</h2>
+    <p class="sub">Nur Energie, ohne Wartung, Schornsteinfeger und Grundgebühren.</p>
+    <div class="tk-cmp" id="cmp"></div>
+    <div class="tk-kpis" style="margin-top:16px">
+      <div class="tk-kpi hi"><span>Ersparnis pro Jahr</span><b id="k-spar"></b><small id="k-spar2"></small></div>
+      <div class="tk-kpi"><span>Weniger CO₂</span><b id="k-co2"></b><small>pro Jahr</small></div>
+    </div>
+  </div>
+  <div class="tk-box">
+    <h2>Strom der Wärmepumpe über das Jahr</h2>
+    <div class="tk-svg" id="chart"></div>
+    <div class="tk-leg"><span><i style="background:#FF9B5E"></i>Strom der Wärmepumpe</span><span data-nur="pv" hidden><i style="background:#FFC531"></i>davon mit Sonnenstrom</span></div>
+  </div>
+  <div class="tk-box">
+    <p class="tk-tip" id="tipp"></p>
+    <ul class="tk-hin" style="margin-top:14px">
+      <li>Wärmebedarf aus Wohnfläche und Baujahr oder aus Ihrem Verbrauch (Kesselnutzungsgrad Gas 90 %, Öl 85 %), Warmwasser 800 kWh pro Person.</li>
+      <li>Luft-Wasser-Wärmepumpe, Jahresarbeitszahl je nach Heizflächen 4,0 / 3,5 / 3,0, ausgelegt auf ca. 2.000 Volllaststunden.</li>
+      <li>Sonnenstrom-Anteil mit VOLTHERM: Die Wärmepumpe läuft bevorzugt in Sonnenstunden (SG-Ready), Monatsbilanz über ein typisches Jahr in Nordbayern.</li>
+      <li>CO₂: Gas 0,20, Öl 0,27, Netzstrom 0,38 kg pro kWh. Unverbindliche Abschätzung, die genaue Heizlast berechnen wir vor Ort.</li>
+    </ul>
+  </div>
+</section>
+</div>
+<script>
+(function(){
+var $=function(i){return document.getElementById(i)};
+var n0=new Intl.NumberFormat('de-DE',{maximumFractionDigits:0}),n1=new Intl.NumberFormat('de-DE',{minimumFractionDigits:1,maximumFractionDigits:1}),n2=new Intl.NumberFormat('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2});
+var S={bau:'150',hf:'hk',alt:'gas'},letzteAlt='gas';
+document.querySelectorAll('.tk-seg').forEach(function(g){g.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;
+  g.querySelectorAll('button').forEach(function(x){x.classList.toggle('on',x===b)});S[g.dataset.k]=b.dataset.v;rechne();});});
+var HEIZ=[.17,.15,.13,.08,.04,.01,.005,.005,.03,.08,.13,.16],PVM=[.028,.048,.085,.112,.128,.132,.135,.12,.09,.06,.032,.022];
+var hs=HEIZ.reduce(function(a,b){return a+b},0);HEIZ=HEIZ.map(function(x){return x/hs});
+var GW=[0,0,0,0,0,0,0,0,0,0,0,0];
+function rechne(){
+  var gas=S.alt==='gas';
+  if(S.alt!==letzteAlt){letzteAlt=S.alt;var m=$('menge'),p=$('bpreis');
+    if(gas){m.min=5000;m.max=60000;m.step=500;m.value=20000;p.min=5;p.max=25;p.step=.1;p.value=11}
+    else{m.min=500;m.max=6000;m.step=50;m.value=2000;p.min=.6;p.max=2;p.step=.01;p.value=1.05}}
+  document.querySelectorAll('[data-nur]').forEach(function(e){e.hidden=!$(e.dataset.nur).checked});
+  var fl=+$('flaeche').value,pers=+$('pers').value,kenne=$('kenne').checked,menge=+$('menge').value,bp=+$('bpreis').value,sp=+$('spreis').value,pv=$('pv').checked,kwp=+$('kwp').value;
+  $('l-menge').textContent=gas?'Gasverbrauch pro Jahr':'Heizölverbrauch pro Jahr';$('o-menge').textContent=n0.format(menge)+(gas?' kWh':' Liter');
+  $('l-bpreis').textContent=gas?'Gaspreis':'Heizölpreis';$('o-bpreis').textContent=gas?n1.format(bp)+' ct/kWh':n2.format(bp)+' €/Liter';
+  $('o-flaeche').textContent=n0.format(fl)+' m²';$('o-pers').textContent=pers;$('o-spreis').textContent=n1.format(sp)+' ct/kWh';$('o-kwp').textContent=n1.format(kwp)+' kWp';
+  var eta=gas?.9:.85,ww=pers*800,waerme;
+  if(kenne){var kwhBr=gas?menge:menge*10;waerme=kwhBr*eta}else waerme=fl*(+S.bau)+ww;
+  var heiz=Math.max(0,waerme-ww),jaz={fbh:4,hk:3.5,alt:3}[S.hf];
+  if(S.hf==='alt'&&+S.bau>=150)jaz=2.8;
+  var last=waerme/2000,groessen=[4,5,6,7,8,9,10,12,14,16,19,22,25],kw=groessen.filter(function(g){return g>=last})[0]||Math.ceil(last);
+  var strom=waerme/jaz;
+  var brenn=waerme/eta,kostAlt=gas?brenn*bp/100:brenn/10*bp;
+  // Monatswerte Strom der WP, Sonnenanteil
+  var mw=[],ms=[],pvAnteil=0;for(var m=0;m<12;m++){var w=heiz*HEIZ[m]+ww/12,s=w/jaz;mw.push(s);
+    var pvm=pv?kwp*1000*PVM[m]*.38:0, deck=Math.min(s*.6,pvm);ms.push(deck);pvAnteil+=deck}
+  var kostWp=(strom-pvAnteil)*sp/100+pvAnteil*7.9/100;
+  $('k-kw').textContent='ca. '+kw+' kW';$('k-kw2').textContent='berechnete Heizlast '+n1.format(last)+' kW';
+  $('k-waerme').textContent=n0.format(Math.round(waerme/100)*100)+' kWh';$('k-strom').textContent=n0.format(Math.round(strom/10)*10)+' kWh';$('k-jaz').textContent='Jahresarbeitszahl ca. '+n1.format(jaz);
+  $('sub').textContent=n0.format(fl)+' m² · '+{'200':'vor 1978','150':'1979–1994','100':'1995–2009','60':'ab 2010','80':'Altbau saniert'}[S.bau]+' · '+{fbh:'Fußbodenheizung',hk:'Heizkörper',alt:'alte Heizkörper'}[S.hf]+' · '+pers+(pers>1?' Personen':' Person');
+  var rows=[[gas?'Heute mit Gas':'Heute mit Öl',kostAlt,'#8FA3C8'],['Wärmepumpe'+(pv?' mit Sonnenstrom (VOLTHERM)':''),kostWp,'#19C3E6']],mx=Math.max(kostAlt,kostWp)||1;
+  $('cmp').innerHTML=rows.map(function(r){return '<div class="tk-bar"><span>'+r[0]+'</span><b>'+n0.format(Math.round(r[1]/10)*10)+' €</b><div class="trk"><div class="fl" style="width:'+(r[1]/mx*100)+'%;background:'+r[2]+'"></div></div></div>'}).join('');
+  var spar=kostAlt-kostWp;$('k-spar').textContent=(spar>=0?'':'−')+n0.format(Math.abs(Math.round(spar/10)*10))+' €';
+  $('k-spar2').textContent=pv?n0.format(pvAnteil/strom*100)+' % des WP-Stroms vom eigenen Dach':'nur Energiekosten';
+  var co2=(brenn*(gas?.2:.27)-(strom-pvAnteil)*.38)/1000;$('k-co2').textContent=n1.format(Math.max(0,co2))+' t';
+  var W=720,H=220,pl=44,pb=24,mmax=Math.max.apply(null,mw)*1.12||1,bw=(W-pl)/12,s='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Strom der Wärmepumpe je Monat">';
+  for(var g=0;g<=4;g++){var y=(H-pb)-(H-pb-8)*g/4;s+='<line x1="'+pl+'" x2="'+W+'" y1="'+y+'" y2="'+y+'" stroke="rgba(143,163,200,.15)"/><text x="'+(pl-6)+'" y="'+(y+4)+'" text-anchor="end">'+n0.format(mmax*g/4)+'</text>'}
+  for(var m2=0;m2<12;m2++){var x=pl+m2*bw,h1=(H-pb-8)*mw[m2]/mmax,h2=(H-pb-8)*ms[m2]/mmax;
+    s+='<rect x="'+(x+bw*.2)+'" y="'+(H-pb-h1)+'" width="'+bw*.6+'" height="'+h1+'" rx="3" fill="#FF9B5E"/>';
+    if(h2>0)s+='<rect x="'+(x+bw*.2)+'" y="'+(H-pb-h2)+'" width="'+bw*.6+'" height="'+h2+'" rx="3" fill="#FFC531"/>';
+    s+='<text x="'+(x+bw/2)+'" y="'+(H-6)+'" text-anchor="middle">'+['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'][m2]+'</text>'}
+  $('chart').innerHTML=s+'<text x="'+pl+'" y="10">kWh</text></svg>';
+  var t;
+  if(S.hf==='alt'&&+S.bau>=150)t='Mit alten, kleinen Heizkörpern braucht die Wärmepumpe hohe Vorlauftemperaturen. Oft reicht es, einzelne Heizkörper zu tauschen. Das prüfen wir bei der Besichtigung.';
+  else if(!pv)t='Mit einer PV-Anlage und VOLTHERM läuft die Wärmepumpe bevorzugt mit eigenem Sonnenstrom. Haken Sie oben „PV-Anlage“ an und sehen Sie den Unterschied.';
+  else t='VOLTHERM gibt der Wärmepumpe bei Sonnenüberschuss das Signal „mehr Leistung“ (SG-Ready) und heizt Warmwasser und Puffer mit eigenem Strom vor. So sinken die Heizkosten weiter.';
+  $('tipp').textContent=t;
+}
+document.querySelector('#wpc form').addEventListener('input',rechne);document.querySelector('#wpc form').addEventListener('change',rechne);
+rechne();
+})();
+</script>
+
+
+<section class="wrap"><div class="r-cta">
+  <h2>Wir berechnen die Heizlast genau</h2>
+  <p>Vor Ort prüfen wir Heizkörper, Warmwasser und Aufstellort und berechnen die Heizlast Raum für Raum. Dann wissen Sie genau, welche Wärmepumpe passt. Kostenlos und unverbindlich.</p>
+  <div class="cta-row">
+    <a class="btn" href="../#kontakt">Beratung anfragen <svg class="ic" aria-hidden="true"><use href="#i-pfeil"/></svg></a>
+    <a class="btn btn-ghost" href="https://wa.me/4915568656548" rel="noopener"><svg class="ic" aria-hidden="true"><use href="#i-wa"/></svg>Per WhatsApp schreiben</a>
+  </div>
+</div></section>
+</main>
+
+<footer class="foot">
+  <div class="wrap foot-row">
+    <div>
+      <a class="brand" href="../"><svg viewBox="0 0 300 300" aria-hidden="true"><use href="#logo"/></svg><span class="wm">VOLT<span>HERM</span></span></a>
+      <p class="tagline">INTEGRATED SOLUTIONS</p>
+      <p class="region">Ihr Elektriker und Smart Home Experte für die Oberpfalz, Weiden, Bayreuth und Umgebung.</p>
+    </div>
+    <nav class="foot-nav" aria-label="Rechtliches und mehr">
+      <a href="../voltherm/">Was ist VOLTHERM?</a>
+      <a href="../rechner/">Wirtschaftlichkeitsrechner</a>
+      <a href="../impressum.html">Impressum</a>
+      <a href="../datenschutz.html">Datenschutz</a>
+      <a href="../voltherm/datenschutz-app.html">Datenschutz App</a>
+    </nav>
+  </div>
+  <p class="wrap copy">© <span id="jahr">2026</span> VOLTHERM Integrated Solutions · Kulmblick 2, Mockersdorf, 95514 Neustadt am Kulm</p>
+</footer>
+
+<script>
+(function(){var b=document.querySelector('.menu-btn'),n=document.getElementById('nav');if(!b||!n)return;
+b.addEventListener('click',function(){var o=n.classList.toggle('open');b.setAttribute('aria-expanded',o?'true':'false');});
+n.addEventListener('click',function(e){if(e.target.tagName==='A'){n.classList.remove('open');b.setAttribute('aria-expanded','false');}});})();
+</script>
+</body>
+</html>
