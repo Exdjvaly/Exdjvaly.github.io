@@ -153,6 +153,14 @@
     <label class="tk-chk"><input type="checkbox" id="wp"> Wärmepumpe (oder geplant)</label>
     <div class="tk-f" data-nur="wp" hidden><div class="tk-row"><label for="wpkwh">Strom der Wärmepumpe pro Jahr</label><output id="o-wpkwh"></output></div><input type="range" id="wpkwh" min="1500" max="10000" step="100" value="4000"></div>
   </div>
+  <div class="tk-box">
+    <h2>Speicher</h2>
+    <p class="sub">Speichert Sonnenstrom vom Mittag für Abend und Nacht.</p>
+    <div class="tk-seg" data-k="sp">
+      <button type="button" data-v="kein">kein Speicher</button><button type="button" data-v="empf" class="on">Empfehlung</button><button type="button" data-v="eigen">eigene Größe</button></div>
+    <div class="tk-f" data-sp="eigen" hidden><div class="tk-row"><label for="spkwh">Nutzbare Kapazität</label><output id="o-spkwh"></output></div><input type="range" id="spkwh" min="3" max="30" step="0.5" value="10"></div>
+    <label class="tk-chk" data-sp="eigen" hidden><input type="checkbox" id="spda"> Speicher ist schon vorhanden</label>
+  </div>
 </form>
 
 <section class="tk-out" aria-live="polite">
@@ -194,7 +202,7 @@
 (function(){
 var $=function(i){return document.getElementById(i)};
 var n0=new Intl.NumberFormat('de-DE',{maximumFractionDigits:0}),n1=new Intl.NumberFormat('de-DE',{minimumFractionDigits:1,maximumFractionDigits:1});
-var S={ori:'S',neig:'35',schatten:'0'};
+var S={ori:'S',neig:'35',schatten:'0',sp:'empf'};
 document.querySelectorAll('.tk-seg').forEach(function(g){g.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;
   g.querySelectorAll('button').forEach(function(x){x.classList.toggle('on',x===b)});S[g.dataset.k]=b.dataset.v;rechne();});});
 // Monatsanteile Ertrag (Nordbayern) und Tageslänge
@@ -233,16 +241,19 @@ function rechne(){
   if(flach)fo=Math.max(fo,.9);
   var spez=1000*fo*fn*fsch,pv=profil(kwp,spez,flach?'OW':S.ori),total=vb+auto+wpk,ld=last(vb,auto,wpk);
   var cap=Math.max(5,Math.min(15,Math.round(Math.min(total/1000*1.1,kwp*1.1)*2)/2));if(kwp<3)cap=0;
-  var a=sim(pv,ld,0),b=sim(pv,ld,cap),ertrag=kwp*spez;
+  document.querySelectorAll('[data-sp]').forEach(function(e){e.hidden=S.sp!==e.dataset.sp});
+  $('o-spkwh').textContent=n1.format(+$('spkwh').value)+' kWh';
+  var spda=S.sp==='eigen'&&$('spda').checked,wahl=S.sp==='kein'?0:(S.sp==='eigen'?+$('spkwh').value:cap);
+  var a=sim(pv,ld,0),b=sim(pv,ld,wahl),ertrag=kwp*spez;
   $('k-kwp').textContent=n1.format(kwp)+' kWp';$('k-mod').textContent='ca. '+mod+' Module';
   $('k-ertrag').textContent=n0.format(ertrag)+' kWh';$('k-spez').textContent=n0.format(spez)+' kWh pro kWp';
   $('k-sp').textContent=cap?n1.format(cap)+' kWh':'–';
   $('sub').textContent=n0.format(fl)+' m² · '+{S:'Süd',SO:'Südost',SW:'Südwest',O:'Ost',W:'West',OW:'Ost-West',N:'Nord'}[S.ori]+' · '+(flach?'Flachdach (Ost-West aufgeständert)':'Neigung '+{'20':'15–25°','35':'30–40°','50':'ab 45°'}[S.neig])+' · Verbrauch '+n0.format(total)+' kWh/Jahr';
-  var rows=[['Ohne Speicher',a],['Mit '+n1.format(cap)+' kWh Speicher',b]];if(!cap)rows=[rows[0]];
+  var rows=[['Ohne Speicher',a],['Mit '+n1.format(wahl)+' kWh Speicher'+(spda?' (vorhanden)':S.sp==='empf'?' (Empfehlung)':''),b]];if(!wahl)rows=[rows[0]];
   $('cmp').innerHTML=rows.map(function(r){var aut=r[1].eig/total*100,ev=ertrag?(ertrag-r[1].ein)/ertrag*100:0;
     return '<div class="tk-bar"><span>'+r[0]+': <b style="font-family:inherit">'+n0.format(aut)+' %</b> Ihres Stroms vom eigenen Dach</span><b>'+n0.format(ev)+' % genutzt</b><div class="trk"><div class="fl" style="width:'+Math.min(100,aut)+'%;background:'+(r===rows[rows.length-1]?'#19C3E6':'#FFC531')+'"></div></div></div>'}).join('');
-  var best=cap?b:a,verg=kwp<=10?7.9:(10*7.9+(kwp-10)*6.8)/kwp,spar=(best.eig*pr+best.ein*verg)/100;
-  $('k-spar').textContent=n0.format(Math.round(spar/10)*10)+' €';$('k-spar2').textContent=cap?'mit Speicher, im ersten Jahr':'im ersten Jahr';
+  var best=wahl?b:a,verg=kwp<=10?7.9:(10*7.9+(kwp-10)*6.8)/kwp,spar=(best.eig*pr+best.ein*verg)/100;
+  $('k-spar').textContent=n0.format(Math.round(spar/10)*10)+' €';$('k-spar2').textContent=wahl?'mit '+n1.format(wahl)+' kWh Speicher, im ersten Jahr':'ohne Speicher, im ersten Jahr';
   $('k-co2').textContent=n1.format(ertrag*.38/1000)+' t';
   // Monatsgrafik
   var mp=[],ml=[],i=0;for(var m=0;m<12;m++){var sp=0,sl=0;for(var k=0;k<TAGE[m]*24;k++,i++){sp+=pv[i];sl+=ld[i]}mp.push(sp);ml.push(sl)}
