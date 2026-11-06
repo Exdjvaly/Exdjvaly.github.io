@@ -1,0 +1,837 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Wirtschaftlichkeitsrechner PV &amp; Speicher | VOLTHERM</title>
+<meta name="description" content="Kostenloser Rechner von VOLTHERM: Lohnt sich Photovoltaik mit Speicher, eine Kaskadenmessung für die Wärmepumpe und ein Energiemanagement (HEMS) für Ihr Haus? Stündliche Simulation, Ergebnis als PDF.">
+<meta name="theme-color" content="#0B1220">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Wirtschaftlichkeitsrechner · VOLTHERM">
+<meta property="og:description" content="Photovoltaik, Speicher, Kaskadenmessung und Energiemanagement: was lohnt sich für Ihr Haus?">
+<meta property="og:image" content="https://voltherm.de/assets/og.jpg">
+<meta property="og:locale" content="de_DE">
+<link rel="canonical" href="https://voltherm.de/rechner/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 300'%3E%3Crect width='300' height='300' rx='60' fill='%230B1220'/%3E%3Cpolygon points='22,20 86,20 166,232 150,272' fill='%238FA3C8'/%3E%3Cpolygon points='74,20 112,20 168,200 154,226' fill='%23FFFFFF'/%3E%3Cpolygon points='200,20 290,20 214,118 276,118 126,286 176,170 128,170' fill='%2319C3E6'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="../site.css?v=20261026b">
+<link rel="stylesheet" href="../design-b.css?v=20261106a">
+<style>
+.rechner{
+  --bg:transparent; --surface:#0D1628; --sunk:#0A1222; --ink:#E9EEF7; --muted:#9AA8C2; --line:rgba(143,163,200,.2);
+  --accent:#F0B429; --accent-ink:#F6CF72; --volt:#19C3E6; --volt-soft:#0f2c3d;
+  --good:#3FBF74; --good-soft:#143425; --warn:#E0A43A; --warn-soft:#3a2b10; --bad:#EF6B5B; --bad-soft:#3d1a16;
+  --f-display:"Inter Tight","Inter",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  --f-body:"Inter Tight","Inter",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  --f-mono:ui-monospace,"SFMono-Regular","JetBrains Mono",Menlo,Consolas,monospace;
+  color-scheme:dark;
+}
+.rechner, .rechner *{box-sizing:border-box}
+.rechner [hidden]{display:none!important}
+.rechner{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5}
+.rechner .r-wrap{max-width:1360px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 48px}
+.rechner .r-kopf{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px 24px;margin-bottom:18px}
+.rechner .brand{display:flex;flex-direction:column;gap:2px}
+.rechner .brand .mark{font-family:var(--f-display);font-weight:800;letter-spacing:.14em;font-size:13px;color:var(--volt)}
+.rechner .brand h1{font-family:var(--f-display);font-weight:700;font-size:clamp(22px,3vw,30px);margin:0;line-height:1.15;text-wrap:balance}
+.rechner .actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.rechner button,.rechner .btn{font:600 14px/1 var(--f-body);border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:10px 14px;border-radius:8px;cursor:pointer;min-height:40px}
+.rechner button:hover{border-color:var(--volt)}
+.rechner button:focus-visible,.rechner input:focus-visible,.rechner select:focus-visible,.rechner summary:focus-visible{outline:2px solid var(--volt);outline-offset:2px}
+.rechner button.primary{background:var(--volt);border-color:var(--volt);color:#fff}
+.rechner button:disabled{opacity:.5;cursor:not-allowed}
+.rechner select,.rechner input[type=number],.rechner input[type=text]{font:500 15px/1.2 var(--f-body);color:var(--ink);background:var(--sunk);border:1px solid var(--line);border-radius:6px;padding:8px 9px;width:100%;min-width:0}
+.rechner input[type=number]{font-family:var(--f-mono);text-align:right}
+.rechner .app{display:grid;gap:20px;grid-template-columns:1fr}
+@media (min-width:1000px){.rechner .app{grid-template-columns:minmax(340px,430px) minmax(0,1fr);align-items:start}}
+.rechner .inputs{display:flex;flex-direction:column;gap:10px;min-width:0}
+.rechner details.grp{background:var(--surface);border:1px solid var(--line);border-radius:10px}
+.rechner details.grp>summary{list-style:none;cursor:pointer;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;gap:8px;font-family:var(--f-display);font-weight:700;font-size:15px}
+.rechner details.grp>summary::-webkit-details-marker{display:none}
+.rechner details.grp>summary .hint{font:400 12.5px var(--f-body);color:var(--muted);text-align:right}
+.rechner details.grp>summary::after{content:"+";font:600 18px var(--f-mono);color:var(--muted)}
+.rechner details.grp[open]>summary::after{content:"–"}
+.rechner .fields{display:grid;grid-template-columns:1fr 1fr;gap:10px 12px;padding:0 14px 14px}
+.rechner .f{display:flex;flex-direction:column;gap:4px;min-width:0}
+.rechner .f.full{grid-column:1/-1}
+.rechner .f label{font-size:12.5px;color:var(--muted);line-height:1.3}
+.rechner .f .u{font:400 11.5px var(--f-mono);color:var(--muted)}
+.rechner .chk{display:flex;gap:8px;align-items:center;font-size:13.5px;grid-column:1/-1}
+.rechner .chk input{width:18px;height:18px;accent-color:var(--volt)}
+.rechner .note{grid-column:1/-1;font-size:12.5px;color:var(--muted);margin:0}
+.rechner .market{font:500 10.5px var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--accent-ink);background:color-mix(in srgb,var(--accent) 18%,transparent);padding:2px 6px;border-radius:4px}
+.rechner .results{display:flex;flex-direction:column;gap:18px;min-width:0}
+.rechner .panel{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px;min-width:0}
+.rechner .panel h2{font-family:var(--f-display);font-size:18px;margin:0 0 4px;text-wrap:balance}
+.rechner .panel .sub{color:var(--muted);font-size:13px;margin:0 0 14px}
+.rechner .verdicts{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.rechner .verdict{border:1px solid var(--line);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:8px;background:var(--sunk)}
+.rechner .verdict .k{font:600 11.5px var(--f-body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.rechner .verdict .big{font:700 26px/1.1 var(--f-display);font-variant-numeric:tabular-nums}
+.rechner .verdict p{margin:0;font-size:13.5px}
+.rechner .pill{align-self:flex-start;font:600 12px var(--f-body);padding:3px 9px;border-radius:999px}
+.rechner .pill.good{background:var(--good-soft);color:var(--good)}
+.rechner .pill.warn{background:var(--warn-soft);color:var(--warn)}
+.rechner .pill.bad{background:var(--bad-soft);color:var(--bad)}
+.rechner .pill.na{background:var(--sunk);color:var(--muted);border:1px solid var(--line)}
+.rechner .tbl{overflow-x:auto}
+.rechner table{border-collapse:collapse;width:100%;font-size:13.5px;font-variant-numeric:tabular-nums}
+.rechner th,.rechner td{padding:8px 10px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
+.rechner th:first-child,.rechner td:first-child{text-align:left}
+.rechner thead th{font:600 12px var(--f-body);color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.rechner tr.best td{background:color-mix(in srgb,var(--good) 9%,transparent)}
+.rechner tr.volt td:first-child{color:var(--volt);font-weight:600}
+.rechner td.num{font-family:var(--f-mono)}
+.rechner .pos{color:var(--good)}
+.rechner .neg{color:var(--bad)}
+.rechner .bars{display:flex;flex-direction:column;gap:10px}
+.rechner .bar{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px}
+.rechner .bar .lab{font-size:13.5px}
+.rechner .bar .val{font:500 13.5px var(--f-mono);text-align:right}
+.rechner .bar .trk{grid-column:1/-1;height:10px;background:var(--sunk);border-radius:5px;overflow:hidden;border:1px solid var(--line)}
+.rechner .bar .fill{height:100%;background:var(--volt);border-radius:5px}
+.rechner .bar .fill.neg{background:var(--bad)}
+.rechner .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:14px}
+.rechner .kpi{border-left:3px solid var(--volt);padding:2px 10px}
+.rechner .kpi .k{font-size:12px;color:var(--muted)}
+.rechner .kpi .v{font:600 18px var(--f-mono)}
+.rechner .chart svg{width:100%;height:auto;display:block}
+.rechner .chart text{font-family:var(--f-body);font-size:11px;fill:var(--muted)}
+.rechner .legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12.5px;margin-top:8px}
+.rechner .legend span{display:inline-flex;align-items:center;gap:6px}
+.rechner .legend i{width:14px;height:3px;border-radius:2px;display:inline-block}
+.rechner ul.ann{margin:0;padding-left:18px;font-size:13px;color:var(--muted);display:flex;flex-direction:column;gap:4px}
+.rechner .status{font-size:13px;color:var(--muted);min-height:1.2em}
+.rechner .sample{font-size:12.5px;color:var(--accent-ink);background:color-mix(in srgb,var(--accent) 14%,transparent);border-radius:6px;padding:6px 10px}
+.rechner .split{display:grid;gap:16px;grid-template-columns:1fr}
+@media (prefers-reduced-motion:no-preference){.rechner .bar .fill{transition:width .4s ease}}
+
+.rechner .r-wrap{max-width:1240px;padding-top:8px;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+.rechner .r-kopf{align-items:center}
+.rechner .r-hinweis{margin:0;color:var(--muted);font-size:14px}
+.rechner button.primary{color:#0B1220}
+.rechner .panel,.rechner details.grp{border-radius:16px}
+.rechner select option{background:#0D1628;color:#E9EEF7}
+.nav a[aria-current]{color:var(--cyan)}
+.r-intro{padding:56px 0 18px}
+.r-intro h1{font-size:clamp(32px,4.4vw,52px);font-weight:800;margin:0;max-width:18em;text-wrap:balance}
+.r-intro .lead{color:#b9c5da;font-size:18px;margin:18px 0 0;max-width:46em}
+.r-intro .haken{margin-top:20px}
+.r-cta{margin:10px 0 70px;border:1px solid var(--line2);border-radius:22px;padding:30px;background:radial-gradient(60% 120% at 100% 0,rgba(25,195,230,.12),transparent 70%),var(--card)}
+.r-cta h2{font-size:clamp(24px,3vw,34px);margin:0}
+.r-cta p{color:var(--mut);margin:12px 0 0;max-width:44em}
+.r-cta .cta-row{display:flex;flex-wrap:wrap;margin-top:22px}
+@media (max-width:600px){.r-intro{padding-top:34px}.r-cta{padding:22px}}
+</style>
+<script src="jspdf.umd.min.js" defer></script>
+<script src="jspdf.plugin.autotable.min.js" defer></script>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="logo" viewBox="0 0 300 300">
+      <polygon points="22,20 86,20 166,232 150,272" fill="#8FA3C8"/>
+      <polygon points="74,20 112,20 168,200 154,226" fill="#FFFFFF"/>
+      <polygon points="200,20 290,20 214,118 276,118 126,286 176,170 128,170" fill="#19C3E6"/>
+    </symbol>
+    <symbol id="hex" viewBox="0 0 64 64"><path d="M32 3 57 17.5v29L32 61 7 46.5v-29Z"/></symbol>
+    <symbol id="i-pv" viewBox="0 0 24 24"><path d="M4 15h16l-2-8H6Z M8.5 7 7.5 15 M15.5 7l1 8 M5 11h14 M12 15v4 M8 19h8"/></symbol>
+    <symbol id="i-bat" viewBox="0 0 24 24"><path d="M7 5h10v16H7Z M10 3h4v2 M12.8 9 10.5 13h3l-2.3 4"/></symbol>
+    <symbol id="i-wb" viewBox="0 0 24 24"><path d="M5 21V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v16 M3 21h14 M8 7h4 M15 9h2a2 2 0 0 1 2 2v5a1.5 1.5 0 0 0 3 0V9l-2-2 M10.8 10 9 13.5h2.5L10 17"/></symbol>
+    <symbol id="i-wp" viewBox="0 0 24 24"><path d="M3 5h18v14H3Z M12 9.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5Z M12 7c1.8 0 2 2.5 0 2.5 M17 12c0 1.8-2.5 2-2.5 0 M12 17c-1.8 0-2-2.5 0-2.5 M7 12c0-1.8 2.5-2 2.5 0"/></symbol>
+    <symbol id="i-kl" viewBox="0 0 24 24"><path d="M2 5h20v7H2Z M5 9.5h14 M7 15l-1 3 M12 15v4 M17 15l1 3"/></symbol>
+    <symbol id="i-sh" viewBox="0 0 24 24"><path d="M3 11 12 4l9 7 M5 9.5V20h14V9.5 M12.8 10 10.5 14h3l-2.3 4"/></symbol>
+    <symbol id="i-el" viewBox="0 0 24 24"><path d="M13 2 4.5 13.5h6.5L10 22l9-12h-6.5Z"/></symbol>
+    <symbol id="i-tel" viewBox="0 0 24 24"><path d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 5a2 2 0 0 1 2-2Z"/></symbol>
+    <symbol id="i-send" viewBox="0 0 24 24"><path d="M3 11.5 21 3l-6.5 18-3.5-7.5Z M11 13.5 21 3"/></symbol>
+    <symbol id="i-mail" viewBox="0 0 24 24"><path d="M3 5h18v14H3Z M3 6l9 7 9-7"/></symbol>
+    <symbol id="i-wa" viewBox="0 0 24 24"><path d="M4 20l1.3-4A8 8 0 1 1 8 18.7Z M9 8.5c0 3.5 3 6.5 6.5 6.5l1-1.5-2-1-1 .8a5 5 0 0 1-2.3-2.3l.8-1-1-2Z"/></symbol>
+    <symbol id="i-uhr" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Z M12 7v5l3.5 2"/></symbol>
+    <symbol id="i-netz" viewBox="0 0 24 24"><path d="M10 2h4 M12 2 7 22 M12 2l5 20 M4 7h16 M8.4 15h7.2 M7.6 19l8.6-4 M7.8 15l8.6 4"/></symbol>
+    <symbol id="i-v2h" viewBox="0 0 24 24"><path d="M4 8.5h14 M15 5.5l3 3-3 3 M20 15.5H6 M9 12.5l-3 3 3 3"/></symbol>
+    <symbol id="i-puls" viewBox="0 0 24 24"><path d="M2 12h4.5l2-5 4 10 2.5-6 1.5 1H22"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><path d="M5.5 11h13v10h-13Z M8.5 11V8a3.5 3.5 0 0 1 7 0v3 M12 14.5v3"/></symbol>
+    <symbol id="i-ww" viewBox="0 0 24 24"><path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11Z"/></symbol>
+    <symbol id="i-mic" viewBox="0 0 24 24"><path d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3Z M5 11a7 7 0 0 0 14 0 M12 18v3"/></symbol>
+    <symbol id="i-ecke" viewBox="0 0 24 24"><path d="M7 17 17 7 M8 7h9v9"/></symbol>
+    <symbol id="i-pfeil" viewBox="0 0 24 24"><path d="M5 12h14 M13 6l6 6-6 6"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21Z M12 7a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5Z"/></symbol>
+  </defs>
+</svg>
+
+<a class="skip" href="#inhalt">Zum Inhalt springen</a>
+
+<header class="top" id="top">
+  <div class="wrap top-row">
+    <a class="brand" href="../" aria-label="VOLTHERM Startseite">
+      <span class="logo-box"><svg viewBox="0 0 300 300" aria-hidden="true"><use href="#logo"/></svg></span>
+      <span class="brand-txt"><span class="wm">VOLT<span>HERM</span></span><small>INTEGRATED SOLUTIONS</small></span>
+    </a>
+    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="nav"><span></span><span class="sr">Menü</span></button>
+    <nav id="nav" class="nav">
+      <a href="../#leistungen">Leistungen</a>
+      <a href="../#smart">Smart Energy</a>
+      <a href="../#hub">VOLTHERM Hub</a>
+      <a href="../#ki">KI</a>
+      <a href="../#ablauf">Ablauf</a>
+      <a href="../#ueber-uns">Über uns</a>
+      <a href="./" aria-current="page">Rechner</a>
+      <a href="tel:+4915568656548" class="nav-tel"><svg class="ic" aria-hidden="true"><use href="#i-tel"/></svg>+49 1556 8656548</a>
+      <a href="../#kontakt" class="btn btn-sm">Beratung anfragen</a>
+    </nav>
+  </div>
+</header>
+
+<main id="inhalt">
+<section class="r-intro">
+  <div class="wrap">
+    <p class="kicker">WIRTSCHAFTLICHKEITSRECHNER</p>
+    <h1>Was bringt <span class="grad">Photovoltaik, Speicher und Energiemanagement</span> für Ihr Haus?</h1>
+    <p class="lead">Tragen Sie Ihren Verbrauch, Ihre Heizung und Ihre Tarife ein. Der Rechner simuliert jede Stunde eines typischen Jahres in Nordbayern und zeigt, was sich lohnt: Solaranlage, Speicher, Kaskadenmessung für die Wärmepumpe und das Energiemanagement VOLTHERM.</p>
+    <ul class="haken"><li>Kostenlos und ohne Anmeldung</li><li>Rechnet nur in Ihrem Browser</li><li>Ergebnis als PDF</li></ul>
+  </div>
+</section>
+
+<div class="rechner">
+<div class="r-wrap">
+<div class="r-kopf">
+  <p class="r-hinweis">Alle Werte lassen sich ändern. Das Ergebnis rechnet sofort neu.</p>
+  <div class="actions">
+    <select id="kundenListe" aria-label="Gespeicherte Berechnungen" style="width:auto;min-width:170px"><option value="">Gespeicherte Berechnungen …</option></select>
+    <button id="btnSave" type="button">Berechnung speichern</button>
+    <button id="btnPdf" type="button" class="primary">Ergebnis als PDF</button>
+  </div>
+</div>
+<p class="status" id="status" role="status"></p>
+
+<div class="app">
+<form class="inputs" id="form" autocomplete="off">
+  <div class="sample" id="sampleNote">Beispielwerte geladen. Tragen Sie Ihre Werte aus der Stromrechnung ein.</div>
+
+  <details class="grp" open><summary>Ihre Angaben <span class="hint">nur für das PDF</span></summary>
+    <div class="fields">
+      <div class="f full"><label for="kName">Name</label><input type="text" id="kName" data-p="kName" value="" placeholder="optional"></div>
+      <div class="f full"><label for="kOrt">Adresse / Ort</label><input type="text" id="kOrt" data-p="kOrt" value="" placeholder="optional"></div>
+    </div>
+  </details>
+
+  <details class="grp" open><summary>Verbrauch <span class="hint">laut Rechnung</span></summary>
+    <div class="fields">
+      <div class="f"><label for="house">Haushaltsstrom <span class="u">kWh/a</span></label><input type="number" id="house" data-p="house" value="4500" min="0" step="100"></div>
+      <div class="f"><label for="car">E-Auto <span class="u">kWh/a</span></label><input type="number" id="car" data-p="car" value="2500" min="0" step="100"></div>
+      <div class="f"><label for="carKw">Wallbox-Leistung <span class="u">kW</span></label><input type="number" id="carKw" data-p="carKw" value="11" min="1.4" step="0.1"></div>
+      <div class="f"><label for="carHome">Auto tagsüber zu Hause <span class="u">% der Tage</span></label><input type="number" id="carHome" data-p="carHome" value="40" min="0" max="100" step="5"></div>
+    </div>
+  </details>
+
+  <details class="grp" open><summary>Heizung &amp; Zähler <span class="hint">Ist-Zustand</span></summary>
+    <div class="fields">
+      <div class="f full"><label for="heatType">Heizungsart</label>
+        <select id="heatType" data-p="heatType">
+          <option value="wp" selected>Wärmepumpe</option>
+          <option value="ns">Nachtspeicher / Elektro-Direktheizung</option>
+          <option value="fossil">Öl / Gas</option>
+          <option value="none">Keine elektrische Heizung (Holz, Fernwärme …)</option>
+        </select></div>
+      <div class="f el"><label for="heatKwh">Strom für Heizung <span class="u">kWh/a</span></label><input type="number" id="heatKwh" data-p="heatKwh" value="4500" min="0" step="100"></div>
+      <div class="f wpo"><label for="wwShare">davon Warmwasser <span class="u">%</span></label><input type="number" id="wwShare" data-p="wwShare" value="20" min="0" max="60" step="5"></div>
+      <div class="f wpo"><label for="wpKw">WP elektr. Leistung <span class="u">kW</span></label><input type="number" id="wpKw" data-p="wpKw" value="3" min="0.5" step="0.1"></div>
+      <div class="f wpo"><label for="jaz">Jahresarbeitszahl</label><input type="number" id="jaz" data-p="jaz" value="3.5" min="1" step="0.1"></div>
+      <label class="chk wpo"><input type="checkbox" id="m14a" data-p="m14a" checked> WP ist steuerbar nach §14a EnWG (ab 2024 / &gt; 4,2 kW)</label>
+      <div class="f fos"><label for="fuel">Wärmepreis Öl/Gas <span class="u">ct/kWh Wärme</span></label><input type="number" id="fuel" data-p="fuel" value="12" min="0" step="0.5"></div>
+      <div class="f el full"><label for="istMeter">Zähler heute</label>
+        <select id="istMeter" data-p="istMeter">
+          <option value="A">Ein Zähler für alles</option>
+          <option value="C" selected>Getrennter Heizstrom-Zähler (parallel)</option>
+          <option value="B">Kaskadenmessung (bereits vorhanden)</option>
+        </select></div>
+    </div>
+  </details>
+
+  <details class="grp" open><summary>Tarife <span class="hint">brutto</span></summary>
+    <div class="fields">
+      <div class="f"><label for="tH">Haushaltstarif <span class="u">ct/kWh</span></label><input type="number" id="tH" data-p="tH" value="33" min="0" step="0.1"></div>
+      <div class="f"><label for="gH">Grundpreis Haushalt <span class="u">€/Monat</span></label><input type="number" id="gH" data-p="gH" value="14" min="0" step="0.5"></div>
+      <div class="f el"><label for="tW">Heizstrom-/WP-Tarif <span class="u">ct/kWh</span></label><input type="number" id="tW" data-p="tW" value="26" min="0" step="0.1"></div>
+      <div class="f el"><label for="gW">Grundpreis Heizstrom <span class="u">€/Monat</span></label><input type="number" id="gW" data-p="gW" value="10" min="0" step="0.5"></div>
+      <div class="f el"><label for="meter2">Gebühr zweiter Zähler <span class="u">€/a</span></label><input type="number" id="meter2" data-p="meter2" value="60" min="0" step="5"></div>
+      <div class="f wpo"><label for="modul1">§14a Modul 1 Pauschale <span class="u">€/a</span></label><input type="number" id="modul1" data-p="modul1" value="140" min="0" step="5"></div>
+      <div class="f"><label for="ev1">Einspeisung bis 10 kWp <span class="u">ct/kWh</span></label><input type="number" id="ev1" data-p="ev1" value="7.8" min="0" step="0.01"></div>
+      <div class="f"><label for="ev2">Einspeisung über 10 kWp <span class="u">ct/kWh</span></label><input type="number" id="ev2" data-p="ev2" value="6.8" min="0" step="0.01"></div>
+      <div class="f"><label for="infl">Strompreissteigerung <span class="u">%/a</span></label><input type="number" id="infl" data-p="infl" value="2" min="-5" step="0.5"></div>
+      <div class="f"><label for="years">Betrachtungszeitraum <span class="u">Jahre</span></label><input type="number" id="years" data-p="years" value="20" min="5" max="30" step="1"></div>
+    </div>
+  </details>
+
+  <details class="grp" open><summary>PV-Anlage</summary>
+    <div class="fields">
+      <label class="chk"><input type="checkbox" id="pvExist" data-p="pvExist"> PV-Anlage ist schon vorhanden</label>
+      <div class="f"><label for="pvKwp">Leistung <span class="u">kWp</span></label><input type="number" id="pvKwp" data-p="pvKwp" value="12" min="0" step="0.1"></div>
+      <div class="f"><label for="ori">Ausrichtung</label>
+        <select id="ori" data-p="ori">
+          <option value="S" selected>Süd</option><option value="SO">Süd-Ost</option><option value="SW">Süd-West</option>
+          <option value="OW">Ost-West</option><option value="O">Ost</option><option value="W">West</option>
+        </select></div>
+      <div class="f"><label for="spez">Spez. Ertrag Süd <span class="u">kWh/kWp·a</span></label><input type="number" id="spez" data-p="spez" value="1000" min="500" step="10"></div>
+      <div class="f"><label for="limit">Einspeisegrenze</label>
+        <select id="limit" data-p="limit">
+          <option value="0">keine</option><option value="60" selected>60 % (neue Anlage ohne Steuerbox)</option><option value="70">70 % (Altanlage)</option>
+        </select></div>
+    </div>
+  </details>
+
+  <details class="grp" open><summary>Speicher</summary>
+    <div class="fields">
+      <label class="chk"><input type="checkbox" id="battExist" data-p="battExist"> Speicher ist schon vorhanden</label>
+      <div class="f"><label for="battKwh">Nutzbare Kapazität <span class="u">kWh</span></label><input type="number" id="battKwh" data-p="battKwh" value="10.24" min="0" step="0.01"></div>
+      <div class="f"><label for="battKw">Lade-/Entladeleistung <span class="u">kW</span></label><input type="number" id="battKw" data-p="battKw" value="5" min="0" step="0.1"></div>
+    </div>
+  </details>
+
+  <details class="grp"><summary>eTherm / Heizstab <span class="hint">PV-Überschuss in Wärme</span></summary>
+    <div class="fields">
+      <div class="f full"><label for="ethMode">Heizstab</label>
+        <select id="ethMode" data-p="ethMode">
+          <option value="none" selected>kein Heizstab</option><option value="new">wird neu eingebaut</option><option value="exist">vorhanden, bisher ohne Regelung</option>
+        </select></div>
+      <div class="f"><label for="ethKw">Leistung <span class="u">kW</span></label><input type="number" id="ethKw" data-p="ethKw" value="9" min="0" step="0.5"></div>
+      <div class="f"><label for="ethSteps">Stufen</label><input type="number" id="ethSteps" data-p="ethSteps" value="3" min="1" max="9" step="1"></div>
+      <div class="f full"><label for="ethDay">Wärmeabnahme Speicher/Puffer <span class="u">kWh/Tag</span></label><input type="number" id="ethDay" data-p="ethDay" value="12" min="0" step="1"></div>
+    </div>
+  </details>
+
+  <details class="grp"><summary>VOLTHERM HEMS <span class="hint">Regelung</span></summary>
+    <div class="fields">
+      <div class="f full"><label for="flex">WP-Heizenergie in PV-Stunden verschiebbar <span class="u">%</span></label><input type="number" id="flex" data-p="flex" value="30" min="0" max="80" step="5"></div>
+      <p class="note">VOLTHERM legt per SG-Ready den genannten Anteil der Heizenergie und das komplette Warmwasser in Stunden mit PV-Überschuss, lädt das E-Auto mit Überschuss (evcc), steuert den Heizstab stufenweise und hält mit der PV-Prognose Speicherplatz für die Mittagsspitze frei, damit weniger abgeregelt wird.</p>
+    </div>
+  </details>
+
+  <details class="grp"><summary>Preise <span class="market">Marktwerte</span></summary>
+    <div class="fields">
+      <div class="f"><label for="pPv">PV inkl. Montage <span class="u">€/kWp</span></label><input type="number" id="pPv" data-p="pPv" value="1300" min="0" step="10"></div>
+      <div class="f"><label for="pBatt">Speicher <span class="u">€/kWh</span></label><input type="number" id="pBatt" data-p="pBatt" value="650" min="0" step="10"></div>
+      <div class="f"><label for="pHems">VOLTHERM HEMS <span class="u">€</span></label><input type="number" id="pHems" data-p="pHems" value="1900" min="0" step="50"></div>
+      <div class="f"><label for="pEth">Heizstab inkl. Ansteuerung <span class="u">€</span></label><input type="number" id="pEth" data-p="pEth" value="900" min="0" step="50"></div>
+      <div class="f el"><label for="pZp">Neuer Zählerplatz <span class="u">€</span></label><input type="number" id="pZp" data-p="pZp" value="1500" min="0" step="50"></div>
+      <div class="f el"><label for="pKask">Umbau auf Kaskade <span class="u">€</span></label><input type="number" id="pKask" data-p="pKask" value="700" min="0" step="50"></div>
+      <div class="f"><label for="maint">PV Betrieb/Versicherung <span class="u">€/a</span></label><input type="number" id="maint" data-p="maint" value="150" min="0" step="10"></div>
+      <div class="f"><label for="deg">Modulalterung <span class="u">%/a</span></label><input type="number" id="deg" data-p="deg" value="0.5" min="0" step="0.1"></div>
+    </div>
+  </details>
+</form>
+
+<section class="results" aria-live="polite">
+  <div class="panel">
+    <h2>Ergebnis auf einen Blick</h2>
+    <p class="sub" id="subLine"></p>
+    <div class="verdicts" id="verdicts"></div>
+  </div>
+
+  <div class="panel">
+    <h2>Szenarien im Vergleich</h2>
+    <p class="sub">Jährliche Energiekosten im ersten Jahr, jeweils mit der günstigsten Zählervariante. Ersparnis gegenüber heute.</p>
+    <div class="tbl"><table id="tblScen"></table></div>
+  </div>
+
+  <div class="panel chart">
+    <h2>Kumulierter Gewinn</h2>
+    <p class="sub">Investition zu Beginn, danach die jährliche Ersparnis mit Strompreissteigerung und Modulalterung.</p>
+    <div id="chart"></div>
+    <div class="legend" id="legend"></div>
+  </div>
+
+  <div class="split">
+    <div class="panel" id="panelMeter">
+      <h2>Kaskadenmessung: lohnt sich der zweite Zähler?</h2>
+      <p class="sub" id="meterSub"></p>
+      <div class="tbl"><table id="tblMeter"></table></div>
+    </div>
+    <div class="panel">
+      <h2>Mehrwert durch VOLTHERM</h2>
+      <p class="sub" id="voltSub"></p>
+      <div class="bars" id="voltBars"></div>
+      <div class="kpis" id="voltKpis"></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Energiebilanz</h2>
+    <div class="tbl"><table id="tblEnergy"></table></div>
+  </div>
+
+  <div class="panel">
+    <h2>Annahmen</h2>
+    <ul class="ann">
+      <li>Stündliche Simulation über 8760 Stunden mit typischem Wetterjahr für Nordbayern, Haushaltsprofil ähnlich H0, Heizlast nach Gradtagen.</li>
+      <li>Kaskadenmessung: Netzbezug der Wärmepumpe wird anteilig je Stunde zum Heizstromtarif abgerechnet, der Rest zum Haushaltstarif. Der zweite Zähler kostet Grundpreis Heizstrom plus Zählergebühr.</li>
+      <li>Getrennter Zähler (parallel): Die Wärmepumpe bekommt keinen PV-Strom, alles kommt aus dem Netz zum Heizstromtarif.</li>
+      <li>Ein Zähler: Alles zum Haushaltstarif, bei steuerbarer WP abzüglich §14a Modul 1 Pauschale.</li>
+      <li>Speicher mit 90 % Wirkungsgrad. Ohne VOLTHERM lädt das E-Auto ab 18 Uhr mit voller Leistung und der Heizstab bleibt aus.</li>
+      <li>Heizstab-Wärme ersetzt Öl/Gas zum Wärmepreis oder WP-Strom geteilt durch die Jahresarbeitszahl.</li>
+      <li>Unverbindliche Modellrechnung. Tatsächliche Werte hängen von Wetter, Verhalten und Tarifen ab.</li>
+    </ul>
+  </div>
+</section>
+</div>
+</div>
+
+<script>
+(function(){
+"use strict";
+const $=id=>document.getElementById(id);
+const eur=new Intl.NumberFormat("de-DE",{style:"currency",currency:"EUR",maximumFractionDigits:0});
+const n0=new Intl.NumberFormat("de-DE",{maximumFractionDigits:0});
+const n1=new Intl.NumberFormat("de-DE",{maximumFractionDigits:1,minimumFractionDigits:1});
+const pct=v=>n0.format(Math.round(v*100))+" %";
+
+/* ---------- Profile ---------- */
+const MON_DAYS=[31,28,31,30,31,30,31,31,30,31,30,31];
+const PV_MON=[2.5,4.5,8,11,12.5,12.5,13,11.5,9,6,3,2];
+const HALF=[4.2,5,5.9,6.8,7.6,8.1,7.9,7.2,6.3,5.4,4.5,4.0];
+const HDD=[17,14.5,12.5,8,4,1,0.3,0.3,2.5,7,12,16];
+const H0=[.42,.36,.33,.32,.33,.40,.62,.90,.95,.85,.80,.82,.88,.80,.72,.70,.78,.98,1.25,1.35,1.28,1.05,.80,.58];
+const HS=h=>h<8?1.15:h<12?1.0:h<17?0.9:1.05;
+const ORI={S:{f:1,p:[[1,0]]},SO:{f:.96,p:[[1,-.8]]},SW:{f:.96,p:[[1,.8]]},OW:{f:.86,p:[[.5,-2.2],[.5,2.2]]},O:{f:.84,p:[[1,-2.2]]},W:{f:.84,p:[[1,2.2]]}};
+const ORI_TXT={S:"Süd",SO:"Süd-Ost",SW:"Süd-West",OW:"Ost-West",O:"Ost",W:"West"};
+function rng(seed){return()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296}}
+
+function buildProfiles(P){
+  const r=rng(20261028);
+  const pv=new Float64Array(8760),house=new Float64Array(8760),heat=new Float64Array(8760),ww=new Float64Array(8760),home=new Uint8Array(365);
+  const ori=ORI[P.ori]||ORI.S, monSum=PV_MON.reduce((a,b)=>a+b,0);
+  const annual=P.pvKwp*P.spez*ori.f;
+  let d=0;
+  for(let m=0;m<12;m++){
+    const nd=MON_DAYS[m],noon=(m>=3&&m<=9)?13.2:12.2,H=HALF[m];
+    const pSun=.22+.25*Math.sin(Math.PI*m/11);
+    let tot=0;const start=d;
+    for(let k=0;k<nd;k++,d++){
+      const x=r(),wf=x<pSun?1.35:(x<pSun+.4?.9:.35);
+      for(let h=0;h<24;h++){
+        let v=0;
+        for(let s=0;s<4;s++){const t=h+(s+.5)/4;if(Math.abs(t-noon)>=H)continue;
+          for(const [sh,shift] of ori.p){const u=(t-(noon+shift))/H;if(Math.abs(u)<1)v+=sh*Math.pow(Math.cos(u*Math.PI/2),1.4)/4;}}
+        v*=wf;if(wf>.5&&wf<1)v*=.6+.8*r();
+        pv[d*24+h]=v;tot+=v;
+      }
+    }
+    const f=tot>0?annual*PV_MON[m]/monSum/tot:0;
+    for(let i=start*24;i<d*24;i++)pv[i]*=f;
+  }
+  // Haushalt
+  let hs=0;
+  for(let dd=0;dd<365;dd++){const sea=1+.15*Math.cos(2*Math.PI*(dd-15)/365),nz=.9+.2*r();
+    for(let h=0;h<24;h++){const v=H0[h]*sea*nz;house[dd*24+h]=v;hs+=v;}}
+  for(let i=0;i<8760;i++)house[i]*=P.house/hs;
+  // Heizung
+  const elec=P.heatType==="wp"||P.heatType==="ns";
+  if(elec&&P.heatKwh>0){
+    const wwShare=P.heatType==="wp"?P.wwShare/100:0;
+    let ht=0;d=0;
+    for(let m=0;m<12;m++)for(let k=0;k<MON_DAYS[m];k++,d++){
+      const dw=HDD[m]/MON_DAYS[m]*(.85+.3*r());
+      for(let h=0;h<24;h++){const w=P.heatType==="ns"?((h>=22||h<6)?1:0):HS(h);const v=dw*w;heat[d*24+h]=v;ht+=v;}
+    }
+    for(let i=0;i<8760;i++)heat[i]*=P.heatKwh*(1-wwShare)/ht;
+    const wwd=P.heatKwh*wwShare/365;
+    for(let dd=0;dd<365;dd++){ww[dd*24+5]=wwd/2;ww[dd*24+6]=wwd/2;}
+  }
+  for(let dd=0;dd<365;dd++)home[dd]=r()<P.carHome/100?1:0;
+  return{pv,house,heat,ww,home};
+}
+
+/* ---------- Simulation ---------- */
+function sim(P,prof,o){
+  const cap=(o.pv&&P.limit>0)?P.pvKwp*P.limit/100:Infinity;
+  const C=o.batt?P.battKwh:0,Pb=o.batt?P.battKw:0,ec=.95,ed=.95;
+  const eth=o.eth&&P.ethMode!=="none"&&P.ethKw>0;
+  const step=P.ethKw/Math.max(1,Math.round(P.ethSteps));
+  const isWP=P.heatType==="wp";
+  let soc=C*.3;
+  const R={imH:0,imW:0,ex:0,clip:0,pv:0,load:0,eth:0,wpLoad:0};
+  const pv=new Array(24),house=new Array(24),wp=new Array(24),wpF=new Array(24),car=new Array(24),over=new Array(24);
+  for(let d=0;d<365;d++){
+    const b=d*24;let flexE=0;
+    for(let h=0;h<24;h++){
+      pv[h]=o.pv?prof.pv[b+h]:0;house[h]=prof.house[b+h];car[h]=0;
+      const he=prof.heat[b+h],w=prof.ww[b+h];
+      if(o.wpShift&&isWP&&o.wpOnPV){wp[h]=he*(1-P.flex/100);wpF[h]=he*P.flex/100+w;flexE+=wpF[h];}
+      else{wp[h]=he+w;wpF[h]=0;}
+    }
+    if(flexE>0){
+      const sur=h=>pv[h]-house[h]-wp[h];let rem=flexE;
+      const hrs=[...Array(24).keys()].filter(h=>sur(h)>.1).sort((a,c)=>sur(c)-sur(a));
+      for(const h of hrs){const g=Math.min(rem,sur(h),Math.max(0,P.wpKw-wp[h]));if(g>0){wp[h]+=g;rem-=g;}if(rem<=1e-9)break;}
+      if(rem>1e-9){const f=rem/flexE;for(let h=0;h<24;h++)wp[h]+=wpF[h]*f;}
+    }
+    let carE=P.car>0?P.car/365:0;
+    if(carE>0){
+      if(o.car&&prof.home[d]){
+        const sur=h=>pv[h]-house[h]-(o.wpOnPV?wp[h]:0)-car[h];
+        const hrs=[9,10,11,12,13,14,15,16].sort((a,c)=>sur(c)-sur(a));
+        for(const h of hrs){const s=sur(h);if(s>=1.4){const g=Math.min(carE,s,P.carKw);car[h]+=g;carE-=g;}if(carE<=1e-9)break;}
+      }
+      for(let h=18;h<24&&carE>1e-9;h++){const g=Math.min(carE,P.carKw);car[h]+=g;carE-=g;}
+    }
+    let overRem=0;
+    for(let h=0;h<24;h++){const n=pv[h]-house[h]-(o.wpOnPV?wp[h]:0)-car[h];over[h]=cap<Infinity?Math.max(0,n-cap):0;overRem+=over[h];}
+    let ethLeft=eth?P.ethDay:0;
+    for(let h=0;h<24;h++){
+      const lw=o.wpOnPV?wp[h]:0,load=house[h]+lw+car[h];
+      let n=pv[h]-load;
+      R.pv+=pv[h];R.load+=house[h]+wp[h]+car[h];R.wpLoad+=wp[h];
+      overRem-=over[h];
+      if(n>0){
+        if(C>0){
+          let lim=C;
+          if(o.clip&&cap<Infinity&&n<=cap)lim=C-Math.min(overRem*ec,C*.9);
+          const ch=Math.min(n,Pb,Math.max(0,(lim-soc)/ec));
+          soc+=ch*ec;n-=ch;
+        }
+        if(ethLeft>0&&step>0){const u=Math.min(Math.floor((n+1e-9)/step)*step,P.ethKw,ethLeft);if(u>0){n-=u;ethLeft-=u;R.eth+=u;}}
+        const ex=Math.min(n,cap);R.ex+=ex;R.clip+=n-ex;
+      }else{
+        const def=-n,dis=Math.min(def,Pb,soc*ed);soc-=dis/ed;const imp=def-dis;
+        const sh=load>0?lw/load:0;R.imW+=imp*sh;R.imH+=imp*(1-sh);
+      }
+      if(!o.wpOnPV)R.imW+=wp[h];
+    }
+  }
+  return R;
+}
+
+/* ---------- Kosten ---------- */
+const elecHeat=P=>P.heatType==="wp"||P.heatType==="ns";
+const feedRate=P=>P.pvKwp<=0?0:(Math.min(P.pvKwp,10)*P.ev1+Math.max(P.pvKwp-10,0)*P.ev2)/P.pvKwp/100;
+function heatValue(P,v){
+  if(P.heatType==="wp")return(v==="A"?P.tH:P.tW)/100/P.jaz;
+  if(P.heatType==="ns")return(v==="A"?P.tH:P.tW)/100;
+  return P.fuel/100;
+}
+function cost(P,R,v,o){
+  const H=P.tH/100,W=P.tW/100;
+  const energy=v==="A"?(R.imH+R.imW)*H:R.imH*H+R.imW*W;
+  const fixed=P.gH*12+(v!=="A"?P.gW*12+P.meter2:0)-(v==="A"&&P.heatType==="wp"&&P.m14a?P.modul1:0);
+  const credit=R.eth*heatValue(P,v);
+  const feed=R.ex*feedRate(P);
+  const maint=o.pv?P.maint:0;
+  return{energy,fixed,credit,feed,maint,grid:energy+fixed-credit,total:energy+fixed-credit-feed+maint};
+}
+function umbau(P,v){
+  const ist=P.istMeter;
+  if(v===ist||v==="A")return 0;
+  if(v==="C")return ist==="A"?P.pZp:0;
+  return ist==="A"?P.pZp:P.pKask;
+}
+const VAR_TXT={A:"Ein Zähler",B:"Kaskadenmessung",C:"Getrennter WP-Zähler"};
+
+function irr(cfs){
+  const npv=r=>cfs.reduce((s,c,i)=>s+c/Math.pow(1+r,i),0);
+  let lo=-.9,hi=1;if(npv(lo)*npv(hi)>0)return null;
+  for(let i=0;i<80;i++){const m=(lo+hi)/2;if(npv(lo)*npv(m)<=0)hi=m;else lo=m;}
+  return(lo+hi)/2;
+}
+
+function calc(P){
+  const prof=buildProfiles(P);
+  const cache=new Map();
+  const run=o=>{const k=JSON.stringify(o);if(!cache.has(k))cache.set(k,sim(P,prof,o));return cache.get(k);};
+  const variants=elecHeat(P)?["A","B","C"]:["A"];
+  if(!elecHeat(P))P.istMeter="A";
+  const hasPv=P.pvKwp>0,hasBatt=P.battKwh>0;
+  const pvNew=hasPv&&!P.pvExist,battNew=hasBatt&&!P.battExist;
+  const NONE={wpShift:false,car:false,eth:false,clip:false};
+  const ALL={wpShift:true,car:true,eth:true,clip:true};
+  const evalCfg=(base,v)=>{const o={...base,wpOnPV:v!=="C"};const R=run(o);return{v,R,c:cost(P,R,v,o),u:umbau(P,v),o};};
+
+  const istBase={pv:hasPv&&P.pvExist,batt:hasBatt&&P.battExist&&P.pvExist,...NONE};
+  const ist=evalCfg(istBase,P.istMeter);
+
+  const scen=[];
+  scen.push({key:"ist",name:"Heute",base:istBase,invest:0,fixedV:P.istMeter});
+  let inv=0;
+  if(pvNew&&battNew){scen.push({key:"pv",name:"PV ohne Speicher",base:{pv:true,batt:false,...NONE},invest:P.pvKwp*P.pPv});}
+  if(pvNew||battNew){
+    inv=(pvNew?P.pvKwp*P.pPv:0)+(battNew?P.battKwh*P.pBatt:0);
+    const nm=pvNew?(hasBatt?"PV + Speicher":"PV-Anlage"):"Speicher nachrüsten";
+    scen.push({key:"pvb",name:nm,base:{pv:hasPv,batt:hasBatt,...NONE},invest:inv});
+  }
+  const ethHw=P.ethMode==="new"&&P.ethKw>0?P.pEth:0;
+  scen.push({key:"volt",name:(pvNew||battNew?scen[scen.length-1].name+" + ":"")+"VOLTHERM",base:{pv:hasPv,batt:hasBatt,...ALL},invest:inv+P.pHems+ethHw,volt:true});
+
+  const N=Math.round(P.years),infl=P.infl/100,deg=P.deg/100;
+  for(const s of scen){
+    const vs=s.fixedV?[s.fixedV]:variants;
+    s.all=vs.map(v=>evalCfg(s.base,v));
+    s.all.forEach(e=>e.score=e.c.total*N+e.u);
+    s.best=s.all.reduce((a,b)=>b.score<a.score?b:a);
+    s.totalInvest=s.invest+s.best.u;
+    const cf=[-s.totalInvest];const cum=[-s.totalInvest];
+    for(let y=1;y<=N;y++){
+      const g=(ist.c.grid-s.best.c.grid)*Math.pow(1+infl,y-1);
+      const f=s.best.c.feed-ist.c.feed;
+      const sv=(g+f)*Math.pow(1-deg,y-1)-(s.best.c.maint-ist.c.maint);
+      cf.push(sv);cum.push(cum[y-1]+sv);
+    }
+    s.cf=cf;s.cum=cum;s.save1=cf[1]||0;
+    s.payback=null;
+    for(let y=1;y<=N;y++)if(cum[y]>=0){const prev=cum[y-1];s.payback=y-1+(-prev)/(cum[y]-prev);break;}
+    s.irr=s.totalInvest>0?irr(cf):null;
+    s.profit=cum[N];
+  }
+  const sv=scen.find(s=>s.key==="volt"),sPrev=scen[scen.length-2];
+
+  // VOLTHERM-Mehrwert nach Mechanismus (gleiche Zählervariante wie VOLTHERM-Szenario)
+  const vb=sv.best.v;
+  const steps=[["wpShift","Wärmepumpe läuft mit PV-Überschuss"],["car","E-Auto lädt mit PV-Überschuss"],["eth","Heizstab nutzt Überschuss"],["clip","Weniger Abregelung durch Prognose"]];
+  let cur={...sv.base,...NONE};let prevCost=evalCfg(cur,vb).c.total;
+  const parts=[];
+  for(const [k,label] of steps){cur={...cur,[k]:true};const c=evalCfg(cur,vb).c.total;parts.push({label,val:prevCost-c});prevCost=c;}
+  const prevBestAtVb=evalCfg({...sv.base,...NONE},vb).c.total;
+  const meterShift=(sPrev.best.c.total-prevBestAtVb);
+  if(Math.abs(meterShift)>=5)parts.push({label:"Andere Zählervariante wird günstiger",val:meterShift});
+  const voltGain=sPrev.best.c.total-sv.best.c.total;
+  const voltInvest=P.pHems+ethHw+(sv.best.u-sPrev.best.u);
+  const voltPayback=voltGain>0?voltInvest/voltGain:null;
+
+  return{P,prof,ist,scen,sv,sPrev,parts,voltGain,voltInvest,voltPayback,variants,N};
+}
+
+/* ---------- Bewertung ---------- */
+function rate(pb,good,ok){if(pb==null)return["bad","Lohnt sich nicht"];if(pb<=good)return["good","Lohnt sich"];if(pb<=ok)return["warn","Knapp"];return["bad","Lohnt sich nicht"];}
+function meterVerdict(res){
+  const P=res.P;
+  if(!elecHeat(P))return{cls:"na",txt:"Nicht relevant",big:"–",line:"Keine elektrische Heizung, ein Zähler reicht."};
+  const s=res.sv;const B=s.all.find(e=>e.v==="B");
+  const others=s.all.filter(e=>e.v!=="B");const alt=others.reduce((a,b)=>b.score<a.score?b:a);
+  const diff=alt.c.total-B.c.total; // >0: Kaskade günstiger pro Jahr
+  const extra=B.u-alt.u;
+  if(diff<=0)return{cls:"bad",txt:"Lohnt sich nicht",big:eur.format(diff)+" /Jahr",line:`${VAR_TXT[alt.v]} ist günstiger. Der Tarifvorteil deckt Grundpreis und Zählergebühr nicht.`,B,alt,diff,extra};
+  const pb=extra>0?extra/diff:0;
+  const [cls,txt]=extra<=0?["good","Lohnt sich"]:rate(pb,5,10);
+  return{cls,txt,big:"+"+eur.format(diff)+" /Jahr",line:extra>0?`Umbau ${eur.format(extra)} ist nach ${n1.format(pb)} Jahren bezahlt (gegenüber ${VAR_TXT[alt.v]}).`:`Ohne Umbaukosten, gegenüber ${VAR_TXT[alt.v]}.`,B,alt,diff,extra,pb};
+}
+
+/* ---------- Darstellung ---------- */
+let LAST=null;
+const COLORS=["var(--muted)","var(--accent)","var(--good)","var(--volt)"];
+function render(res){
+  LAST=res;
+  const {P,scen,sv,sPrev}=res;
+  const main=scen.filter(s=>s.key!=="ist");
+  const inv=main.find(s=>s.key==="pvb")||null;
+  // Verdikte
+  const vd=[];
+  if(inv){const [c,t]=rate(inv.payback,12,16);vd.push({k:inv.name,cls:c,txt:t,big:inv.payback!=null?n1.format(inv.payback)+" Jahre":"> "+res.N+" Jahre",line:`Amortisation bei ${eur.format(inv.totalInvest)} Investition, ${eur.format(inv.save1)} Ersparnis im 1. Jahr.`});}
+  const mv=meterVerdict(res);vd.push({k:"Kaskadenmessung",...mv});
+  const [vc,vt]=res.voltGain>0?rate(res.voltPayback,6,10):["bad","Lohnt sich nicht"];
+  vd.push({k:"VOLTHERM HEMS",cls:vc,txt:vt,big:"+"+eur.format(Math.max(0,res.voltGain))+" /Jahr",line:res.voltPayback!=null?`${eur.format(res.voltInvest)} sind nach ${n1.format(res.voltPayback)} Jahren zurück.`:"Kein messbarer Vorteil mit diesen Daten."});
+  $("verdicts").innerHTML=vd.map(v=>`<div class="verdict"><span class="k">${esc(v.k)}</span><span class="pill ${v.cls}">${v.txt}</span><span class="big">${v.big}</span><p>${esc(v.line)}</p></div>`).join("");
+  $("subLine").textContent=`${P.kName?P.kName+" · ":""}${n0.format(P.house)} kWh Haushalt${elecHeat(P)?" · "+n0.format(P.heatKwh)+" kWh Heizung":""}${P.car>0?" · "+n0.format(P.car)+" kWh E-Auto":""} · ${n1.format(P.pvKwp)} kWp ${ORI_TXT[P.ori]}${P.battKwh>0?" · "+n1.format(P.battKwh)+" kWh Speicher":""}`;
+
+  // Szenarien
+  let h=`<thead><tr><th>Szenario</th><th>Zähler</th><th>Kosten 1. Jahr</th><th>Ersparnis 1. Jahr</th><th>Investition</th><th>Amortisation</th><th>Rendite</th><th>Gewinn ${res.N} J.</th></tr></thead><tbody>`;
+  for(const s of scen){
+    const isIst=s.key==="ist";
+    h+=`<tr class="${s.volt?"volt":""}"><td>${esc(s.name)}</td><td>${VAR_TXT[s.best.v]}</td><td class="num">${eur.format(s.best.c.total)}</td>`+
+      (isIst?`<td class="num">–</td><td class="num">–</td><td class="num">–</td><td class="num">–</td><td class="num">–</td>`:
+      `<td class="num ${s.save1>=0?"pos":"neg"}">${eur.format(s.save1)}</td><td class="num">${eur.format(s.totalInvest)}</td><td class="num">${s.payback!=null?n1.format(s.payback)+" J.":"–"}</td><td class="num">${s.irr!=null?n1.format(s.irr*100)+" %":"–"}</td><td class="num ${s.profit>=0?"pos":"neg"}">${eur.format(s.profit)}</td>`)+`</tr>`;
+  }
+  $("tblScen").innerHTML=h+"</tbody>";
+
+  // Chart
+  $("chart").innerHTML=chartSvg(res,false);
+  $("legend").innerHTML=main.map((s,i)=>`<span><i style="background:${COLORS[(i+1)%COLORS.length]}"></i>${esc(s.name)}</span>`).join("");
+
+  // Zähler
+  if(elecHeat(P)){
+    $("panelMeter").hidden=false;
+    $("meterSub").textContent=`Mit ${sv.name}. Zusatzkosten zweiter Zähler: ${eur.format(P.gW*12+P.meter2)} pro Jahr (Grundpreis Heizstrom + Zählergebühr). Tarifvorteil: ${n1.format(P.tH-P.tW)} ct/kWh.`;
+    let t=`<thead><tr><th>Variante</th><th>Netz Haushalt</th><th>Netz Heizung</th><th>Kosten 1. Jahr</th><th>Einmalig</th><th>${res.N} Jahre</th></tr></thead><tbody>`;
+    for(const e of [...sv.all].sort((a,b)=>a.score-b.score)){
+      t+=`<tr class="${e===sv.best?"best":""}"><td>${VAR_TXT[e.v]}${e===sv.best?" ✓":""}</td><td class="num">${n0.format(e.v==="A"?e.R.imH+e.R.imW:e.R.imH)} kWh</td><td class="num">${e.v==="A"?"–":n0.format(e.R.imW)+" kWh"}</td><td class="num">${eur.format(e.c.total)}</td><td class="num">${eur.format(e.u)}</td><td class="num">${eur.format(e.score)}</td></tr>`;
+    }
+    $("tblMeter").innerHTML=t+"</tbody>";
+  }else $("panelMeter").hidden=true;
+
+  // VOLTHERM
+  const max=Math.max(1,...res.parts.map(p=>Math.abs(p.val)));
+  $("voltSub").textContent=`Gegenüber „${sPrev.name}“ ohne Regelung, gleiche Hardware.`;
+  $("voltBars").innerHTML=res.parts.map(p=>`<div class="bar"><span class="lab">${esc(p.label)}</span><span class="val ${p.val>=0?"pos":"neg"}">${p.val>=0?"+":""}${eur.format(p.val)}</span><div class="trk"><div class="fill ${p.val<0?"neg":""}" style="width:${Math.abs(p.val)/max*100}%"></div></div></div>`).join("");
+  const a=sPrev.best.R,b=sv.best.R;
+  $("voltKpis").innerHTML=[
+    ["Mehrwert pro Jahr",eur.format(res.voltGain)],
+    ["Investition",eur.format(res.voltInvest)],
+    ["Amortisation",res.voltPayback!=null?n1.format(res.voltPayback)+" Jahre":"–"],
+    ["Autarkie",pct(1-(a.imH+a.imW)/a.load)+" → "+pct(1-(b.imH+b.imW)/b.load)]
+  ].map(([k,v])=>`<div class="kpi"><div class="k">${k}</div><div class="v">${v}</div></div>`).join("");
+
+  // Energie
+  let e=`<thead><tr><th>Szenario</th><th>PV-Ertrag</th><th>Netzbezug</th><th>Einspeisung</th><th>Abgeregelt</th><th>Heizstab</th><th>Eigenverbrauch</th><th>Autarkie</th></tr></thead><tbody>`;
+  for(const s of scen){const R=s.best.R;
+    e+=`<tr class="${s.volt?"volt":""}"><td>${esc(s.name)}</td><td class="num">${n0.format(R.pv)}</td><td class="num">${n0.format(R.imH+R.imW)}</td><td class="num">${n0.format(R.ex)}</td><td class="num">${n0.format(R.clip)}</td><td class="num">${n0.format(R.eth)}</td><td class="num">${R.pv>0?pct((R.pv-R.ex-R.clip)/R.pv):"–"}</td><td class="num">${pct(1-(R.imH+R.imW)/R.load)}</td></tr>`;}
+  $("tblEnergy").innerHTML=e+"</tbody><caption style='caption-side:bottom;text-align:left;font-size:12px;color:var(--muted);padding-top:6px'>Alle Werte in kWh pro Jahr.</caption>";
+}
+
+function chartSvg(res,forPdf){
+  const W=720,H=300,L=64,Rr=36,T=14,B=34;
+  const main=res.scen.filter(s=>s.key!=="ist");const N=res.N;
+  let lo=0,hi=0;for(const s of main)for(const v of s.cum){lo=Math.min(lo,v);hi=Math.max(hi,v);}
+  const span=hi-lo||1;const stepRaw=span/5,mag=Math.pow(10,Math.floor(Math.log10(stepRaw)));const st=[1,2,2.5,5,10].map(k=>k*mag).find(k=>k>=stepRaw);
+  lo=Math.floor(lo/st)*st;hi=Math.ceil(hi/st)*st;
+  const x=y=>L+(W-L-Rr)*y/N,y=v=>T+(H-T-B)*(hi-v)/(hi-lo);
+  const ink=forPdf?"#5b6b7b":"var(--muted)",grid=forPdf?"#d5dde5":"var(--line)";
+  const cols=forPdf?["#5b6b7b","#e8a317","#1f8a4c","#1565c0"]:COLORS;
+  let s=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Kumulierter Gewinn je Szenario">`;
+  if(forPdf)s+=`<rect width="${W}" height="${H}" fill="#ffffff"/>`;
+  for(let v=lo;v<=hi+1e-6;v+=st){s+=`<line x1="${L}" x2="${W-Rr}" y1="${y(v)}" y2="${y(v)}" stroke="${v===0?ink:grid}" stroke-width="${v===0?1.2:1}"/><text x="${L-6}" y="${y(v)+4}" text-anchor="end" fill="${ink}" font-size="11" font-family="Arial">${n0.format(v/1000)} T€</text>`;}
+  for(let k=0;k<=N;k+=5)s+=`<text x="${x(k)}" y="${H-12}" text-anchor="middle" fill="${ink}" font-size="11" font-family="Arial">Jahr ${k}</text>`;
+  main.forEach((sc,i)=>{const c=cols[(i+1)%cols.length];s+=`<polyline fill="none" stroke="${c}" stroke-width="${sc.volt?3:2}" stroke-linejoin="round" points="${sc.cum.map((v,k)=>x(k).toFixed(1)+","+y(v).toFixed(1)).join(" ")}"/><circle cx="${x(N)}" cy="${y(sc.cum[N])}" r="4" fill="${c}"/>`;});
+  return s+"</svg>";
+}
+function esc(t){return String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+
+/* ---------- Eingaben ---------- */
+function readP(){
+  const P={};
+  document.querySelectorAll("[data-p]").forEach(el=>{const k=el.dataset.p;
+    P[k]=el.type==="checkbox"?el.checked:el.type==="number"?(parseFloat(el.value)||0):el.value;});
+  P.limit=parseFloat(P.limit)||0;
+  return P;
+}
+function writeP(P){document.querySelectorAll("[data-p]").forEach(el=>{const k=el.dataset.p;if(!(k in P))return;if(el.type==="checkbox")el.checked=!!P[k];else el.value=P[k];});}
+function visibility(){
+  const t=$("heatType").value,el=t==="wp"||t==="ns";
+  document.querySelectorAll(".el").forEach(e=>e.hidden=!el);
+  document.querySelectorAll(".wpo").forEach(e=>e.hidden=t!=="wp");
+  document.querySelectorAll(".fos").forEach(e=>e.hidden=el);
+}
+let timer=null;
+function update(){visibility();clearTimeout(timer);timer=setTimeout(()=>{try{render(calc(readP()));}catch(e){$("status").textContent="Fehler bei der Berechnung: "+e.message;console.error(e);}},120);}
+$("form").addEventListener("input",()=>{$("sampleNote").hidden=true;update();});
+$("form").addEventListener("change",update);
+$("form").addEventListener("submit",e=>e.preventDefault());
+
+/* ---------- Kunden speichern (nur auf diesem Gerät) ---------- */
+const KEY="voltherm-rechner-kunden";
+function loadList(){try{return JSON.parse(localStorage.getItem(KEY)||"{}")}catch(e){return{}}}
+function refreshList(){const l=loadList();$("kundenListe").innerHTML=`<option value="">Gespeicherte Berechnungen …</option>`+Object.keys(l).sort().map(k=>`<option value="${esc(k)}">${esc(k)}</option>`).join("");}
+$("btnSave").addEventListener("click",()=>{const P=readP();const name=(P.kName||"").trim()||("Berechnung "+new Date().toLocaleString("de-DE",{dateStyle:"short",timeStyle:"short"}));const l=loadList();l[name]=P;
+  try{localStorage.setItem(KEY,JSON.stringify(l));refreshList();$("kundenListe").value=name;$("status").textContent=`„${name}“ auf diesem Gerät gespeichert.`;}catch(e){$("status").textContent="Speichern ist in dieser Ansicht nicht möglich.";}});
+$("kundenListe").addEventListener("change",e=>{const l=loadList();const P=l[e.target.value];if(P){writeP(P);$("sampleNote").hidden=true;update();$("status").textContent=`„${e.target.value}“ geladen.`;}});
+refreshList();
+
+/* ---------- PDF ---------- */
+async function svgToPng(svg){return new Promise((ok,bad)=>{const img=new Image();img.onload=()=>{const c=document.createElement("canvas");c.width=1440;c.height=600;const g=c.getContext("2d");g.drawImage(img,0,0,1440,600);ok(c.toDataURL("image/png"));};img.onerror=bad;img.src="data:image/svg+xml;charset=utf-8,"+encodeURIComponent(svg);});}
+async function buildPdf(res){
+  const {jsPDF}=window.jspdf;const doc=new jsPDF({unit:"mm",format:"a4"});const P=res.P;
+  const blue=[21,101,192],ink=[18,32,47],muted=[91,107,123];
+  const today=new Date().toLocaleDateString("de-DE");
+  doc.setFillColor(...blue);doc.rect(0,0,210,26,"F");
+  doc.setTextColor(255,255,255);doc.setFont("helvetica","bold");doc.setFontSize(18);doc.text("VOLTHERM",14,12);
+  doc.setFont("helvetica","normal");doc.setFontSize(10.5);doc.text("Wirtschaftlichkeitsberechnung Photovoltaik und Energiemanagement",14,19);
+  doc.text(today,196,12,{align:"right"});
+  doc.setTextColor(...ink);doc.setFontSize(12);doc.setFont("helvetica","bold");doc.text(P.kName||"Ihre Berechnung",14,36);
+  doc.setFont("helvetica","normal");doc.setFontSize(10);doc.setTextColor(...muted);doc.text(P.kOrt||"",14,41.5);
+  let y=50;
+  const head=(t)=>{if(y>262){doc.addPage();y=18;}doc.setTextColor(...ink);doc.setFont("helvetica","bold");doc.setFontSize(12.5);doc.text(t,14,y);y+=3;};
+  const tbl=(hd,body,opts={})=>{doc.autoTable({startY:y,head:[hd],body,theme:"grid",styles:{fontSize:8.6,cellPadding:1.8,textColor:ink,lineColor:[213,221,229]},headStyles:{fillColor:[238,241,244],textColor:ink,fontStyle:"bold"},margin:{left:14,right:14},...opts});y=doc.lastAutoTable.finalY+8;};
+
+  head("Ihre Ausgangslage");
+  const heatTxt={wp:"Wärmepumpe",ns:"Nachtspeicher / Direktheizung",fossil:"Öl / Gas",none:"keine elektrische Heizung"}[P.heatType];
+  const lage=[["Haushaltsstrom",n0.format(P.house)+" kWh/Jahr"],["Heizung",heatTxt+(elecHeat(P)?", "+n0.format(P.heatKwh)+" kWh Strom/Jahr":"")],
+    ["E-Auto",P.car>0?n0.format(P.car)+" kWh/Jahr":"keins"],["Photovoltaik",n1.format(P.pvKwp)+" kWp, "+ORI_TXT[P.ori]+(P.pvExist?" (vorhanden)":" (neu)")],
+    ["Speicher",P.battKwh>0?n1.format(P.battKwh)+" kWh"+(P.battExist?" (vorhanden)":" (neu)"):"keiner"],
+    ["Strompreis",n1.format(P.tH)+" ct/kWh"+(elecHeat(P)?", Heizstrom "+n1.format(P.tW)+" ct/kWh":"")]];
+  if(P.ethMode!=="none")lage.push(["Heizstab",n1.format(P.ethKw)+" kW in "+Math.round(P.ethSteps)+" Stufen"]);
+  tbl(["",""],lage,{showHead:false,columnStyles:{0:{fontStyle:"bold",cellWidth:45}}});
+
+  head("Ergebnis auf einen Blick");
+  const vd=[];const inv=res.scen.find(s=>s.key==="pvb");
+  if(inv){vd.push([inv.name,rate(inv.payback,12,16)[1],inv.payback!=null?"Amortisation nach "+n1.format(inv.payback)+" Jahren, "+eur.format(inv.save1)+" Ersparnis im 1. Jahr":"keine Amortisation im Zeitraum"]);}
+  const mv=meterVerdict(res);if(elecHeat(P))vd.push(["Kaskadenmessung",mv.txt,mv.line]);
+  vd.push(["VOLTHERM Energiemanagement",res.voltGain>0?rate(res.voltPayback,6,10)[1]:"Lohnt sich nicht","+"+eur.format(Math.max(0,res.voltGain))+" pro Jahr"+(res.voltPayback!=null?", Amortisation nach "+n1.format(res.voltPayback)+" Jahren":"")]);
+  tbl(["Maßnahme","Bewertung","Begründung"],vd,{columnStyles:{0:{fontStyle:"bold",cellWidth:48},1:{cellWidth:30}}});
+
+  head("Szenarien im Vergleich");
+  tbl(["Szenario","Zähler","Kosten 1. Jahr","Ersparnis","Investition","Amortisation","Gewinn "+res.N+" J."],
+    res.scen.map(s=>s.key==="ist"?[s.name,VAR_TXT[s.best.v],eur.format(s.best.c.total),"–","–","–","–"]:[s.name,VAR_TXT[s.best.v],eur.format(s.best.c.total),eur.format(s.save1),eur.format(s.totalInvest),s.payback!=null?n1.format(s.payback)+" J.":"–",eur.format(s.profit)]),
+    {columnStyles:{2:{halign:"right"},3:{halign:"right"},4:{halign:"right"},5:{halign:"right"},6:{halign:"right"}}});
+
+  try{const png=await svgToPng(chartSvg(res,true));if(y>200){doc.addPage();y=18;}head("Kumulierter Gewinn");doc.addImage(png,"PNG",14,y+1,182,75.8);y+=80;
+    const main=res.scen.filter(s=>s.key!=="ist");const cols=[[91,107,123],[232,163,23],[31,138,76],[21,101,192]];let lx=14;doc.setFontSize(8.6);doc.setFont("helvetica","normal");
+    main.forEach((s,i)=>{const c=cols[(i+1)%cols.length];doc.setFillColor(...c);doc.rect(lx,y-2.2,5,1.4,"F");doc.setTextColor(...ink);doc.text(s.name,lx+7,y-.6);lx+=doc.getTextWidth(s.name)+16;});y+=8;}catch(e){}
+
+  if(elecHeat(P)){head("Kaskadenmessung: lohnt sich der zweite Zähler?");
+    tbl(["Variante","Netzbezug Haushalt","Netzbezug Heizung","Kosten 1. Jahr","Einmalig"],
+      [...res.sv.all].sort((a,b)=>a.score-b.score).map(e=>[VAR_TXT[e.v]+(e===res.sv.best?" (empfohlen)":""),n0.format(e.v==="A"?e.R.imH+e.R.imW:e.R.imH)+" kWh",e.v==="A"?"–":n0.format(e.R.imW)+" kWh",eur.format(e.c.total),eur.format(e.u)]),
+      {columnStyles:{1:{halign:"right"},2:{halign:"right"},3:{halign:"right"},4:{halign:"right"}}});}
+
+  head("Mehrwert durch VOLTHERM");
+  tbl(["Was VOLTHERM regelt","pro Jahr"],[...res.parts.map(p=>[p.label,eur.format(p.val)]),[{content:"Summe",styles:{fontStyle:"bold"}},{content:eur.format(res.voltGain),styles:{fontStyle:"bold"}}]],{columnStyles:{1:{halign:"right",cellWidth:40}}});
+
+  if(y>250){doc.addPage();y=18;}
+  doc.setFontSize(8);doc.setTextColor(...muted);
+  const hin=doc.splitTextToSize("Unverbindliche Modellrechnung auf Basis einer stündlichen Simulation (typisches Wetterjahr Nordbayern) und der angegebenen Verbrauchs- und Tarifdaten. Preise sind Marktwerte inkl. Montage. Tatsächliche Erträge und Einsparungen hängen von Wetter, Nutzerverhalten und Tarifentwicklung ab. Kaskadenmessung und §14a-Module sind mit dem Netzbetreiber abzustimmen.",182);
+  doc.text(hin,14,y);
+  const pages=doc.getNumberOfPages();
+  for(let i=1;i<=pages;i++){doc.setPage(i);doc.setFontSize(7.5);doc.setTextColor(...muted);
+    doc.text("VOLTHERM Integrated Solutions · Valentin Motoc · Kulmblick 2, 95514 Mockersdorf · office@voltherm.de · +49 1556 8656548",105,289,{align:"center"});
+    doc.text(i+"/"+pages,196,289,{align:"right"});}
+  return doc;
+}
+window.__voltherm={calc,buildPdf,readP};
+let downloads=null;
+$("btnPdf").addEventListener("click",async()=>{
+  if(!LAST)return;
+  if(!window.jspdf){$("status").textContent="PDF-Bibliothek nicht geladen. Bitte Seite neu laden.";return;}
+  $("status").textContent="PDF wird erstellt …";
+  try{
+    const doc=await buildPdf(LAST);
+    const name="VOLTHERM-Wirtschaftlichkeit-"+(LAST.P.kName||"Berechnung").replace(/[^\wäöüÄÖÜß-]+/g,"-")+".pdf";
+    if(downloads)await downloads.save({filename:name,data:doc.output("arraybuffer")});else doc.save(name);
+    $("status").textContent="PDF gespeichert.";
+  }catch(e){$("status").textContent=e&&e.code==="declined"?"Speichern abgebrochen.":"PDF konnte nicht gespeichert werden"+(e&&e.message?": "+e.message:".");}
+});
+if(window.claude&&window.claude.use){window.claude.use("downloads").then(d=>{downloads=d;if(!d)$("btnPdf").disabled=true;}).catch(()=>{$("btnPdf").disabled=true;});}
+update();
+})();
+</script>
+</div>
+
+<section class="wrap"><div class="r-cta">
+  <h2>Ergebnis gemeinsam prüfen?</h2>
+  <p>Der Rechner ist eine unverbindliche Modellrechnung. Wir schauen uns Ihr Dach, Ihren Zählerschrank und Ihre Rechnungen an und rechnen mit echten Angeboten nach. Kostenlos und unverbindlich.</p>
+  <div class="cta-row">
+    <a class="btn" href="../#kontakt">Beratung anfragen <svg class="ic" aria-hidden="true"><use href="#i-pfeil"/></svg></a>
+    <a class="btn btn-ghost" href="https://wa.me/4915568656548" rel="noopener"><svg class="ic" aria-hidden="true"><use href="#i-wa"/></svg>Per WhatsApp schreiben</a>
+  </div>
+</div></section>
+</main>
+
+<footer class="foot">
+  <div class="wrap foot-row">
+    <div>
+      <a class="brand" href="../"><svg viewBox="0 0 300 300" aria-hidden="true"><use href="#logo"/></svg><span class="wm">VOLT<span>HERM</span></span></a>
+      <p class="tagline">INTEGRATED SOLUTIONS</p>
+      <p class="region">Ihr Elektriker und Smart Home Experte für die Oberpfalz, Weiden, Bayreuth und Umgebung.</p>
+    </div>
+    <nav class="foot-nav" aria-label="Rechtliches und mehr">
+      <a href="../voltherm/">Was ist VOLTHERM?</a>
+      <a href="./">Wirtschaftlichkeitsrechner</a>
+      <a href="../impressum.html">Impressum</a>
+      <a href="../datenschutz.html">Datenschutz</a>
+      <a href="../voltherm/datenschutz-app.html">Datenschutz App</a>
+    </nav>
+  </div>
+  <p class="wrap copy">© <span id="jahr">2026</span> VOLTHERM Integrated Solutions · Kulmblick 2, Mockersdorf, 95514 Neustadt am Kulm</p>
+</footer>
+
+<script>
+(function(){var b=document.querySelector('.menu-btn'),n=document.getElementById('nav');if(!b||!n)return;
+b.addEventListener('click',function(){var o=n.classList.toggle('open');b.setAttribute('aria-expanded',o?'true':'false');});
+n.addEventListener('click',function(e){if(e.target.tagName==='A'){n.classList.remove('open');b.setAttribute('aria-expanded','false');}});})();
+</script>
+</body>
+</html>
