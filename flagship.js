@@ -186,3 +186,34 @@
   }
   if (ruhig) { tick(); setInterval(tick, 1000); } else requestAnimationFrame(tick);
 })();
+
+/* Echte Gerätefotos: der laufende Bildschirm wird per Perspektive genau auf das Display im Foto gelegt */
+(function () {
+  var boxen = document.querySelectorAll('.ft');
+  if (!boxen.length) return;
+  // Rechteck (0,0)-(w,h) auf Viereck p0 (oben links), p1 (oben rechts), p2 (unten links), p3 (unten rechts)
+  function matrix(w, h, p) {
+    var x0 = p[0][0], y0 = p[0][1], x1 = p[1][0], y1 = p[1][1], x2 = p[2][0], y2 = p[2][1], x3 = p[3][0], y3 = p[3][1];
+    var dx1 = x1 - x3, dy1 = y1 - y3, dx2 = x2 - x3, dy2 = y2 - y3, sx = x0 - x1 + x3 - x2, sy = y0 - y1 + y3 - y2;
+    var det = dx1 * dy2 - dx2 * dy1;
+    var g = (sx * dy2 - dx2 * sy) / det, hh = (dx1 * sy - sx * dy1) / det;
+    var a = x1 - x0 + g * x1, b = x2 - x0 + hh * x2, c = x0;
+    var d = y1 - y0 + g * y1, e = y2 - y0 + hh * y2, f = y0;
+    a /= w; d /= w; g /= w; b /= h; e /= h; hh /= h;
+    return 'matrix3d(' + [a, d, 0, g, b, e, 0, hh, 0, 0, 1, 0, c, f, 0, 1].map(function (v) { return +v.toFixed(8); }).join(',') + ')';
+  }
+  function setze(box) {
+    var scr = box.querySelector('.ft-scr'), img = box.querySelector('img');
+    var bild = box.dataset.bild.split('x').map(Number), w = +box.dataset.w, h = +box.dataset.h;
+    var k = img.clientWidth / bild[0];
+    if (!k) return;
+    var p = box.dataset.quad.split(' ').map(function (q) { return q.split(',').map(function (v) { return +v * k; }); });
+    scr.style.width = w + 'px'; scr.style.height = h + 'px';
+    scr.style.transform = matrix(w, h, p);
+  }
+  function alle() { boxen.forEach(setze); }
+  alle();
+  window.addEventListener('load', alle);
+  if ('ResizeObserver' in window) { var ro = new ResizeObserver(alle); boxen.forEach(function (b) { ro.observe(b); }); }
+  else window.addEventListener('resize', alle);
+})();

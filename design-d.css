@@ -202,3 +202,50 @@ h2 .blau, h2 .grad, h2 .grad-dark, h2 span { color: var(--grau); background: non
 #uhr .ut { font: 700 34px var(--font); fill: #fff; text-anchor: middle; letter-spacing: -.5px; font-variant-numeric: tabular-nums; }
 #uhr .ud { font: 500 12px var(--font); fill: #8ea0bd; text-anchor: middle; }
 #uhr-std, #uhr-min, #uhr-sek { transform-origin: 180px 180px; transform-box: view-box; }
+
+/* ---------- Echte Gerätefotos mit laufendem Bildschirm ---------- */
+.ft { position: relative; }
+.ft > img { display: block; width: 100%; height: auto; filter: drop-shadow(0 30px 50px rgba(0,0,0,.55)); }
+.ft-scr { position: absolute; left: 0; top: 0; transform-origin: 0 0; overflow: hidden; background: #070c16; }
+.ft-scr::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(118deg, rgba(255,255,255,.10), rgba(255,255,255,0) 32%, rgba(255,255,255,0) 70%, rgba(255,255,255,.04)); }
+.ft-fold .ft-scr { border-radius: 22px; }
+.ft-fold .ft-scr iframe { position: absolute; left: 0; top: -40px; width: 760px; height: 1026px; border: 0; background: #070c16; pointer-events: none; }
+.ft-fold .ft-scr::before { content: ""; position: absolute; left: 50%; top: 0; bottom: 0; width: 26px; margin-left: -13px; z-index: 1; pointer-events: none; background: linear-gradient(90deg, rgba(0,0,0,0), rgba(0,0,0,.22) 45%, rgba(255,255,255,.06) 55%, rgba(0,0,0,0)); }
+.ft-wrap { width: min(100%, 520px); margin: 0 auto; }
+.uw-duo .ft-fold { width: 86%; }
+.ft-tab .ft-scr { border-radius: 16px; }
+.ft-tab .pf-scr { width: 1280px; height: 768px; aspect-ratio: auto; border: 0; border-radius: 0; box-shadow: none; }
+.hd-pro { background: none !important; }
+.hd-pro .ft-tab { width: 100%; }
+.ft-ki .kt { width: auto; max-width: none; margin: 0; filter: none; height: 100%; }
+.ft-ki .kt-dev { font-size: 16px; padding: 0; aspect-ratio: auto; height: 100%; border-radius: 0; background: none; box-shadow: none; }
+.ft-ki .kt-cam { display: none; }
+.ft-ki .kt-scr { border-radius: 0; }
+.ki-pic .ft-ki { max-width: 940px; margin: 0 auto; }
+
+/* Hub Core: Foto des echten Geräts, das Display darin läuft */
+.hd-core { background: none !important; }
+.hc-foto { position: relative; width: min(100%, 470px); container-type: inline-size; }
+.hc-foto > img { display: block; width: 100%; height: auto; }
+.hc-foto .rk { position: absolute; left: 11.2%; top: 10.8%; width: 88.2%; height: 79.7%; --d: 100%; }
+.hc-foto .rk-ring { display: none; }
+.hc-foto .rk-scr { inset: auto; left: 15.9%; top: 21.3%; width: 63.5%; height: 64.4%; border: 0; font-size: 3.1cqw;
+  background: radial-gradient(circle at 50% 45%, #13224a, #0a1330 70%); box-shadow: 0 0 18px rgba(60,120,255,.25), 0 0 0 1px rgba(0,0,0,.6); }
+.hc-foto .rk-scr::after { background: linear-gradient(135deg, rgba(255,255,255,.14), rgba(255,255,255,0) 38%); }
+
+/* Klima: echtes Vivax Innengerät mit kühlem Luftstrom */
+.vx { margin: 0; }
+.vx-bild { position: relative; padding-bottom: 34%; }
+.vx-bild img { position: relative; z-index: 1; display: block; width: 100%; height: auto; filter: drop-shadow(0 26px 40px rgba(0,0,0,.6)); }
+.vx-luft { position: absolute; left: 10%; right: 18%; top: 52%; bottom: 0; display: flex; justify-content: space-around; pointer-events: none; -webkit-mask: linear-gradient(#000 30%, transparent); mask: linear-gradient(#000 30%, transparent); }
+.vx-luft i { width: 14%; border-radius: 50%; background: linear-gradient(rgba(140,225,255,.55), rgba(42,123,234,0)); filter: blur(10px); transform-origin: top; animation: vx-luft 3.6s ease-in-out infinite; }
+.vx-luft i:nth-child(2) { animation-delay: -.7s; } .vx-luft i:nth-child(3) { animation-delay: -1.5s; } .vx-luft i:nth-child(4) { animation-delay: -2.2s; } .vx-luft i:nth-child(5) { animation-delay: -2.9s; }
+@keyframes vx-luft { 0% { transform: translateY(-20%) scaleY(.4) skewX(8deg); opacity: 0; } 35% { opacity: .9; } 100% { transform: translateY(30%) scaleY(1.1) skewX(-8deg); opacity: 0; } }
+.vx figcaption { display: flex; justify-content: center; margin-top: -10px; }
+.vx-chip { display: inline-flex; align-items: center; gap: 10px; padding: 9px 16px; border-radius: 999px; background: var(--glas, rgba(22,26,32,.55)); border: 1px solid rgba(255,255,255,.1); -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); font-size: 14px; color: #dfe6f0; }
+.vx-chip i { width: 9px; height: 9px; border-radius: 50%; background: #5FD4F0; box-shadow: 0 0 10px #5FD4F0; }
+@media (prefers-reduced-motion: reduce) { .vx-luft i { animation: none; opacity: .5; } }
+.hc-foto .rk-scr { left: 16.6%; width: 64.2%; top: 21%; height: 65%; }
+.vx-luft i { background: linear-gradient(rgba(150,230,255,.28), rgba(42,123,234,0)); filter: blur(14px); }
+.ki-pic .ft-ki > img { filter: drop-shadow(0 30px 60px rgba(0,0,0,.6)) drop-shadow(0 0 60px rgba(42,123,234,.12)); }
+.vx-bild { padding-bottom: 8%; }
