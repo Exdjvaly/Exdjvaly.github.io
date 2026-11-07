@@ -281,22 +281,40 @@
       spaeter(function () { schritt(n, 0); }, 300);
     };
     new IntersectionObserver(function (e) {
+      kiSichtbar = e[0].isIntersecting;
       if (e[0].isIntersecting) {
         if (!kt.classList.contains('live')) kt.classList.add('live');
         alleStopp(); lauf++; start(lauf); takt(lauf);
       } else { alleStopp(); lauf++; if (tonEl) tonEl.pause(); }
     }, { threshold: .35 }).observe(kt);
-    tonKnopf.addEventListener('click', function () {
-      tonAn = !tonAn;
+    // Ton direkt: Browser erlauben Ton erst nach der ersten Eingabe auf der Seite.
+    // Deshalb gibt die erste Berührung irgendwo den Ton frei, das Gespräch spricht dann von selbst.
+    var tonAusGewollt = false, kiSichtbar = false;
+    var tonFrei = function () {
+      if (!tonEl) tonEl = new Audio();
+      tonEl.src = KI_TON[0][0]; tonEl.muted = true;
+      var pl = tonEl.play();
+      var frei = function () { tonEl.pause(); tonEl.muted = false; };
+      if (pl && pl.then) pl.then(frei, frei); else frei();
+    };
+    var tonZeigen = function () {
       tonKnopf.setAttribute('aria-pressed', String(tonAn));
       tonKnopf.querySelector('span').textContent = tonAn ? 'Ton aus' : 'Mit Ton anhören';
+    };
+    var ersteEingabe = function (ev) {
+      ['pointerdown', 'keydown', 'touchstart'].forEach(function (t) { document.removeEventListener(t, ersteEingabe, true); });
+      if (tonAusGewollt || tonAn || (ev && tonKnopf.contains(ev.target))) return;
+      tonAn = true; tonZeigen(); tonFrei();
+      if (kiSichtbar) { alleStopp(); lauf++; start(lauf); takt(lauf); }
+    };
+    ['pointerdown', 'keydown', 'touchstart'].forEach(function (t) { document.addEventListener(t, ersteEingabe, { capture: true, passive: true }); });
+    tonKnopf.addEventListener('click', function () {
+      tonAn = !tonAn;
+      if (!tonAn) tonAusGewollt = true;
+      tonZeigen();
       if (tonAn) {
         // Im Klick einmal stumm anspielen, damit auch iPhone und Safari den Ton später erlauben
-        if (!tonEl) tonEl = new Audio();
-        tonEl.src = KI_TON[0][0]; tonEl.muted = true;
-        var pl = tonEl.play();
-        var frei = function () { tonEl.pause(); tonEl.muted = false; };
-        if (pl && pl.then) pl.then(frei, frei); else frei();
+        tonFrei();
         alleStopp(); lauf++; start(lauf); takt(lauf);
       } else if (tonEl) tonEl.pause();
     });
