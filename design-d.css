@@ -283,3 +283,16 @@ h2 .blau, h2 .grad, h2 .grad-dark, h2 span { color: var(--grau); background: non
 .vx2 figcaption { bottom: 30px; }
 @media (max-width: 700px) { .vx2 { padding-bottom: 150px; } .vx2 .vx-geraet { width: 60%; left: -2%; } .vx2 figcaption { bottom: -8px; } }
 @media (max-width: 700px) { .vx2 { padding-bottom: 0; } .vx2 .vx-geraet { position: relative; left: -2%; bottom: auto; width: 70%; margin-top: -14%; } .vx2 figcaption { position: static; margin-top: 12px; } }
+/* Test: Falt-Handy in der Hand */
+.ft-wrap.hand { max-width: 760px; width: 100%; }
+#smart .smart-grid:has(.ft-wrap.hand) { grid-template-columns: 1.3fr 1fr; }
+.ft-hand > img { border-radius: 26px; filter: none; box-shadow: 0 30px 70px rgba(0,0,0,.55); }
+.ft-hand .ft-scr { clip-path: none; border-radius: 10px; }
+.ft-hand .ft-in { top: 34px; bottom: 0; }
+.ft-hand .ft-in iframe { width: 1000px; }
+.ft-hand .ft-kam { left: 75.6%; top: 12px; width: 26px; height: 26px; }
+.ft-hand .ft-scr::before { display: none; }
+.ft-hand2 .ft-scr { border-radius: 14px; }
+.ft-hand2 .ft-in { top: 26px; }
+.ft-daumen { position: absolute; inset: 0; width: 100%; height: auto; z-index: 3; pointer-events: none; }
+.ft-hand2 .ft-in iframe { width: 920px; }
