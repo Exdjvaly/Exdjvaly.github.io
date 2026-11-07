@@ -218,8 +218,3 @@
   else window.addEventListener('resize', alle);
 })();
 
-/* Vorschau: ?core=hand zeigt das Display-Foto mit Hand (Variante zum Vergleich) */
-(function () {
-  if (!/[?&]core=hand\b/.test(location.search)) return;
-  var img = document.querySelector('.hc-foto > img'); if (img) { img.src = 'assets/geraete/matouch-hand.webp'; img.parentNode.classList.add('hand'); }
-})();
