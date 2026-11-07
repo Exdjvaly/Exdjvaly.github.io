@@ -296,3 +296,7 @@ h2 .blau, h2 .grad, h2 .grad-dark, h2 span { color: var(--grau); background: non
 .ft-hand2 .ft-in { top: 26px; }
 .ft-daumen { position: absolute; inset: 0; width: 100%; height: auto; z-index: 3; pointer-events: none; }
 .ft-hand2 .ft-in iframe { width: 920px; }
+.ft-tab .ft-scr { border-radius: 12px; }
+.hd-pro .ft-tab { max-width: 760px; }
+.ki-pic .ft-ki { max-width: 900px; }
+.ft-tab .pf-scr { height: 100%; }
