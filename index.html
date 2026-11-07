@@ -16,7 +16,7 @@
 <link rel="stylesheet" href="site.css?v=20261026b">
 <link rel="stylesheet" href="design-b.css?v=20261106a">
 <link rel="stylesheet" href="chat.css?v=20261022b">
-<link rel="stylesheet" href="design-d.css?v=20261107a">
+<link rel="stylesheet" href="design-d.css?v=20261107b">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -116,7 +116,7 @@
     <nav id="nav" class="nav">
       <a href="#leistungen">Leistungen</a>
       <a href="#smart">Smart Energy</a>
-      <a href="#hub3d">VOLTHERM Hub</a>
+      <a href="#hub">VOLTHERM Hub</a>
       <a href="#ki">KI</a>
       <a href="#ablauf">Ablauf</a>
       <a href="#ueber-uns">Über uns</a>
@@ -137,22 +137,28 @@
     <p class="fx-sub">Photovoltaik, Speicher, Wallbox, Wärmepumpe, Klimaanlage und Smart Home. Geplant, montiert und vernetzt von einem Elektrobetrieb mit 30 Jahren Erfahrung, aus Mockersdorf in der Oberpfalz.</p>
     <div class="fx-cta">
       <a class="btn" href="#kontakt">Beratung anfragen</a>
-      <a class="fx-link" href="#hub3d">Hub Core und Hub Pro ansehen <svg class="ic" aria-hidden="true"><use href="#i-pfeil"/></svg></a>
+      <a class="fx-link" href="#hub">Hub Core und Hub Pro erleben <svg class="ic" aria-hidden="true"><use href="#i-pfeil"/></svg></a>
     </div>
+  </div>
+  <div class="fx-szenen" role="tablist" aria-label="Szenario">
+    <button type="button" role="tab" aria-selected="true" data-szene="sonne"><b>Sonnen-Überschuss</b><small>13:20 Uhr · Mittag</small></button>
+    <button type="button" role="tab" aria-selected="false" data-szene="nacht"><b>Günstiger Strom</b><small>02:45 Uhr · dynamischer Tarif</small></button>
+    <button type="button" role="tab" aria-selected="false" data-szene="spitze"><b>Teurer Strom</b><small>18:50 Uhr · Preisspitze</small></button>
   </div>
   <div class="fx-buehne" id="fx-buehne">
     <canvas class="fx-flow" id="fx-flow" aria-hidden="true"></canvas>
     <img class="fx-haus" src="assets/3d/haus-v2.webp" width="1400" height="1045" alt="Haus mit Photovoltaik, Speicher, Wallbox und Wärmepumpe" decoding="async" fetchpriority="high">
     <span class="fx-kern" data-knoten="kern"><svg viewBox="0 0 300 300" aria-hidden="true"><use href="#logo"/></svg><b>HEMS</b></span>
-    <span class="fx-chip" data-knoten="quelle" data-farbe="#FFC94A" style="--x:10%;--y:16%"><i class="sonne-ic"></i><span><b data-wert="sonne">6,4 kW</b><small>Sonne</small></span></span>
-    <span class="fx-chip" data-knoten="quelle" data-farbe="#9AA6B8" style="--x:90%;--y:16%"><img src="assets/3d/mast.webp" alt=""><span><b>0,2 kW</b><small>Netz</small></span></span>
-    <span class="fx-chip" data-knoten="ziel" data-farbe="#FF7A3D" style="--x:6%;--y:52%"><img src="assets/3d/boiler.webp" alt=""><span><b>52 °C</b><small>Warmwasser</small></span></span>
-    <span class="fx-chip" data-knoten="ziel" data-farbe="#2FD18B" style="--x:94%;--y:52%"><img src="assets/3d/batterie.webp" alt=""><span><b>82 %</b><small>Speicher</small></span></span>
-    <span class="fx-chip" data-knoten="ziel" data-farbe="#FF7A3D" style="--x:12%;--y:88%"><img src="assets/3d/wp.webp" alt=""><span><b>1,8 kW</b><small>Wärmepumpe</small></span></span>
-    <span class="fx-chip" data-knoten="ziel" data-farbe="#3C9BFF" style="--x:88%;--y:88%"><img src="assets/3d/wallbox.webp" alt=""><span><b>11 kW</b><small>Wallbox</small></span></span>
-    <span class="fx-chip" data-knoten="ziel" data-farbe="#5FD4F0" style="--x:50%;--y:100%"><img src="assets/3d/klima.webp" alt=""><span><b>22 °C</b><small>Klima</small></span></span>
+    <span class="fx-chip" data-id="sonne" data-knoten="quelle" data-farbe="#FFC94A" style="--x:10%;--y:16%"><i class="sonne-ic"></i><span><b>6,4 kW</b><small>Sonne</small></span></span>
+    <span class="fx-chip" data-id="netz" data-knoten="quelle" data-farbe="#9AA6B8" style="--x:90%;--y:16%"><img src="assets/3d/mast.webp" alt=""><span><b>0,2 kW</b><small>Netz</small></span></span>
+    <span class="fx-chip" data-id="ww" data-knoten="ziel" data-farbe="#FF7A3D" style="--x:6%;--y:52%"><img src="assets/3d/boiler.webp" alt=""><span><b>52 °C</b><small>Warmwasser</small></span></span>
+    <span class="fx-chip" data-id="speicher" data-knoten="ziel" data-farbe="#2FD18B" style="--x:94%;--y:52%"><img src="assets/3d/batterie.webp" alt=""><span><b>82 %</b><small>Speicher</small></span></span>
+    <span class="fx-chip" data-id="wp" data-knoten="ziel" data-farbe="#FF7A3D" style="--x:12%;--y:88%"><img src="assets/3d/wp.webp" alt=""><span><b>1,8 kW</b><small>Wärmepumpe</small></span></span>
+    <span class="fx-chip" data-id="wallbox" data-knoten="ziel" data-farbe="#3C9BFF" style="--x:88%;--y:88%"><img src="assets/3d/wallbox.webp" alt=""><span><b>11 kW</b><small>Wallbox</small></span></span>
+    <span class="fx-chip" data-id="klima" data-knoten="ziel" data-farbe="#5FD4F0" style="--x:50%;--y:100%"><img src="assets/3d/klima.webp" alt=""><span><b>22 °C</b><small>Klima</small></span></span>
   </div>
-  <p class="fx-hinweis">Beispielwerte · Sonnenstrom fließt dorthin, wo er gerade am meisten bringt.</p>
+  <p class="fx-einsicht" id="fx-einsicht" aria-live="polite"></p>
+  <p class="fx-hinweis">Beispielwerte zur Veranschaulichung.</p>
 </section>
 
 <section class="fx-sec fx-erf" id="erfahrung">
@@ -374,38 +380,6 @@
   </div>
 </section>
 
-<section class="fx-sec fx-hub3d" id="hub3d">
-  <div class="wrap">
-    <header class="fx-kopf">
-      <p class="fx-over">VOLTHERM Hub</p>
-      <h2>Das Gehirn Ihres Hauses.<br><span>Zum Anfassen.</span></h2>
-      <p>Hub Core mit Drehknopf und Rund-Display. Hub Pro mit 7-Zoll-Touch-Display und Sprachsteuerung. Drehen Sie das Gerät mit Finger oder Maus.</p>
-    </header>
-    <div class="fx-wahl" role="tablist" aria-label="Modell">
-      <button type="button" role="tab" aria-selected="true" data-modell="core">Hub Core</button>
-      <button type="button" role="tab" aria-selected="false" data-modell="pro">Hub Pro</button>
-    </div>
-    <div class="fx-3d" id="fx-3d">
-      <canvas id="hub3d-canvas" aria-label="3D-Modell VOLTHERM Hub, mit Finger oder Maus drehbar"></canvas>
-      <span class="fx-3d-hinweis">Ziehen zum Drehen</span>
-      <span class="fx-3d-laden">3D-Modell wird geladen …</span>
-    </div>
-    <div class="fx-specs" data-specs="core">
-      <div><small>Bedienung</small><b>Drehknopf mit Rund-Display</b></div>
-      <div><small>Rechner</small><b>Im Gerät, lüfterlos</b></div>
-      <div><small>Energie-Steuerung</small><b>Für das ganze Haus</b></div>
-      <div><small>Stromtarif</small><b>Dynamisch</b></div>
-    </div>
-    <div class="fx-specs" data-specs="pro" hidden>
-      <div><small>Bedienung</small><b>7" Touch-Display</b></div>
-      <div><small>Rechner</small><b>KI-Rechner im Technikraum</b></div>
-      <div><small>Sprache</small><b>VOLTHERM KI</b></div>
-      <div><small>Stromtarif</small><b>Dynamisch</b></div>
-    </div>
-    <p class="fx-fuss">Hub Core und Hub Pro sind in Entwicklung. Das Energiemanagement VOLTHERM Basic gibt es schon heute.</p>
-  </div>
-</section>
-
 <section class="sec soft" id="hub">
   <div class="wrap">
     <p class="kicker">VOLTHERM Hub · In Entwicklung</p>
@@ -612,6 +586,10 @@
 
 <section class="sec" id="ueber-uns">
   <div class="wrap">
+    <figure class="fx-zitat">
+      <blockquote>„Ich sehe täglich Häuser mit teurer Photovoltaik, Wärmepumpe und Wallbox, bei denen jedes Gerät seine eigene App hat, aber keines mit dem anderen spricht. Abends zieht das E-Auto den Hausspeicher leer, während der Heizstab teuren Netzstrom kauft. Genau dieses Problem lösen wir bei VOLTHERM.“</blockquote>
+      <figcaption><b>Valentin Motoc</b> · Inhaber, 30 Jahre Elektrotechnik</figcaption>
+    </figure>
     <p class="kicker">Über uns</p>
     <h2>Klassisches Handwerk trifft Energiemanagement</h2>
     <div class="text-spalten">
@@ -781,8 +759,7 @@
 <script type="application/json" id="galerie-daten">{}</script>
 <script src="site.js?v=20261026b" defer></script>
 <script src="chat.js?v=20261026a" defer></script>
-<script type="importmap">{"imports":{"three":"/assets/vendor/three/three.module.min.js","three/addons/":"/assets/vendor/three/"}}</script>
-<script src="flagship.js?v=20261107a" defer></script>
-<script type="module" src="hub3d.js?v=20261107a"></script>
+<script src="flagship.js?v=20261107b" defer></script>
+
 </body>
 </html>

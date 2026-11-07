@@ -128,27 +128,31 @@ h2 .blau, h2 .grad, h2 .grad-dark, h2 span { color: var(--grau); background: non
 .fx-zahl.gross p { font-size: 17px; max-width: 22em; }
 @media (max-width: 640px) { .fx-zahlen { grid-template-columns: 1fr 1fr; } .fx-zahl { padding: 20px 18px; } .fx-zahl b { font-size: 26px; } }
 
-/* ---------- Hub 3D ---------- */
-.fx-wahl { display: flex; width: max-content; margin: 0 auto 28px; padding: 4px; border-radius: 980px; background: rgba(255,255,255,.06); border: 1px solid var(--glas-rand); backdrop-filter: blur(16px); }
-.fx-wahl button { border: 0; background: transparent; color: var(--ink2); font: 600 15px/1 var(--font); padding: 11px 22px; border-radius: 980px; cursor: pointer; }
-.fx-wahl button[aria-selected="true"] { background: rgba(255,255,255,.14); color: #fff; }
-.fx-3d { position: relative; aspect-ratio: 16 / 9; border-radius: 36px; overflow: hidden; cursor: grab;
-  background: radial-gradient(60% 70% at 50% 60%, rgba(42,123,234,.22), transparent 70%), rgba(255,255,255,.02); border: 1px solid var(--glas-rand); }
-.fx-3d:active { cursor: grabbing; }
-.fx-3d canvas { position: absolute; inset: 0; width: 100%; height: 100%; touch-action: pan-y; }
-.fx-3d-hinweis { position: absolute; left: 50%; bottom: 18px; transform: translateX(-50%); padding: 7px 14px; border-radius: 980px; font-size: 13px; color: var(--ink2); background: rgba(0,0,0,.35); backdrop-filter: blur(10px); transition: opacity .4s; pointer-events: none; }
-.fx-3d.angefasst .fx-3d-hinweis { opacity: 0; }
-.fx-3d-laden { position: absolute; inset: 0; display: grid; place-items: center; color: var(--grau); font-size: 15px; pointer-events: none; transition: opacity .4s; }
-.fx-3d.bereit .fx-3d-laden { opacity: 0; }
-.fx-3d.laedt .fx-3d-laden { opacity: 1; }
-@media (max-width: 700px) { .fx-3d { aspect-ratio: 1 / 1; border-radius: 26px; } }
-.fx-specs { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; margin-top: 18px; border-radius: 24px; overflow: hidden; background: var(--line); border: 1px solid var(--glas-rand); }
-@media (min-width: 800px) { .fx-specs { grid-template-columns: repeat(4, 1fr); } }
-.fx-specs div { padding: 20px 22px; background: rgba(14,17,22,.75); }
-.fx-specs small { display: block; font-size: 13px; color: var(--grau); margin-bottom: 6px; }
-.fx-specs b { font-size: 17px; font-weight: 600; color: #fff; letter-spacing: -.015em; }
-.fx-specs[hidden] { display: none; }
-.fx-fuss { text-align: center; margin: 22px 0 0; font-size: 14px; color: var(--grau); }
+/* ---------- Szenarien im Startbild ---------- */
+.fx-szenen { position: relative; z-index: 2; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; width: max-content; max-width: calc(100% - 32px); margin: 56px auto 0; padding: 6px; border-radius: 22px;
+  background: rgba(255,255,255,.05); border: 1px solid var(--glas-rand); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); }
+.fx-szenen button { border: 0; background: transparent; color: var(--ink2); text-align: left; padding: 10px 18px; border-radius: 16px; cursor: pointer; font-family: var(--font); transition: background .25s, color .25s; }
+.fx-szenen button b { display: block; font-size: 15px; font-weight: 600; letter-spacing: -.01em; }
+.fx-szenen button small { display: block; font-size: 12px; color: var(--grau); margin-top: 2px; }
+.fx-szenen button[aria-selected="true"] { background: rgba(255,255,255,.12); color: #fff; box-shadow: inset 0 1px 0 rgba(255,255,255,.1); }
+.fx-buehne { margin-top: 20px; }
+.fx-chip { transition: opacity .4s, filter .4s; }
+.fx-chip.aus { opacity: .45; filter: grayscale(1); }
+.fx-einsicht { position: relative; z-index: 2; max-width: 46em; min-height: 3em; margin: 64px auto 0; padding: 0 20px; font-size: clamp(16px, 1.4vw, 19px); line-height: 1.5; color: var(--ink); }
+.fx-hinweis { margin-top: 10px; }
+@media (max-width: 700px) { .fx-szenen { width: auto; } .fx-szenen button { flex: 1 1 100%; text-align: center; padding: 9px 12px; } }
+
+/* ---------- Schwebende Glas-Navigation ---------- */
+.top { top: 12px; margin: 12px auto 0; width: min(1240px, calc(100% - 24px)); border-radius: 20px; border: 1px solid var(--glas-rand); background: rgba(12,15,20,.62);
+  box-shadow: 0 20px 60px rgba(0,0,0,.55); }
+.top .wrap { padding-inline: 16px; }
+@media (max-width: 760px) { .nav { border-radius: 0 0 20px 20px; background: rgba(12,15,20,.96); } }
+
+/* ---------- Gründer-Zitat ---------- */
+.fx-zitat { margin: 0 0 56px; padding: clamp(28px, 4vw, 52px); border-radius: 32px; background: var(--glas); border: 1px solid var(--glas-rand); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); }
+.fx-zitat blockquote { margin: 0; font: 600 clamp(22px, 2.6vw, 34px)/1.3 var(--font); letter-spacing: -.025em; color: #fff; }
+.fx-zitat figcaption { margin-top: 20px; font-size: 15px; color: var(--grau); }
+.fx-zitat figcaption b { color: var(--ink); font-weight: 600; }
 
 /* Bewegung reduzieren */
 @media (prefers-reduced-motion: reduce) { body::before, .fx-aura i, .fx-kern { animation: none !important; } }

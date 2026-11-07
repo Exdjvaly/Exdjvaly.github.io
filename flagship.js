@@ -12,6 +12,29 @@
 
     // vorgerenderter Leuchtpunkt pro Farbe
     var sprites = {};
+    // Szenarien: [Anzeige, Stärke 0..1, rückwärts]
+    var SZ = {
+      sonne:  { sonne: ['12,6 kW', 1], netz: ['0,0 kW', 0], ww: ['60 °C', .8], speicher: ['+4,2 kW', 1], wp: ['1,4 kW', .7], wallbox: ['6,4 kW', 1], klima: ['0,6 kW', .5],
+        text: 'Der Überschuss vom Dach lädt das E-Auto, füllt den Speicher, heizt das Warmwasser auf 60 °C und kühlt das Haus. Aus dem Netz kommt nichts.' },
+      nacht:  { sonne: ['0,0 kW', 0], netz: ['14,8 kW', 1], ww: ['52 °C', 0], speicher: ['+3,5 kW', .8], wp: ['0,3 kW', .25], wallbox: ['11 kW', 1], klima: ['Standby', 0],
+        text: 'Nachts ist der Börsenstrom am günstigsten. Auto und Speicher laden gleichzeitig, der Hausspeicher wird dabei nicht vom Auto leergezogen.' },
+      spitze: { sonne: ['0,2 kW', .15], netz: ['0,0 kW', 0], ww: ['58 °C', 0], speicher: ['−1,8 kW', 1, 1], wp: ['0,0 kW', 0], wallbox: ['Pause', 0], klima: ['Standby', 0],
+        text: 'Abends ist der Strom teuer. Der Speicher versorgt das Haus, das Auto wartet auf die Nacht, die Wärmepumpe nutzt die Wärme vom Mittag.' }
+    };
+    var szene = 'sonne', einsicht = document.getElementById('fx-einsicht');
+    function setzeSzene(n) {
+      szene = n; var d = SZ[n];
+      buehne.querySelectorAll('.fx-chip').forEach(function (el) {
+        var z = d[el.dataset.id]; if (!z) return;
+        el.querySelector('b').textContent = z[0];
+        el.classList.toggle('aus', !(z[1] > 0));
+      });
+      if (einsicht) einsicht.textContent = d.text;
+      document.querySelectorAll('.fx-szenen button').forEach(function (b) { b.setAttribute('aria-selected', String(b.dataset.szene === n)); });
+      if (W) aufbauen();
+      if (ruhig) zeichnen(performance.now());
+    }
+    document.querySelectorAll('.fx-szenen button').forEach(function (b) { b.addEventListener('click', function () { setzeSzene(b.dataset.szene); }); });
     function sprite(farbe) {
       if (sprites[farbe]) return sprites[farbe];
       var c = document.createElement('canvas'); c.width = c.height = 64;
@@ -45,11 +68,12 @@
         // weiche S-Kurve: erst senkrecht, dann waagerecht in den Kern
         var p1 = quelle ? { x: a.x, y: a.y + (e.y - a.y) * .75 } : { x: a.x + (e.x - a.x) * .7, y: a.y };
         var p2 = quelle ? { x: e.x + (a.x - e.x) * .45, y: e.y } : { x: e.x, y: e.y + (a.y - e.y) * .55 };
-        var staerke = el.textContent.indexOf('0,2 kW') > -1 ? .15 : 1;
-        bahnen.push({ p0: a, p1: p1, p2: p2, p3: e, farbe: el.dataset.farbe || '#5FD4F0', staerke: staerke, el: el });
+        var z = (SZ[szene] || {})[el.dataset.id] || [null, 1, 0];
+        bahnen.push({ p0: a, p1: p1, p2: p2, p3: e, farbe: el.dataset.farbe || '#5FD4F0', staerke: z[1], rueck: !!z[2], el: el });
       });
       teile = [];
       bahnen.forEach(function (b, bi) {
+        if (b.staerke <= 0) return;
         var n = Math.round(14 * b.staerke) + 2;
         for (var k = 0; k < n; k++) teile.push({ b: bi, t: Math.random(), v: .12 + Math.random() * .1, g: (3 + Math.random() * 5) * Math.max(.45, Math.min(1, W / 950)) });
       });
@@ -62,7 +86,7 @@
       bahnen.forEach(function (b) {
         ctx.beginPath(); ctx.moveTo(b.p0.x, b.p0.y);
         ctx.bezierCurveTo(b.p1.x, b.p1.y, b.p2.x, b.p2.y, b.p3.x, b.p3.y);
-        ctx.strokeStyle = 'rgba(255,255,255,.07)'; ctx.lineWidth = 1.2; ctx.stroke();
+        ctx.strokeStyle = b.staerke > 0 ? 'rgba(255,255,255,.09)' : 'rgba(255,255,255,.035)'; ctx.lineWidth = 1.2; ctx.stroke();
       });
       // Partikel mit Schweif, additiv
       ctx.globalCompositeOperation = 'lighter';
@@ -72,7 +96,7 @@
         var sp = sprite(b.farbe);
         for (var s = 0; s < 6; s++) {
           var tt = p.t - s * .012; if (tt < 0) break;
-          var q = punkt(b, tt), gr = p.g * (1 - s * .14), al = (1 - s / 6) * (b.staerke < 1 ? .5 : 1);
+          var q = punkt(b, b.rueck ? 1 - tt : tt), gr = p.g * (1 - s * .14), al = (1 - s / 6) * (b.staerke < 1 ? .5 : 1);
           ctx.globalAlpha = al;
           ctx.drawImage(sp, q.x - gr * 2, q.y - gr * 2, gr * 4, gr * 4);
         }
@@ -80,7 +104,7 @@
       ctx.globalAlpha = 1;
       if (!ruhig && sichtbar) requestAnimationFrame(zeichnen);
     }
-    function start() { aufbauen(); letzte = performance.now(); requestAnimationFrame(zeichnen); }
+    function start() { setzeSzene(szene); aufbauen(); letzte = performance.now(); requestAnimationFrame(zeichnen); }
     if (document.readyState === 'complete') start(); else window.addEventListener('load', start);
     var rt; window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(aufbauen, 150); });
     if ('IntersectionObserver' in window) new IntersectionObserver(function (e) {
