@@ -1,9 +1,3 @@
-/* Vorschau: ?fold=hand zeigt das Falt-Handy in der Hand (Test) */
-(function () {
-  var mm = location.search.match(/[?&]fold=(hand2?)\b/); if (!mm) return;
-  var t = document.getElementById('fold-' + mm[1]), w = document.querySelector('#smart .ft-wrap');
-  if (t && w) { w.innerHTML = ''; w.appendChild(t.content.cloneNode(true)); w.classList.add('hand'); }
-})();
 /* VOLTHERM Flagship (2026-11-07): Energie-Partikel auf Bézier-Kurven im Startbild, Zähler im Abschnitt Erfahrung. */
 (function () {
   'use strict';
