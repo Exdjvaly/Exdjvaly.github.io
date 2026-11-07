@@ -249,3 +249,7 @@ h2 .blau, h2 .grad, h2 .grad-dark, h2 span { color: var(--grau); background: non
 .vx-luft i { background: linear-gradient(rgba(150,230,255,.28), rgba(42,123,234,0)); filter: blur(14px); }
 .ki-pic .ft-ki > img { filter: drop-shadow(0 30px 60px rgba(0,0,0,.6)) drop-shadow(0 0 60px rgba(42,123,234,.12)); }
 .vx-bild { padding-bottom: 8%; }
+/* Hub Core: Foto des runden Displays mit Drehring */
+.hc-foto { width: min(100%, 440px); }
+.hc-foto .rk { left: 7.25%; top: 7%; width: 85%; height: 86.25%; }
+.hc-foto .rk-scr { left: 7.35%; top: 6.7%; width: 87%; height: 85.8%; font-size: 3.7cqw; background: #000; box-shadow: none; }
