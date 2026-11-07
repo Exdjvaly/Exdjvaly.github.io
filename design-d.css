@@ -254,3 +254,9 @@ h2 .blau, h2 .grad, h2 .grad-dark, h2 span { color: var(--grau); background: non
 .hc-foto .rk { left: 7.25%; top: 7%; width: 85%; height: 86.25%; }
 .hc-foto .rk-scr { left: 7.35%; top: 6.7%; width: 87%; height: 85.8%; font-size: 3.7cqw; background: #000; box-shadow: none; }
 .hc-foto.hand > img { border-radius: 28px; }
+/* Falt-Handy: Ränder sauber, Statusleiste und Navigation mit Abstand zum Rahmen */
+.ft-fold .ft-scr { border-radius: 14px; background: #05070b; }
+.ft-fold .ft-in { position: absolute; left: 0; right: 0; top: 30px; bottom: 22px; overflow: hidden; }
+.ft-fold .ft-in iframe { top: -40px; height: calc(100% + 40px); }
+.ft-fold .ft-kam { position: absolute; z-index: 2; top: 9px; left: 71%; width: 14px; height: 14px; border-radius: 50%; background: #000; box-shadow: 0 0 0 2px #15181d; }
+.ft-wrap, .uw-duo .ft-fold { max-width: 470px; }
