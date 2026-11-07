@@ -300,3 +300,68 @@ h2 .blau, h2 .grad, h2 .grad-dark, h2 span { color: var(--grau); background: non
 .hd-pro .ft-tab { max-width: 760px; }
 .ki-pic .ft-ki { max-width: 900px; }
 .ft-tab .pf-scr { height: 100%; }
+
+/* ---------- Ein Tag mit VOLTHERM (Startbild, 2026-11-07) ---------- */
+.fx-tag { position: relative; z-index: 2; display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; width: min(860px, calc(100% - 32px)); margin: 56px auto 0; padding: 6px; border-radius: 22px;
+  background: rgba(255,255,255,.05); border: 1px solid var(--glas-rand); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); }
+.fx-tag button { position: relative; overflow: hidden; border: 0; background: transparent; color: var(--ink2); padding: 10px 6px 12px; border-radius: 16px; cursor: pointer; font-family: var(--font); text-align: center; transition: background .3s, color .3s; }
+.fx-tag button small { display: block; font-size: 12px; color: var(--grau); font-variant-numeric: tabular-nums; }
+.fx-tag button b { display: block; margin-top: 2px; font-size: 14px; font-weight: 600; letter-spacing: -.01em; white-space: nowrap; }
+.fx-tag button[aria-selected="true"] { background: rgba(255,255,255,.12); color: #fff; box-shadow: inset 0 1px 0 rgba(255,255,255,.1); }
+.fx-tag button[aria-selected="true"] small { color: var(--hell); }
+.fx-tag button::after { content: ""; position: absolute; left: 14px; right: 14px; bottom: 5px; height: 2px; border-radius: 2px; background: var(--hell); transform: scaleX(0); transform-origin: 0 50%; opacity: 0; }
+.fx-tag button.lauf::after { opacity: .9; animation: fxLauf 7s linear forwards; }
+@keyframes fxLauf { to { transform: scaleX(1); } }
+@media (max-width: 700px) { .fx-tag { grid-template-columns: repeat(3, 1fr); } .fx-tag button b { font-size: 13px; } }
+
+/* Himmel hinter dem Haus: Sonne/Mond wandert, Wolken bei Bewölkung */
+.fx-himmel { position: absolute; inset: 0; z-index: -1; pointer-events: none; }
+.fx-gestirn { position: absolute; left: var(--gx, 50%); top: var(--gy, 10%); width: 11%; aspect-ratio: 1; border-radius: 50%; transform: translate(-50%, -50%);
+  background: radial-gradient(circle, var(--gk, #FFE7A0) 0 28%, var(--gf, rgba(255,190,70,.45)) 34%, transparent 70%); filter: blur(1px); opacity: var(--go, 1);
+  transition: left 2.2s cubic-bezier(.5,0,.2,1), top 2.2s cubic-bezier(.5,0,.2,1), opacity 1.5s, background 1.5s; }
+.fx-wolke { position: absolute; width: 30%; height: 12%; border-radius: 50%; background: rgba(170,182,200,.28); filter: blur(18px); opacity: 0; transition: opacity 1.6s, transform 6s ease-out; }
+.fx-wolke.w1 { left: 48%; top: 6%; transform: translateX(-20%); }
+.fx-wolke.w2 { left: 28%; top: 14%; width: 26%; transform: translateX(20%); }
+.fx-haus { transition: filter 1.8s; }
+.fx-aura i { transition: background 2s, opacity 2s; }
+#start[data-phase="zwielicht"] { --gx: 14%; --gy: 46%; --gk: #FFB46B; --gf: rgba(255,120,60,.4); --go: .8; }
+#start[data-phase="morgen"]    { --gx: 26%; --gy: 22%; --gk: #FFE2A0; --gf: rgba(255,180,80,.42); }
+#start[data-phase="sonne"]     { --gx: 36%; --gy: 9%;  --gk: #FFF6D8; --gf: rgba(255,210,90,.55); }
+#start[data-phase="wolken"]    { --gx: 64%; --gy: 10%; --gk: #E8E2CC; --gf: rgba(220,210,170,.18); --go: .45; }
+#start[data-phase="abend"]     { --gx: 78%; --gy: 30%; --gk: #FF9A5C; --gf: rgba(255,80,60,.38); --go: .85; }
+#start[data-phase="nacht"]     { --gx: 76%; --gy: 8%;  --gk: #DDE6F5; --gf: rgba(150,180,230,.18); --go: .9; }
+#start[data-phase="wolken"] .fx-wolke { opacity: 1; transform: none; }
+#start[data-phase="zwielicht"] .fx-haus { filter: drop-shadow(0 40px 60px rgba(0,0,0,.6)) brightness(.7) saturate(.85) sepia(.15); }
+#start[data-phase="morgen"] .fx-haus    { filter: drop-shadow(0 40px 60px rgba(0,0,0,.6)) brightness(.9); }
+#start[data-phase="wolken"] .fx-haus    { filter: drop-shadow(0 40px 60px rgba(0,0,0,.6)) brightness(.82) saturate(.7); }
+#start[data-phase="abend"] .fx-haus     { filter: drop-shadow(0 40px 60px rgba(0,0,0,.6)) brightness(.68) sepia(.25) saturate(1.1); }
+#start[data-phase="nacht"] .fx-haus     { filter: drop-shadow(0 40px 60px rgba(0,0,0,.6)) brightness(.45) saturate(.6) hue-rotate(10deg); }
+
+/* Zusätzliche Chips */
+.fx-chip .chip-ic { width: 26px; height: 26px; margin: 2px; color: #C9D3E3; fill: none; stroke: currentColor; stroke-width: 1.6; }
+.fx-chip .euro-ic { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; font: 700 15px/1 var(--font); font-style: normal; color: #0b0f14; background: linear-gradient(140deg, #8fe3ff, #2a7bea); }
+.fx-preis { border-color: rgba(95,212,240,.35); }
+@media (max-width: 700px) { .fx-chip .chip-ic { width: 20px; height: 20px; } .fx-chip .euro-ic { width: 22px; height: 22px; font-size: 12px; } }
+
+/* Text unter dem Haus: Uhrzeit, wohin die Energie geht, was VOLTHERM macht */
+.fx-einsicht { min-height: 8.5em; }
+.fx-einsicht p { margin: 0 auto; max-width: 44em; }
+.fx-einsicht .fx-zeit { font-size: 13px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--hell); margin-bottom: 10px; }
+.fx-einsicht .fx-macht { margin-top: 12px; color: var(--ink2); }
+
+/* ---------- Bidirektionales Laden ---------- */
+.fx-v2h .fx-kopf h2 span { background: linear-gradient(90deg, #2FD18B, #5FD4F0, #FFC94A); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.v2h-buehne { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 12px; max-width: 920px; margin: 0 auto 40px; padding: 28px clamp(16px, 3vw, 36px); border-radius: 32px;
+  background: radial-gradient(120% 140% at 50% 0%, rgba(47,209,139,.16), rgba(20,24,30,.55) 60%); border: 1px solid var(--glas-rand); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); }
+.v2h-knoten { display: grid; justify-items: center; gap: 4px; text-align: center; min-width: 110px; }
+.v2h-knoten img, .v2h-haus { width: 72px; height: 72px; object-fit: contain; }
+.v2h-haus { color: #fff; fill: none; stroke: currentColor; stroke-width: 1.4; }
+.v2h-knoten b { color: #fff; font-size: 16px; } .v2h-knoten small { color: var(--ink2); font-size: 13px; }
+.v2h-fluss { width: 100%; height: 120px; overflow: visible; }
+.v2h-fluss path { fill: none; stroke: rgba(255,255,255,.12); stroke-width: 1.5; }
+.v2h-gruen circle { fill: #2FD18B; filter: drop-shadow(0 0 6px #2FD18B); }
+.v2h-gelb circle { fill: #FFC94A; filter: drop-shadow(0 0 6px #FFC94A); }
+.v2h-karten { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.v2h-hinweis { text-align: center; }
+@media (max-width: 700px) { .v2h-karten { grid-template-columns: 1fr; } .v2h-knoten { min-width: 70px; } .v2h-knoten img, .v2h-haus { width: 48px; height: 48px; } .v2h-buehne { gap: 4px; } }
+@media (max-width: 700px) { .fx-chip[style*="--x:6%"] { left: calc(var(--x) + 15%); } .fx-chip[style*="--x:94%"] { left: calc(var(--x) - 13%); } }

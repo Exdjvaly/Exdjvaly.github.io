@@ -16,7 +16,7 @@
 <link rel="stylesheet" href="site.css?v=20261026b">
 <link rel="stylesheet" href="design-b.css?v=20261106a">
 <link rel="stylesheet" href="chat.css?v=20261022b">
-<link rel="stylesheet" href="design-d.css?v=20261107y">
+<link rel="stylesheet" href="design-d.css?v=20261107z2">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -85,6 +85,7 @@
     <symbol id="i-wb" viewBox="0 0 24 24"><path d="M5 21V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v16 M3 21h14 M8 7h4 M15 9h2a2 2 0 0 1 2 2v5a1.5 1.5 0 0 0 3 0V9l-2-2 M10.8 10 9 13.5h2.5L10 17"/></symbol>
     <symbol id="i-wp" viewBox="0 0 24 24"><path d="M3 5h18v14H3Z M12 9.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5Z M12 7c1.8 0 2 2.5 0 2.5 M17 12c0 1.8-2.5 2-2.5 0 M12 17c-1.8 0-2-2.5 0-2.5 M7 12c0-1.8 2.5-2 2.5 0"/></symbol>
     <symbol id="i-kl" viewBox="0 0 24 24"><path d="M2 5h20v7H2Z M5 9.5h14 M7 15l-1 3 M12 15v4 M17 15l1 3"/></symbol>
+    <symbol id="i-v2h" viewBox="0 0 24 24"><path d="M4 8.5h14 M15 5.5l3 3-3 3 M20 15.5H6 M9 12.5l-3 3 3 3"/></symbol>
     <symbol id="i-sh" viewBox="0 0 24 24"><path d="M3 11 12 4l9 7 M5 9.5V20h14V9.5 M12.8 10 10.5 14h3l-2.3 4"/></symbol>
     <symbol id="i-el" viewBox="0 0 24 24"><path d="M13 2 4.5 13.5h6.5L10 22l9-12h-6.5Z"/></symbol>
     <symbol id="i-tel" viewBox="0 0 24 24"><path d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 5a2 2 0 0 1 2-2Z"/></symbol>
@@ -93,7 +94,6 @@
     <symbol id="i-wa" viewBox="0 0 24 24"><path d="M4 20l1.3-4A8 8 0 1 1 8 18.7Z M9 8.5c0 3.5 3 6.5 6.5 6.5l1-1.5-2-1-1 .8a5 5 0 0 1-2.3-2.3l.8-1-1-2Z"/></symbol>
     <symbol id="i-uhr" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Z M12 7v5l3.5 2"/></symbol>
     <symbol id="i-netz" viewBox="0 0 24 24"><path d="M10 2h4 M12 2 7 22 M12 2l5 20 M4 7h16 M8.4 15h7.2 M7.6 19l8.6-4 M7.8 15l8.6 4"/></symbol>
-    <symbol id="i-v2h" viewBox="0 0 24 24"><path d="M4 8.5h14 M15 5.5l3 3-3 3 M20 15.5H6 M9 12.5l-3 3 3 3"/></symbol>
     <symbol id="i-puls" viewBox="0 0 24 24"><path d="M2 12h4.5l2-5 4 10 2.5-6 1.5 1H22"/></symbol>
     <symbol id="i-lock" viewBox="0 0 24 24"><path d="M5.5 11h13v10h-13Z M8.5 11V8a3.5 3.5 0 0 1 7 0v3 M12 14.5v3"/></symbol>
     <symbol id="i-ww" viewBox="0 0 24 24"><path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11Z"/></symbol>
@@ -140,24 +140,30 @@
       <a class="fx-link" href="#hub">Hub Core und Hub Pro erleben <svg class="ic" aria-hidden="true"><use href="#i-pfeil"/></svg></a>
     </div>
   </div>
-  <div class="fx-szenen" role="tablist" aria-label="Szenario">
-    <button type="button" role="tab" aria-selected="true" data-szene="sonne"><b>Sonnen-Überschuss</b><small>13:20 Uhr · Mittag</small></button>
-    <button type="button" role="tab" aria-selected="false" data-szene="nacht"><b>Günstiger Strom</b><small>02:45 Uhr · dynamischer Tarif</small></button>
-    <button type="button" role="tab" aria-selected="false" data-szene="spitze"><b>Teurer Strom</b><small>18:50 Uhr · Preisspitze</small></button>
+  <div class="fx-tag" role="tablist" aria-label="Ein Tag mit VOLTHERM">
+    <button type="button" role="tab" aria-selected="true" data-szene="zwielicht"><small>06:15</small><b>Morgengrauen</b></button>
+    <button type="button" role="tab" aria-selected="false" data-szene="morgen"><small>08:30</small><b>Morgen</b></button>
+    <button type="button" role="tab" aria-selected="false" data-szene="sonne"><small>12:30</small><b>Volle Sonne</b></button>
+    <button type="button" role="tab" aria-selected="false" data-szene="wolken"><small>15:00</small><b>Wolken</b></button>
+    <button type="button" role="tab" aria-selected="false" data-szene="abend"><small>19:00</small><b>Abend</b></button>
+    <button type="button" role="tab" aria-selected="false" data-szene="nacht"><small>02:00</small><b>Nacht</b></button>
   </div>
   <div class="fx-buehne" id="fx-buehne">
+    <div class="fx-himmel" aria-hidden="true"><i class="fx-gestirn"></i><i class="fx-wolke w1"></i><i class="fx-wolke w2"></i></div>
     <canvas class="fx-flow" id="fx-flow" aria-hidden="true"></canvas>
     <img class="fx-haus" src="assets/3d/haus-v2.webp" width="1400" height="1045" alt="Haus mit Photovoltaik, Speicher, Wallbox und Wärmepumpe" decoding="async" fetchpriority="high">
     <span class="fx-kern" data-knoten="kern"><svg viewBox="0 0 300 300" aria-hidden="true"><use href="#logo"/></svg><b>HEMS</b></span>
-    <span class="fx-chip" data-id="sonne" data-knoten="quelle" data-farbe="#FFC94A" style="--x:10%;--y:16%"><i class="sonne-ic"></i><span><b>6,4 kW</b><small>Sonne</small></span></span>
+    <span class="fx-chip" data-id="sonne" data-knoten="quelle" data-farbe="#FFC94A" style="--x:10%;--y:16%"><i class="sonne-ic"></i><span><b>6,4 kW</b><small>Wechselrichter</small></span></span>
     <span class="fx-chip" data-id="netz" data-knoten="quelle" data-farbe="#9AA6B8" style="--x:90%;--y:16%"><img src="assets/3d/mast.webp" alt=""><span><b>0,2 kW</b><small>Netz</small></span></span>
-    <span class="fx-chip" data-id="ww" data-knoten="ziel" data-farbe="#FF7A3D" style="--x:6%;--y:52%"><img src="assets/3d/boiler.webp" alt=""><span><b>52 °C</b><small>Warmwasser</small></span></span>
-    <span class="fx-chip" data-id="speicher" data-knoten="ziel" data-farbe="#2FD18B" style="--x:94%;--y:52%"><img src="assets/3d/batterie.webp" alt=""><span><b>82 %</b><small>Speicher</small></span></span>
-    <span class="fx-chip" data-id="wp" data-knoten="ziel" data-farbe="#FF7A3D" style="--x:12%;--y:88%"><img src="assets/3d/wp.webp" alt=""><span><b>1,8 kW</b><small>Wärmepumpe</small></span></span>
-    <span class="fx-chip" data-id="wallbox" data-knoten="ziel" data-farbe="#3C9BFF" style="--x:88%;--y:88%"><img src="assets/3d/wallbox.webp" alt=""><span><b>11 kW</b><small>Wallbox</small></span></span>
-    <span class="fx-chip" data-id="klima" data-knoten="ziel" data-farbe="#5FD4F0" style="--x:50%;--y:100%"><img src="assets/3d/klima.webp" alt=""><span><b>22 °C</b><small>Klima</small></span></span>
+    <span class="fx-chip" data-id="ww" data-knoten="ziel" data-farbe="#FF7A3D" style="--x:6%;--y:50%"><img src="assets/3d/boiler.webp" alt=""><span><b>52 °C</b><small>Boiler · Heizstab</small></span></span>
+    <span class="fx-chip" data-id="speicher" data-knoten="ziel" data-farbe="#2FD18B" style="--x:94%;--y:50%"><img src="assets/3d/batterie.webp" alt=""><span><b>82 %</b><small>Speicher</small></span></span>
+    <span class="fx-chip" data-id="wp" data-knoten="ziel" data-farbe="#FF7A3D" style="--x:12%;--y:84%"><img src="assets/3d/wp.webp" alt=""><span><b>1,8 kW</b><small>Wärmepumpe</small></span></span>
+    <span class="fx-chip" data-id="wallbox" data-knoten="ziel" data-farbe="#3C9BFF" style="--x:88%;--y:84%"><img src="assets/3d/wallbox.webp" alt=""><span><b>11 kW</b><small>Wallbox</small></span></span>
+    <span class="fx-chip" data-id="klima" data-knoten="ziel" data-farbe="#5FD4F0" style="--x:33%;--y:100%"><img src="assets/3d/klima.webp" alt=""><span><b>22 °C</b><small>Klima</small></span></span>
+    <span class="fx-chip" data-id="haushalt" data-knoten="ziel" data-farbe="#C9D3E3" style="--x:67%;--y:100%"><svg class="chip-ic" aria-hidden="true"><use href="#i-sh"/></svg><span><b>0,5 kW</b><small>Haushalt</small></span></span>
+    <span class="fx-chip fx-preis" data-id="epex" data-knoten="info" style="--x:50%;--y:2%"><i class="euro-ic" aria-hidden="true">€</i><span><b>12 ct/kWh</b><small>Strompreis EPEX</small></span></span>
   </div>
-  <p class="fx-einsicht" id="fx-einsicht" aria-live="polite"></p>
+  <div class="fx-einsicht"><p class="fx-zeit" id="fx-zeit"></p><p id="fx-einsicht" aria-live="polite"></p><p class="fx-macht" id="fx-macht"></p></div>
   <p class="fx-hinweis">Beispielwerte zur Veranschaulichung.</p>
 </section>
 
@@ -180,6 +186,32 @@
   </div>
 </section>
 
+<section class="fx-sec fx-v2h" id="bidirektional">
+  <div class="wrap">
+    <header class="fx-kopf">
+      <p class="fx-over">Bidirektionales Laden · V2H</p>
+      <h2>Ihr Auto wird zum Stromspeicher.<br><span>VOLTHERM steuert beide Richtungen.</span></h2>
+      <p>Ein E-Auto speichert oft 60 kWh und mehr, ein Vielfaches eines Hausspeichers. Mittags lädt es mit Sonnenstrom vom Dach, abends gibt es Strom an das Haus zurück. VOLTHERM entscheidet, wann geladen und wann entladen wird.</p>
+    </header>
+    <div class="v2h-buehne" aria-hidden="true">
+      <div class="v2h-knoten"><img src="assets/3d/wallbox.webp" alt=""><b>Auto + Wallbox</b><small>bidirektional</small></div>
+      <svg class="v2h-fluss" viewBox="0 0 600 120" preserveAspectRatio="none">
+        <path id="v2h-hin" d="M10 40 C 200 0, 400 0, 590 40" />
+        <path id="v2h-rueck" d="M590 80 C 400 120, 200 120, 10 80" />
+        <g class="v2h-gelb"><circle r="5"><animateMotion dur="2.6s" repeatCount="indefinite"><mpath href="#v2h-rueck"/></animateMotion></circle><circle r="5"><animateMotion dur="2.6s" begin=".85s" repeatCount="indefinite"><mpath href="#v2h-rueck"/></animateMotion></circle><circle r="5"><animateMotion dur="2.6s" begin="1.7s" repeatCount="indefinite"><mpath href="#v2h-rueck"/></animateMotion></circle></g>
+        <g class="v2h-gruen"><circle r="5"><animateMotion dur="2.6s" repeatCount="indefinite"><mpath href="#v2h-hin"/></animateMotion></circle><circle r="5"><animateMotion dur="2.6s" begin=".85s" repeatCount="indefinite"><mpath href="#v2h-hin"/></animateMotion></circle><circle r="5"><animateMotion dur="2.6s" begin="1.7s" repeatCount="indefinite"><mpath href="#v2h-hin"/></animateMotion></circle></g>
+      </svg>
+      <div class="v2h-knoten"><svg class="v2h-haus"><use href="#i-sh"/></svg><b>Haus</b><small>Abend und Nacht</small></div>
+    </div>
+    <div class="v2h-karten">
+      <div class="fx-zahl"><b>Mittags</b><small>Auto laden</small><p>Der Überschuss vom Dach fließt ins Auto statt für wenige Cent ins Netz.</p></div>
+      <div class="fx-zahl"><b>Abends</b><small>Haus versorgen</small><p>Wenn der Strom teuer ist, versorgt das Auto das Haus mit dem Sonnenstrom vom Mittag.</p></div>
+      <div class="fx-zahl"><b>Morgens</b><small>bereit zur Fahrt</small><p>Sie legen fest, wie viel Ladung für Ihre Fahrt bleibt. Darunter entlädt VOLTHERM nicht.</p></div>
+    </div>
+    <p class="fx-hinweis v2h-hinweis">Voraussetzung: ein Auto und eine Wallbox, die bidirektionales Laden unterstützen, sowie die Freigabe durch den Netzbetreiber.</p>
+  </div>
+</section>
+
 <section class="sec" id="leistungen">
   <div class="wrap">
     <p class="kicker">Leistungen</p>
@@ -196,7 +228,7 @@
       <a class="lk" href="#kontakt" data-interesse="Stromspeicher"><img src="/bild/speicher" alt="" loading="lazy" decoding="async" onerror="this.remove()">
         <p class="kicker">Sonne für den Abend</p><h3>Stromspeicher</h3><p>Sonnenstrom vom Mittag für den Abend, auch als Nachrüstung.</p><span class="los">Mehr erfahren <svg class="ic"><use href="#i-ecke"/></svg></span></a>
       <a class="lk" href="#kontakt" data-interesse="Wallbox"><img src="/bild/wallbox" alt="" loading="lazy" decoding="async" onerror="this.remove()">
-        <p class="kicker">Laden zu Hause</p><h3>Wallbox</h3><p>Laden mit Überschuss vom Dach oder in den günstigsten Stunden, vorbereitet für V2H.</p><span class="los">Mehr erfahren <svg class="ic"><use href="#i-ecke"/></svg></span></a>
+        <p class="kicker">Laden zu Hause</p><h3>Wallbox</h3><p>Laden mit Überschuss vom Dach oder in den günstigsten Stunden. Bidirektional: Das Auto versorgt auch das Haus (V2H).</p><span class="los">Mehr erfahren <svg class="ic"><use href="#i-ecke"/></svg></span></a>
       <a class="lk" href="#kontakt" data-interesse="Wärmepumpe"><img src="/bild/waermepumpe" alt="" loading="lazy" decoding="async" onerror="this.remove()">
         <p class="kicker">Heizen mit Strom</p><h3>Wärmepumpe</h3><p>Heizen mit Strom statt Öl oder Gas, mit SG-Ready und eigenem Sonnenstrom.</p><span class="los">Mehr erfahren <svg class="ic"><use href="#i-ecke"/></svg></span></a>
       <a class="lk" href="#kontakt" data-interesse="Klimaanlage"><img src="/bild/klima" alt="" loading="lazy" decoding="async" onerror="this.remove()">
@@ -464,7 +496,7 @@
       <div class="card"><svg class="hexi" viewBox="0 0 64 64" aria-hidden="true"><use href="#hex"/><use href="#i-uhr" x="17" y="17" width="30" height="30"/></svg><b>Günstige Stunden nutzen</b><p>Mit einem dynamischen Stromtarif lädt der Hub Auto und Speicher dann, wenn der Strom am wenigsten kostet.</p></div>
       <div class="card warm"><svg class="hexi" viewBox="0 0 64 64" aria-hidden="true"><use href="#hex"/><use href="#i-wp" x="17" y="17" width="30" height="30"/></svg><b>Wärme mit Sonnenstrom</b><p>Bei Überschuss bekommt die Wärmepumpe über SG-Ready das Signal, Wärme auf Vorrat zu machen. Das Warmwasser heizt mit Sonne.</p></div>
       <div class="card"><svg class="hexi" viewBox="0 0 64 64" aria-hidden="true"><use href="#hex"/><use href="#i-netz" x="17" y="17" width="30" height="30"/></svg><b>Bereit für §14a EnWG</b><p>Begrenzt der Netzbetreiber die Leistung, verteilt der Hub den verfügbaren Strom nach Ihren Prioritäten.</p></div>
-      <div class="card"><svg class="hexi" viewBox="0 0 64 64" aria-hidden="true"><use href="#hex"/><use href="#i-v2h" x="17" y="17" width="30" height="30"/></svg><b>Strom aus dem Auto</b><p>Vorbereitet für bidirektionales Laden (V2H), sobald Auto und Wallbox es unterstützen.</p></div>
+      <div class="card"><svg class="hexi" viewBox="0 0 64 64" aria-hidden="true"><use href="#hex"/><use href="#i-v2h" x="17" y="17" width="30" height="30"/></svg><b>Strom aus dem Auto</b><p>Bidirektionales Laden (V2H): VOLTHERM lädt das Auto mit Sonnenstrom und holt abends Strom zurück ins Haus.</p></div>
       <div class="card warm"><svg class="hexi" viewBox="0 0 64 64" aria-hidden="true"><use href="#hex"/><use href="#i-puls" x="17" y="17" width="30" height="30"/></svg><b>Service, bevor etwas ausfällt</b><p>Der Hub prüft Geräte und Verbindungen und meldet Auffälligkeiten. Auf Wunsch helfen wir über einen sicheren Fernzugang.</p></div>
       <div class="card"><svg class="hexi" viewBox="0 0 64 64" aria-hidden="true"><use href="#hex"/><use href="#i-lock" x="17" y="17" width="30" height="30"/></svg><b>Ihre Daten bleiben im Haus</b><p>Kein Cloud-Abo, keine Daten auf fremden Servern. Der Hub arbeitet lokal.</p></div>
     </div>
@@ -735,7 +767,7 @@
 <script type="application/json" id="galerie-daten">{}</script>
 <script src="site.js?v=20261107e" defer></script>
 <script src="chat.js?v=20261026a" defer></script>
-<script src="flagship.js?v=20261107u" defer></script>
+<script src="flagship.js?v=20261107v" defer></script>
 
 </body>
 </html>

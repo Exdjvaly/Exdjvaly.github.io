@@ -12,29 +12,63 @@
 
     // vorgerenderter Leuchtpunkt pro Farbe
     var sprites = {};
-    // Szenarien: [Anzeige, Stärke 0..1, rückwärts]
+    // Ein Tag mit VOLTHERM: [Anzeige, Stärke 0..1, rückwärts, andere Beschriftung]
     var SZ = {
-      sonne:  { sonne: ['12,6 kW', 1], netz: ['0,0 kW', 0], ww: ['60 °C', .8], speicher: ['+4,2 kW', 1], wp: ['1,4 kW', .7], wallbox: ['6,4 kW', 1], klima: ['0,6 kW', .5],
-        text: 'Der Überschuss vom Dach lädt das E-Auto, füllt den Speicher, heizt das Warmwasser auf 60 °C und kühlt das Haus. Aus dem Netz kommt nichts.' },
-      nacht:  { sonne: ['0,0 kW', 0], netz: ['14,8 kW', 1], ww: ['52 °C', 0], speicher: ['+3,5 kW', .8], wp: ['0,3 kW', .25], wallbox: ['11 kW', 1], klima: ['Standby', 0],
-        text: 'Nachts ist der Börsenstrom am günstigsten. Auto und Speicher laden gleichzeitig, der Hausspeicher wird dabei nicht vom Auto leergezogen.' },
-      spitze: { sonne: ['0,2 kW', .15], netz: ['0,0 kW', 0], ww: ['58 °C', 0], speicher: ['−1,8 kW', 1, 1], wp: ['0,0 kW', 0], wallbox: ['Pause', 0], klima: ['Standby', 0],
-        text: 'Abends ist der Strom teuer. Der Speicher versorgt das Haus, das Auto wartet auf die Nacht, die Wärmepumpe nutzt die Wärme vom Mittag.' }
+      zwielicht: { zeit: '06:15 · Morgengrauen',
+        sonne: ['0,1 kW', .1], netz: ['0,0 kW', 0], ww: ['49 °C', 0], speicher: ['−1,2 kW', 1, 1], wp: ['0,5 kW', .5], wallbox: ['Auto steht', 0], klima: ['Standby', 0], haushalt: ['0,8 kW', .6], epex: ['28 ct/kWh', 1],
+        text: 'Der Wechselrichter liefert noch kaum Strom. Kaffee, Licht und die Wärmepumpe laufen mit dem Sonnenstrom von gestern aus dem Speicher.',
+        macht: 'VOLTHERM hält den Netzbezug bei null, solange der Speicher reicht.' },
+      morgen: { zeit: '08:30 · Morgen',
+        sonne: ['3,2 kW', .5], netz: ['0,0 kW', 0], ww: ['49 °C', 0], speicher: ['+1,8 kW', .6], wp: ['0,8 kW', .5], wallbox: ['Wartet', 0], klima: ['Standby', 0], haushalt: ['0,6 kW', .5], epex: ['25 ct/kWh', 1],
+        text: 'Die Sonne steigt. Zuerst versorgt sie das Haus, der Rest fließt in den Speicher.',
+        macht: 'VOLTHERM lädt den Speicher zuerst bis 50 %, damit der Abend gesichert ist. Erst danach bekommt das Auto Strom.' },
+      sonne: { zeit: '12:30 · Volle Sonne',
+        sonne: ['10,0 kW', 1], netz: ['0,3 kW', .25, 1, 'Einspeisung'], ww: ['60 °C', .8, 0, 'Heizstab 1,0 kW'], speicher: ['+2,0 kW', .8], wp: ['1,4 kW', .7], wallbox: ['4,2 kW', 1], klima: ['0,6 kW', .5], haushalt: ['0,5 kW', .4], epex: ['12 ct/kWh', 1],
+        text: 'Volle Sonne. Das E-Auto lädt, der Speicher füllt sich, das Warmwasser heizt auf 60 °C und die Klimaanlage kühlt.',
+        macht: 'VOLTHERM verteilt den Überschuss der Reihe nach: Speicher, Auto, Klima, Wärmepumpe, Heizstab. Ins Netz geht nur der kleine Rest.' },
+      wolken: { zeit: '15:00 · Wolken',
+        sonne: ['2,4 kW', .4], netz: ['0,0 kW', 0], ww: ['60 °C', 0], speicher: ['0,0 kW', 0], wp: ['0,4 kW', .3], wallbox: ['1,4 kW', .5], klima: ['Pause', 0], haushalt: ['0,5 kW', .4], epex: ['22 ct/kWh', 1],
+        text: 'Wolken ziehen auf. Die Leistung vom Dach fällt in wenigen Sekunden auf ein Viertel.',
+        macht: 'VOLTHERM reagiert sofort: Das Auto lädt mit kleinster Leistung weiter, Klima und Heizstab pausieren. Der Speicher wird nicht für das Auto geleert.' },
+      abend: { zeit: '19:00 · Abend',
+        sonne: ['0,0 kW', 0], netz: ['0,0 kW', 0], ww: ['57 °C', 0], speicher: ['−1,2 kW', 1, 1], wp: ['Pause', 0], wallbox: ['−0,7 kW', .6, 1, 'Auto → Haus'], klima: ['Standby', 0], haushalt: ['1,9 kW', 1], epex: ['36 ct/kWh', 1, 0, 'EPEX · teuer'],
+        text: 'Kochen, Licht, Fernsehen: Der Abend läuft mit Sonnenstrom vom Mittag, aus dem Speicher und bidirektional aus dem Auto.',
+        macht: 'Der Strom ist jetzt teuer. VOLTHERM holt Strom aus dem Auto ins Haus (V2H) und pausiert die Wärmepumpe kurz, das Haus heizt mit der Wärme vom Mittag.' },
+      nacht: { zeit: '02:00 · Nacht',
+        sonne: ['0,0 kW', 0], netz: ['13,7 kW', 1], ww: ['54 °C', 0], speicher: ['+2,0 kW', .6], wp: ['0,3 kW', .25], wallbox: ['11 kW', 1], klima: ['Standby', 0], haushalt: ['0,4 kW', .3], epex: ['18 ct/kWh', 1, 0, 'EPEX · günstig'],
+        text: 'Nachts ist der Börsenstrom am günstigsten. Das Auto lädt, bis es morgens 80 % hat.',
+        macht: 'Mit dynamischem Tarif lädt VOLTHERM Auto und Speicher in den billigsten Stunden. Am Morgen beginnt der Tag wieder mit eigenem Strom.' }
     };
-    var szene = 'sonne', einsicht = document.getElementById('fx-einsicht');
+    var FOLGE = ['zwielicht', 'morgen', 'sonne', 'wolken', 'abend', 'nacht'], DAUER = 7000;
+    var szene = 'zwielicht', held = document.getElementById('start'), takt = null, angehalten = false;
+    var einsicht = document.getElementById('fx-einsicht'), fxZeit = document.getElementById('fx-zeit'), fxMacht = document.getElementById('fx-macht');
     function setzeSzene(n) {
       szene = n; var d = SZ[n];
+      if (held) held.dataset.phase = n;
       buehne.querySelectorAll('.fx-chip').forEach(function (el) {
         var z = d[el.dataset.id]; if (!z) return;
         el.querySelector('b').textContent = z[0];
+        var kl = el.querySelector('small'); if (!kl.dataset.name) kl.dataset.name = kl.textContent;
+        kl.textContent = z[3] || kl.dataset.name;
         el.classList.toggle('aus', !(z[1] > 0));
       });
       if (einsicht) einsicht.textContent = d.text;
-      document.querySelectorAll('.fx-szenen button').forEach(function (b) { b.setAttribute('aria-selected', String(b.dataset.szene === n)); });
+      if (fxZeit) fxZeit.textContent = d.zeit;
+      if (fxMacht) fxMacht.textContent = d.macht;
+      document.querySelectorAll('.fx-tag button').forEach(function (b) {
+        var an = b.dataset.szene === n; b.setAttribute('aria-selected', String(an));
+        b.classList.remove('lauf'); if (an && !angehalten && !ruhig) { void b.offsetWidth; b.classList.add('lauf'); }
+      });
       if (W) aufbauen();
       if (ruhig) zeichnen(performance.now());
     }
-    document.querySelectorAll('.fx-szenen button').forEach(function (b) { b.addEventListener('click', function () { setzeSzene(b.dataset.szene); }); });
+    function weiter() { setzeSzene(FOLGE[(FOLGE.indexOf(szene) + 1) % FOLGE.length]); }
+    function abspielen() { clearInterval(takt); if (!angehalten && !ruhig) takt = setInterval(function () { if (sichtbar && !document.hidden) weiter(); }, DAUER); }
+    document.querySelectorAll('.fx-tag button').forEach(function (b) { b.addEventListener('click', function () {
+      // Klick hält den Tag an; ein zweiter Klick auf dieselbe Zeit spielt weiter
+      angehalten = !(angehalten && b.dataset.szene === szene);
+      setzeSzene(b.dataset.szene); abspielen();
+    }); });
     function sprite(farbe) {
       if (sprites[farbe]) return sprites[farbe];
       var c = document.createElement('canvas'); c.width = c.height = 64;
@@ -62,7 +96,7 @@
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       var kern = mitte(buehne.querySelector('[data-knoten="kern"]'));
       bahnen = [];
-      buehne.querySelectorAll('.fx-chip').forEach(function (el, i) {
+      buehne.querySelectorAll('.fx-chip:not([data-knoten="info"])').forEach(function (el, i) {
         var m = mitte(el), quelle = el.dataset.knoten === 'quelle';
         var a = quelle ? m : kern, e = quelle ? kern : m;
         // weiche S-Kurve: erst senkrecht, dann waagerecht in den Kern
@@ -104,7 +138,7 @@
       ctx.globalAlpha = 1;
       if (!ruhig && sichtbar) requestAnimationFrame(zeichnen);
     }
-    function start() { setzeSzene(szene); aufbauen(); letzte = performance.now(); requestAnimationFrame(zeichnen); }
+    function start() { setzeSzene(szene); aufbauen(); abspielen(); letzte = performance.now(); requestAnimationFrame(zeichnen); }
     if (document.readyState === 'complete') start(); else window.addEventListener('load', start);
     var rt; window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(aufbauen, 150); });
     if ('IntersectionObserver' in window) new IntersectionObserver(function (e) {
