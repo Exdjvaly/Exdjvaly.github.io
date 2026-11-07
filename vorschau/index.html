@@ -239,6 +239,23 @@ a{color:inherit}
 .vc .kontakt .tel{display:block;font:600 clamp(30px,4.4vw,56px)/1 "IBM Plex Mono";text-decoration:none;margin:12px 0 8px;letter-spacing:-.03em}
 .vc .kontakt .btn{background:#000;color:#fff}
 .vc .kontakt .ad{font:500 14px/1.5 "IBM Plex Mono";color:#000b}
+
+.va .erf{display:grid;border-top:2px solid var(--ink)}
+@media(min-width:700px){.va .erf{grid-template-columns:repeat(3,1fr)}}
+.va .ef{padding:24px 24px 28px 0;border-bottom:1.5px solid var(--ink)}
+@media(min-width:700px){.va .ef{padding:24px;border-right:1.5px solid var(--ink)}.va .ef:nth-child(3n){border-right:0}}
+.va .ef b{display:block;font:900 clamp(34px,4vw,52px)/1 "Archivo";font-stretch:115%;color:var(--c);margin-bottom:10px}
+.va .ef p{margin:0;color:var(--ink2)}
+.vb .erf{display:grid;gap:0;border-top:1px solid var(--ink)}
+@media(min-width:700px){.vb .erf{grid-template-columns:repeat(3,1fr)}}
+.vb .ef{padding:28px 24px 30px 0;border-bottom:1px solid var(--ln)}
+.vb .ef b{display:block;font:400 clamp(40px,4.4vw,60px)/1 "Fraunces";letter-spacing:-.03em;color:var(--o);margin-bottom:10px}
+.vb .ef p{margin:0;color:var(--ink2)}
+.vc .erf{display:grid;gap:2px;background:var(--ln);border:2px solid var(--ln)}
+@media(min-width:700px){.vc .erf{grid-template-columns:repeat(3,1fr)}}
+.vc .ef{background:var(--pn);padding:22px 22px 26px}
+.vc .ef b{display:block;font:800 clamp(44px,5vw,72px)/.9 "Barlow Condensed";text-transform:uppercase;color:var(--y);margin-bottom:12px}
+.vc .ef p{margin:0;color:var(--mut)}
 .hinweis{font:13px/1.5 system-ui,sans-serif;text-align:center;padding:20px;background:#000;color:#aaa}
 </style>
 </head>
@@ -331,8 +348,10 @@ a{color:inherit}
   </div>
 </div></section>
 
+<section class="sec"><div class="wrap"><div class="sh"><div class="nr mono">02 · Erfahrung</div><div><h2>Kein Neuling. Von der Platine bis zur Hauptverteilung.</h2><p class="lead" style="margin:20px 0 0">Hinter VOLTHERM steht Erfahrung aus Industrie und Energietechnik. Was in einem Wasserkraftwerk zuverlässig läuft, läuft auch in Ihrem Haus.</p></div></div><div class="erf"><div class="ef"><b>3000 A</b><p>Energieverteilung und Hauptverteilungen bis 3000 A aufgebaut.</p></div><div class="ef"><b>1 MW</b><p>Automatisierung eines Wasserkraftwerks mit 1 MW Leistung.</p></div><div class="ef"><b>PV groß</b><p>Photovoltaikanlagen mit hoher Leistung, nicht nur auf dem Einfamilienhaus.</p></div><div class="ef"><b>Industrie</b><p>Automatisierung und Steuerungstechnik, auch in der Industrie.</p></div><div class="ef"><b>Elektronik</b><p>Kenntnisse in Elektronik, nicht nur in der Elektroinstallation.</p></div><div class="ef"><b>Loxone · KNX</b><p>Programmierung von Loxone und KNX.</p></div></div></div></section>
+
 <section class="sec"><div class="wrap">
-  <div class="sh"><div class="nr mono">02 · So arbeiten wir</div><h2>Von der Idee bis zur laufenden Anlage</h2></div>
+  <div class="sh"><div class="nr mono">03 · So arbeiten wir</div><h2>Von der Idee bis zur laufenden Anlage</h2></div>
   <div class="klemmen">
     <div class="kl"><div class="x">X1</div><h3>Gespräch</h3><p>Sie erzählen uns, was Sie vorhaben. Telefon, WhatsApp oder E-Mail.</p></div>
     <div class="kl"><div class="x">X2</div><h3>Termin vor Ort</h3><p>Wir sehen uns Dach, Zählerschrank und Heizung an.</p></div>
@@ -343,7 +362,7 @@ a{color:inherit}
 </div></section>
 
 <section class="kontakt"><div class="wrap kg">
-  <div><div class="nr mono" style="border-color:#ECEDE7">03 · Kontakt</div><h2 style="margin-top:16px">Sprechen wir über Ihr Haus</h2></div>
+  <div><div class="nr mono" style="border-color:#ECEDE7">04 · Kontakt</div><h2 style="margin-top:16px">Sprechen wir über Ihr Haus</h2></div>
   <div><a class="tel" href="#a">+49 1556 8656548</a><div class="mono">office@voltherm.de · Kulmblick 2, 95514 Neustadt am Kulm</div><div style="margin-top:24px"><a class="btn" href="#a">Anfrage senden →</a></div></div>
 </div></section>
 </div>
@@ -387,6 +406,8 @@ a{color:inherit}
     <a class="g" href="#b"><span class="z">Warmwasser</span><img src="../assets/3d/boiler.webp" alt=""><h3>Heizstab</h3><p>Warmwasser mit Überschuss vom Dach.</p><span class="m">Mehr erfahren →</span></a>
   </div>
 </div></section>
+
+<section class="sec" style="padding-top:0"><div class="wrap"><div class="sh"><h2>Kein Neuling. <em>Von der Platine bis zur Hauptverteilung.</em></h2><p>Hinter VOLTHERM steht Erfahrung aus Industrie und Energietechnik. Was in einem Wasserkraftwerk zuverlässig läuft, läuft auch in Ihrem Haus.</p></div><div class="erf"><div class="ef"><b>3000 A</b><p>Energieverteilung und Hauptverteilungen bis 3000 A aufgebaut.</p></div><div class="ef"><b>1 MW</b><p>Automatisierung eines Wasserkraftwerks mit 1 MW Leistung.</p></div><div class="ef"><b>PV groß</b><p>Photovoltaikanlagen mit hoher Leistung, nicht nur auf dem Einfamilienhaus.</p></div><div class="ef"><b>Industrie</b><p>Automatisierung und Steuerungstechnik, auch in der Industrie.</p></div><div class="ef"><b>Elektronik</b><p>Kenntnisse in Elektronik, nicht nur in der Elektroinstallation.</p></div><div class="ef"><b>Loxone · KNX</b><p>Programmierung von Loxone und KNX.</p></div></div></div></section>
 
 <section class="sec" style="padding-top:0"><div class="wrap">
   <div class="sh"><h2>So arbeiten wir</h2><p>Von der Idee bis zur laufenden Anlage.</p></div>
@@ -442,6 +463,8 @@ a{color:inherit}
     <a class="ka" href="#c"><div class="i"><span>07</span><span>↗</span></div><img src="../assets/3d/haus.webp" alt=""><h3>Smart Home</h3><p>Loxone, KNX oder VOLTHERM.</p></a>
   </div>
 </div></section>
+
+<section class="sec"><div class="wrap"><div class="sh"><h2>Kein Neuling.<br><span class="c">Von der Platine</span><br>bis zur Hauptverteilung.</h2><p>Hinter VOLTHERM steht Erfahrung aus Industrie und Energietechnik. Was in einem Wasserkraftwerk zuverlässig läuft, läuft auch in Ihrem Haus.</p></div><div class="erf"><div class="ef"><b>3000 A</b><p>Energieverteilung und Hauptverteilungen bis 3000 A aufgebaut.</p></div><div class="ef"><b>1 MW</b><p>Automatisierung eines Wasserkraftwerks mit 1 MW Leistung.</p></div><div class="ef"><b>PV groß</b><p>Photovoltaikanlagen mit hoher Leistung, nicht nur auf dem Einfamilienhaus.</p></div><div class="ef"><b>Industrie</b><p>Automatisierung und Steuerungstechnik, auch in der Industrie.</p></div><div class="ef"><b>Elektronik</b><p>Kenntnisse in Elektronik, nicht nur in der Elektroinstallation.</p></div><div class="ef"><b>Loxone · KNX</b><p>Programmierung von Loxone und KNX.</p></div></div></div></section>
 
 <section class="sec"><div class="wrap">
   <div class="sh"><h2>So arbeiten wir</h2><p>Von der Idee bis zur laufenden Anlage.</p></div>
