@@ -266,3 +266,20 @@ h2 .blau, h2 .grad, h2 .grad-dark, h2 span { color: var(--grau); background: non
 .vx { max-width: 460px; margin: 0 auto; }
 .ft-fold .ft-kam { left: 74%; top: 6px; }
 .ft-wrap, .uw-duo .ft-fold { max-width: 500px; }
+/* Falt-Handy Fold8: Bildschirm folgt dem leichten Knick zur Mitte (oben und unten) */
+.ft-fold .ft-scr { border-radius: 6px; clip-path: polygon(0 0, 50.1% 28px, 100% 0, 100% 100%, 50.1% calc(100% - 26px), 0 100%); }
+.ft-fold .ft-in { top: 42px; bottom: 34px; }
+.ft-fold .ft-kam { left: 74.4%; top: 30px; }
+/* Klima: Nahaufnahme der Vivax Front, davor das ganze Gerät */
+.vx2 { max-width: 560px; position: relative; padding-bottom: 70px; }
+.vx2 .vx-detail { border-radius: 26px; overflow: hidden; box-shadow: 0 30px 70px rgba(0,0,0,.55), 0 0 0 1px rgba(255,255,255,.06); }
+.vx2 .vx-detail img { display: block; width: 100%; height: auto; }
+.vx2 .vx-geraet { position: absolute; left: -6%; bottom: 34px; width: 62%; filter: drop-shadow(0 24px 30px rgba(0,0,0,.6)); }
+.vx2 .vx-geraet img { display: block; width: 100%; height: auto; }
+.vx2 figcaption { position: absolute; right: 0; bottom: 0; margin: 0; }
+@media (max-width: 700px) { .vx2 .vx-geraet { left: -2%; width: 66%; } }
+.vx2 { padding-bottom: 130px; }
+.vx2 .vx-geraet { bottom: 0; left: -5%; width: 54%; }
+.vx2 figcaption { bottom: 30px; }
+@media (max-width: 700px) { .vx2 { padding-bottom: 150px; } .vx2 .vx-geraet { width: 60%; left: -2%; } .vx2 figcaption { bottom: -8px; } }
+@media (max-width: 700px) { .vx2 { padding-bottom: 0; } .vx2 .vx-geraet { position: relative; left: -2%; bottom: auto; width: 70%; margin-top: -14%; } .vx2 figcaption { position: static; margin-top: 12px; } }
