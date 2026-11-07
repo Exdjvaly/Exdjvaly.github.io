@@ -264,3 +264,5 @@ h2 .blau, h2 .grad, h2 .grad-dark, h2 span { color: var(--grau); background: non
 .ki-pic .ft-ki { max-width: 760px; }
 .hd-pro .ft-tab { max-width: 700px; margin: 0 auto; }
 .vx { max-width: 460px; margin: 0 auto; }
+.ft-fold .ft-kam { left: 74%; top: 6px; }
+.ft-wrap, .uw-duo .ft-fold { max-width: 500px; }
