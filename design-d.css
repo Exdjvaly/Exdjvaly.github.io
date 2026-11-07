@@ -1,0 +1,367 @@
+/* VOLTHERM Flagship (2026-11-07): rauchiges Glas, fließende Umgebungslichter, Energie-Partikel, 3D-Hub.
+   Liegt über site.css und design-b.css. */
+@font-face { font-family: "Inter"; font-style: normal; font-weight: 400 800; font-display: swap; src: url(assets/fonts/inter-latin.woff2) format("woff2"); }
+:root {
+  --bg: #05070A; --bg2: #05070A; --card: rgba(255,255,255,.04); --card2: rgba(255,255,255,.06);
+  --navy: #05070A; --navy2: #0A0D12; --navy3: #10141A;
+  --glas: rgba(22,26,32,.55); --glas-rand: rgba(255,255,255,.09); --glas-hell: rgba(255,255,255,.14);
+  --blau: #2A7BEA; --blau2: #4C95F5; --cyan: #4C95F5; --hell: #6BB4FF;
+  --ink: #F5F5F7; --ink2: #A1A1A6; --mut: #A1A1A6; --grau: #86868B;
+  --line: rgba(255,255,255,.08); --line2: rgba(255,255,255,.14);
+  --font: "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Arial, sans-serif;
+  --r: 28px;
+}
+html { background: #05070A; }
+body { background: #05070A; color: var(--ink); font-family: var(--font); font-size: 17px; letter-spacing: -.011em; }
+::selection { background: rgba(42,123,234,.45); }
+
+/* Fließendes Umgebungslicht hinter der ganzen Seite */
+body::before { content: ""; position: fixed; inset: -20vmax; z-index: -1; pointer-events: none;
+  background:
+    radial-gradient(28vmax 28vmax at 20% 20%, rgba(42,123,234,.20), transparent 70%),
+    radial-gradient(26vmax 26vmax at 85% 35%, rgba(25,195,230,.12), transparent 70%),
+    radial-gradient(30vmax 30vmax at 50% 95%, rgba(110,70,255,.10), transparent 70%);
+  filter: blur(20px); animation: fxDrift 28s ease-in-out infinite alternate; }
+@keyframes fxDrift { 0% { transform: translate3d(0,0,0) rotate(0deg); } 50% { transform: translate3d(4vmax,-3vmax,0) rotate(8deg); } 100% { transform: translate3d(-3vmax,3vmax,0) rotate(-6deg); } }
+
+/* Typografie wie Produktseiten */
+h1, h2, h3 { font-family: var(--font); color: var(--ink); }
+h2 { font-size: clamp(36px, 5.6vw, 72px); font-weight: 700; letter-spacing: -.035em; line-height: 1.04; }
+h2 .blau, h2 .grad, h2 .grad-dark, h2 span { color: var(--grau); background: none; -webkit-background-clip: border-box; background-clip: border-box; }
+.blau, .grad, .grad-dark { color: var(--grau); background: none; -webkit-background-clip: border-box; background-clip: border-box; }
+.kicker, .eyebrow { font: 600 15px/1.2 var(--font); letter-spacing: -.01em; text-transform: none; color: var(--hell); }
+.kicker::before, .eyebrow::before { content: none; }
+.intro, .sec p { color: var(--ink2); }
+
+/* Glas-Kopfzeile */
+.top { background: rgba(10,12,16,.62); backdrop-filter: saturate(180%) blur(22px); -webkit-backdrop-filter: saturate(180%) blur(22px); border-bottom: 1px solid var(--line); }
+.top-row { height: 60px; }
+.nav a { font-size: 13.5px; font-weight: 500; color: rgba(245,245,247,.82); }
+.logo-box { background: transparent; box-shadow: none; }
+.wm span { color: var(--hell); }
+
+/* Knöpfe */
+.btn { border-radius: 980px; background: var(--blau); color: #fff !important; font-weight: 600; box-shadow: none; transform: none; }
+.btn:hover { background: var(--blau2); box-shadow: 0 0 0 6px rgba(42,123,234,.18); transform: none; }
+.btn-ghost, .btn-line { background: rgba(255,255,255,.06); color: var(--ink) !important; box-shadow: inset 0 0 0 1px var(--glas-rand); border-radius: 980px; backdrop-filter: blur(12px); }
+.btn-ghost:hover, .btn-line:hover { background: rgba(255,255,255,.1); box-shadow: inset 0 0 0 1px var(--glas-hell); }
+
+/* Alle Abschnitte durchsichtig, damit das Licht durchscheint */
+.sec, .sec.soft, .sec.dark, .sec.band, #kontakt, #system-check { background: transparent !important; border: 0 !important; }
+.sec { padding-block: clamp(80px, 12vw, 150px); }
+
+/* Rauchiges Glas für Karten */
+.bk, .card, .hub-card, .hub-card.pro, .faq details, .steps li, .kt-box, .smart-card, .cmp, .hd-box, .basic-box, .lk, .feat, .b-card, .bento > *, .kontakt-form, form.anfrage, .contact-card {
+  background: var(--glas) !important; border: 1px solid var(--glas-rand) !important; border-radius: var(--r) !important;
+  backdrop-filter: blur(24px) saturate(150%); -webkit-backdrop-filter: blur(24px) saturate(150%);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 30px 60px -30px rgba(0,0,0,.6) !important; }
+.bk:hover, .card:hover { border-color: var(--glas-hell) !important; transform: translateY(-2px); }
+.lk::before { background: linear-gradient(180deg, rgba(5,7,10,0) 0%, rgba(5,7,10,.7) 50%, rgba(5,7,10,.95) 100%) !important; }
+.band, .band-art { background: transparent; }
+
+/* ---------- Startbild ---------- */
+.fx-hero { position: relative; padding: clamp(56px, 9vw, 110px) 0 40px; overflow: hidden; text-align: center; }
+.fx-aura { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
+.fx-aura i { position: absolute; border-radius: 50%; filter: blur(70px); opacity: .55; mix-blend-mode: screen; }
+.fx-aura .a1 { width: 52vmax; height: 52vmax; left: -12vmax; top: 18%; background: radial-gradient(circle, #1F6FD6, transparent 65%); animation: fxA1 22s ease-in-out infinite alternate; }
+.fx-aura .a2 { width: 44vmax; height: 44vmax; right: -14vmax; top: 30%; background: radial-gradient(circle, #19C3E6, transparent 65%); opacity: .35; animation: fxA2 26s ease-in-out infinite alternate; }
+.fx-aura .a3 { width: 40vmax; height: 40vmax; left: 30%; top: 62%; background: radial-gradient(circle, #FF7A3D, transparent 65%); opacity: .18; animation: fxA3 30s ease-in-out infinite alternate; }
+@keyframes fxA1 { to { transform: translate(14vmax, -6vmax) scale(1.15); } }
+@keyframes fxA2 { to { transform: translate(-12vmax, 8vmax) scale(.9); } }
+@keyframes fxA3 { to { transform: translate(-10vmax, -10vmax) scale(1.2); } }
+.fx-hero-in { position: relative; z-index: 2; }
+.fx-over { margin: 0 0 14px; font: 600 clamp(15px, 1.6vw, 19px)/1.2 var(--font); color: var(--hell); letter-spacing: -.01em; }
+.fx-hero h1 { margin: 0 auto 22px; font-size: clamp(46px, 8.4vw, 112px); font-weight: 700; letter-spacing: -.045em; line-height: 1; }
+.fx-hero h1 span { color: var(--grau); }
+.fx-sub { max-width: 40em; margin: 0 auto 30px; font-size: clamp(17px, 1.6vw, 21px); line-height: 1.45; color: var(--ink2); }
+.fx-cta { display: flex; flex-wrap: wrap; gap: 14px 28px; justify-content: center; align-items: center; }
+.fx-link { display: inline-flex; align-items: center; gap: 6px; color: var(--hell); text-decoration: none; font-weight: 600; font-size: 17px; }
+.fx-link:hover { text-decoration: underline; }
+.fx-link .ic { width: 16px; height: 16px; }
+.fx-buehne { position: relative; z-index: 1; width: min(1060px, 92vw); aspect-ratio: 16 / 10.5; margin: 40px auto 0; }
+.fx-flow { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; }
+.fx-haus { position: absolute; left: 50%; top: 40%; width: 50%; height: auto; transform: translate(-50%, -50%); z-index: 0; filter: drop-shadow(0 40px 60px rgba(0,0,0,.6)); }
+.fx-kern { position: absolute; left: 50%; top: 70%; transform: translate(-50%, -50%); z-index: 3; width: 92px; height: 92px; border-radius: 50%; display: grid; place-items: center; align-content: center; gap: 2px;
+  background: rgba(14,18,24,.6); border: 1px solid var(--glas-hell); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 0 0 10px rgba(42,123,234,.08), 0 0 60px rgba(42,123,234,.45); animation: fxPuls 3.2s ease-in-out infinite; }
+.fx-kern svg { width: 38px; height: 38px; color: #fff; }
+.fx-kern b { font: 700 10px/1 var(--font); letter-spacing: .14em; color: var(--ink2); }
+@keyframes fxPuls { 50% { box-shadow: 0 0 0 16px rgba(42,123,234,.04), 0 0 90px rgba(42,123,234,.6); } }
+.fx-chip { position: absolute; left: var(--x); top: var(--y); transform: translate(-50%, -50%); z-index: 3; display: flex; align-items: center; gap: 10px; padding: 9px 14px 9px 10px; border-radius: 16px; text-align: left;
+  background: rgba(20,24,30,.55); border: 1px solid var(--glas-rand); backdrop-filter: blur(18px) saturate(160%); -webkit-backdrop-filter: blur(18px) saturate(160%);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.07), 0 20px 40px -20px rgba(0,0,0,.7); white-space: nowrap; }
+.fx-chip img { width: 30px; height: 30px; object-fit: contain; }
+.fx-chip .sonne-ic { width: 26px; height: 26px; margin: 2px; }
+.fx-chip b { display: block; font: 700 16px/1.1 var(--font); color: #fff; font-variant-numeric: tabular-nums; }
+.fx-chip small { display: block; font-size: 12px; color: var(--ink2); }
+.fx-hinweis { position: relative; z-index: 2; margin: 34px 0 0; font-size: 13px; color: var(--grau); }
+@media (max-width: 700px) {
+  .fx-buehne { aspect-ratio: 3 / 4; width: 100%; }
+  .fx-haus { width: 78%; top: 40%; }
+  .fx-kern { top: 64%; width: 70px; height: 70px; } .fx-kern svg { width: 28px; height: 28px; }
+  .fx-chip { padding: 6px 9px 6px 7px; gap: 6px; border-radius: 12px; }
+  .fx-chip img { width: 22px; height: 22px; } .fx-chip .sonne-ic { width: 20px; height: 20px; }
+  .fx-chip b { font-size: 13px; } .fx-chip small { font-size: 10.5px; }
+  .fx-chip[style*="--x:6%"], .fx-chip[style*="--x:10%"], .fx-chip[style*="--x:12%"] { left: calc(var(--x) + 9%); }
+  .fx-chip[style*="--x:94%"], .fx-chip[style*="--x:90%"], .fx-chip[style*="--x:88%"] { left: calc(var(--x) - 9%); }
+  .fx-chip[style*="--y:100%"] { top: 95%; }
+}
+
+/* ---------- Kopf der neuen Abschnitte ---------- */
+.fx-sec { position: relative; padding: clamp(90px, 13vw, 170px) 0; }
+.fx-kopf { text-align: center; max-width: 900px; margin: 0 auto clamp(40px, 6vw, 72px); }
+.fx-kopf h2 { margin: 0 0 22px; }
+.fx-kopf > p:last-child { max-width: 40em; margin: 0 auto; font-size: clamp(17px, 1.5vw, 20px); color: var(--ink2); line-height: 1.5; }
+
+/* ---------- Erfahrung ---------- */
+.fx-zahlen { display: grid; gap: 14px; grid-template-columns: 1fr 1fr; }
+@media (min-width: 1000px) { .fx-zahlen { grid-template-columns: repeat(4, 1fr); } }
+.fx-zahl { padding: 26px 24px 28px; border-radius: 28px; background: var(--glas); border: 1px solid var(--glas-rand); backdrop-filter: blur(24px) saturate(150%); -webkit-backdrop-filter: blur(24px) saturate(150%);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.06); }
+.fx-zahl b { display: block; font: 700 clamp(30px, 3.4vw, 46px)/1 var(--font); letter-spacing: -.04em; color: #fff; font-variant-numeric: tabular-nums; }
+.fx-zahl small { display: block; margin-top: 6px; font-size: 14px; font-weight: 600; color: var(--hell); }
+.fx-zahl p { margin: 14px 0 0; font-size: 15px; line-height: 1.45; color: var(--ink2); }
+.fx-zahl.gross { grid-column: span 2; grid-row: span 2; display: flex; flex-direction: column; justify-content: flex-end; min-height: 280px; position: relative; overflow: hidden;
+  background: linear-gradient(160deg, rgba(42,123,234,.35), rgba(20,24,30,.55) 60%); }
+.fx-zahl.gross b { font-size: clamp(90px, 13vw, 180px); letter-spacing: -.06em; }
+.fx-zahl.gross small { font-size: 20px; }
+.fx-zahl.gross p { font-size: 17px; max-width: 22em; }
+@media (max-width: 640px) { .fx-zahlen { grid-template-columns: 1fr 1fr; } .fx-zahl { padding: 20px 18px; } .fx-zahl b { font-size: 26px; } }
+
+/* ---------- Szenarien im Startbild ---------- */
+.fx-szenen { position: relative; z-index: 2; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; width: max-content; max-width: calc(100% - 32px); margin: 56px auto 0; padding: 6px; border-radius: 22px;
+  background: rgba(255,255,255,.05); border: 1px solid var(--glas-rand); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); }
+.fx-szenen button { border: 0; background: transparent; color: var(--ink2); text-align: left; padding: 10px 18px; border-radius: 16px; cursor: pointer; font-family: var(--font); transition: background .25s, color .25s; }
+.fx-szenen button b { display: block; font-size: 15px; font-weight: 600; letter-spacing: -.01em; }
+.fx-szenen button small { display: block; font-size: 12px; color: var(--grau); margin-top: 2px; }
+.fx-szenen button[aria-selected="true"] { background: rgba(255,255,255,.12); color: #fff; box-shadow: inset 0 1px 0 rgba(255,255,255,.1); }
+.fx-buehne { margin-top: 20px; }
+.fx-chip { transition: opacity .4s, filter .4s; }
+.fx-chip.aus { opacity: .45; filter: grayscale(1); }
+.fx-einsicht { position: relative; z-index: 2; max-width: 46em; min-height: 3em; margin: 64px auto 0; padding: 0 20px; font-size: clamp(16px, 1.4vw, 19px); line-height: 1.5; color: var(--ink); }
+.fx-hinweis { margin-top: 10px; }
+@media (max-width: 700px) { .fx-szenen { width: auto; } .fx-szenen button { flex: 1 1 100%; text-align: center; padding: 9px 12px; } }
+
+/* ---------- Schwebende Glas-Navigation ---------- */
+.top { top: 12px; margin: 12px auto 0; width: min(1240px, calc(100% - 24px)); border-radius: 20px; border: 1px solid var(--glas-rand); background: rgba(12,15,20,.62);
+  box-shadow: 0 20px 60px rgba(0,0,0,.55); }
+.top .wrap { padding-inline: 16px; }
+@media (max-width: 760px) { .nav { border-radius: 0 0 20px 20px; background: rgba(12,15,20,.96); } }
+
+/* ---------- Gründer-Zitat ---------- */
+.fx-zitat { margin: 0 0 56px; padding: clamp(28px, 4vw, 52px); border-radius: 32px; background: var(--glas); border: 1px solid var(--glas-rand); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); }
+.fx-zitat blockquote { margin: 0; font: 600 clamp(22px, 2.6vw, 34px)/1.3 var(--font); letter-spacing: -.025em; color: #fff; }
+.fx-zitat figcaption { margin-top: 20px; font-size: 15px; color: var(--grau); }
+.fx-zitat figcaption b { color: var(--ink); font-weight: 600; }
+
+/* Bewegung reduzieren */
+@media (prefers-reduced-motion: reduce) { body::before, .fx-aura i, .fx-kern { animation: none !important; } }
+
+/* ---------- Faltbares Handy mit laufender App ---------- */
+@media (min-width: 900px) { #smart .smart-grid { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 64px; } }
+#smart h2 { font-size: clamp(34px, 3.8vw, 54px); }
+.fold-wrap { display: grid; justify-items: center; gap: 18px; }
+.fold { --fw: min(600px, 92vw); position: relative; width: var(--fw); aspect-ratio: .92; perspective: 2200px; transition: transform 1.3s cubic-bezier(.6,.05,.2,1); }
+.fold.zu { transform: translateX(-25%); }
+.fold-gehaeuse { position: absolute; inset: 0; border-radius: 30px; padding: 9px; background: linear-gradient(145deg, #3b4048, #15181d 45%, #2b2f36); box-shadow: 0 50px 90px -30px rgba(0,0,0,.85), 0 0 0 1px rgba(255,255,255,.08) inset, 0 0 80px rgba(42,123,234,.18);
+  clip-path: inset(0 0 0 50% round 30px); transition: clip-path .55s ease .62s; }
+.fold.auf .fold-gehaeuse { clip-path: inset(0 0 0 0 round 30px); }
+.fold-innen { position: relative; width: 100%; height: 100%; border-radius: 22px; overflow: hidden; background: #070c16; }
+.fold-innen iframe { position: absolute; left: 0; top: calc(-40px * var(--s, .7)); width: 760px; height: var(--ih, 900px); border: 0; transform: scale(var(--s, .7)); transform-origin: 0 0; background: #070c16; }
+.fold-falz { position: absolute; left: 50%; top: 9px; bottom: 9px; width: 14px; transform: translateX(-50%); pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.05) 40%, rgba(0,0,0,.25) 50%, rgba(255,255,255,.05) 60%, transparent); opacity: 0; transition: opacity .4s 1.1s; }
+.fold.auf .fold-falz { opacity: 1; }
+.fold-klappe { position: absolute; left: 0; top: 0; width: 50%; height: 100%; transform-origin: right center; transform-style: preserve-3d; transform: rotateY(0deg); transition: transform 1.3s cubic-bezier(.6,.05,.2,1); pointer-events: none; }
+.fold.zu .fold-klappe { transform: rotateY(180deg); pointer-events: auto; cursor: pointer; }
+.fold-aussen { position: absolute; inset: 0; transform: rotateY(180deg); backface-visibility: hidden; -webkit-backface-visibility: hidden; border-radius: 30px; padding: 9px;
+  background: linear-gradient(145deg, #3b4048, #15181d 45%, #2b2f36); display: grid; place-content: center; justify-items: center; gap: 8px; text-align: center; }
+.fold-aussen::before { content: ""; position: absolute; inset: 9px; border-radius: 22px; background: radial-gradient(80% 60% at 50% 30%, #13233d, #05080d 70%); }
+.fold-aussen > * { position: relative; }
+.fold-aussen svg { width: 54px; height: 54px; color: #fff; }
+.fold-uhr { font: 700 clamp(44px, 6vw, 68px)/1 var(--font); letter-spacing: -.04em; color: #fff; font-variant-numeric: tabular-nums; }
+.fold-aussen small { font-size: 12px; letter-spacing: .3em; color: var(--ink2); }
+.fold-mini { margin-top: 18px; display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 980px; background: rgba(255,255,255,.07); font-size: 12.5px; color: var(--ink); }
+.fold-mini i { width: 8px; height: 8px; border-radius: 50%; background: #FFC94A; box-shadow: 0 0 10px #FFC94A; }
+.fold-cam { position: absolute !important; top: 22px; left: 50%; width: 10px; height: 10px; margin-left: -5px; border-radius: 50%; background: #000; box-shadow: 0 0 0 2px #1f2329; }
+.fold-knopf { border: 1px solid var(--glas-rand); background: rgba(255,255,255,.06); color: var(--ink); font: 600 14px/1 var(--font); padding: 10px 18px; border-radius: 980px; cursor: pointer; backdrop-filter: blur(12px); }
+.fold-knopf:hover { background: rgba(255,255,255,.12); }
+@media (prefers-reduced-motion: reduce) { .fold, .fold-klappe, .fold-gehaeuse { transition: none !important; } }
+
+/* ---------- Handy mit laufender App + VOLTHERM Zifferblatt ---------- */
+.uw-live { position: relative; aspect-ratio: 9 / 19.5; padding: 9px; border-radius: 38px; background: linear-gradient(145deg, #3b4048, #15181d 45%, #2b2f36) !important; box-shadow: 0 40px 80px -30px rgba(0,0,0,.85), 0 0 0 1px rgba(255,255,255,.08) inset !important; }
+.uw-scr { position: relative; width: 100%; height: 100%; border-radius: 30px; overflow: hidden; background: #070c16; }
+.uw-scr iframe { position: absolute; left: 0; top: calc(-40px * var(--s, .6)); width: 420px; height: var(--ih, 950px); border: 0; transform: scale(var(--s, .6)); transform-origin: 0 0; }
+.uw-watch { width: min(48vw, 250px) !important; }
+#uhr .q { stroke: #fff; stroke-width: 5; transition: stroke .6s; }
+#uhr .k { stroke: #5b6170; stroke-width: 2; }
+#uhr .uz { font: 700 26px var(--font); fill: #fff; text-anchor: middle; }
+#uhr .up { font: 700 13px var(--font); text-anchor: middle; }
+#uhr .ul { font: 500 10px var(--font); fill: #8ea0bd; text-anchor: middle; }
+#uhr .uv { font: 700 22px var(--font); fill: #fff; text-anchor: middle; font-variant-numeric: tabular-nums; }
+#uhr .ue { font: 600 10px var(--font); text-anchor: middle; }
+#uhr .ut { font: 700 34px var(--font); fill: #fff; text-anchor: middle; letter-spacing: -.5px; font-variant-numeric: tabular-nums; }
+#uhr .ud { font: 500 12px var(--font); fill: #8ea0bd; text-anchor: middle; }
+#uhr-std, #uhr-min, #uhr-sek { transform-origin: 180px 180px; transform-box: view-box; }
+
+/* ---------- Echte Gerätefotos mit laufendem Bildschirm ---------- */
+.ft { position: relative; }
+.ft > img { display: block; width: 100%; height: auto; filter: drop-shadow(0 30px 50px rgba(0,0,0,.55)); }
+.ft-scr { position: absolute; left: 0; top: 0; transform-origin: 0 0; overflow: hidden; background: #070c16; }
+.ft-scr::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(118deg, rgba(255,255,255,.10), rgba(255,255,255,0) 32%, rgba(255,255,255,0) 70%, rgba(255,255,255,.04)); }
+.ft-fold .ft-scr { border-radius: 22px; }
+.ft-fold .ft-scr iframe { position: absolute; left: 0; top: -40px; width: 760px; height: 1026px; border: 0; background: #070c16; pointer-events: none; }
+.ft-fold .ft-scr::before { content: ""; position: absolute; left: 50%; top: 0; bottom: 0; width: 26px; margin-left: -13px; z-index: 1; pointer-events: none; background: linear-gradient(90deg, rgba(0,0,0,0), rgba(0,0,0,.22) 45%, rgba(255,255,255,.06) 55%, rgba(0,0,0,0)); }
+.ft-wrap { width: min(100%, 520px); margin: 0 auto; }
+.uw-duo .ft-fold { width: 86%; }
+.ft-tab .ft-scr { border-radius: 16px; }
+.ft-tab .pf-scr { width: 1280px; height: 768px; aspect-ratio: auto; border: 0; border-radius: 0; box-shadow: none; }
+.hd-pro { background: none !important; }
+.hd-pro .ft-tab { width: 100%; }
+.ft-ki .kt { width: auto; max-width: none; margin: 0; filter: none; height: 100%; }
+.ft-ki .kt-dev { font-size: 16px; padding: 0; aspect-ratio: auto; height: 100%; border-radius: 0; background: none; box-shadow: none; }
+.ft-ki .kt-cam { display: none; }
+.ft-ki .kt-scr { border-radius: 0; }
+.ki-pic .ft-ki { max-width: 940px; margin: 0 auto; }
+
+/* Hub Core: Foto des echten Geräts, das Display darin läuft */
+.hd-core { background: none !important; }
+.hc-foto { position: relative; width: min(100%, 470px); container-type: inline-size; }
+.hc-foto > img { display: block; width: 100%; height: auto; }
+.hc-foto .rk { position: absolute; left: 11.2%; top: 10.8%; width: 88.2%; height: 79.7%; --d: 100%; }
+.hc-foto .rk-ring { display: none; }
+.hc-foto .rk-scr { inset: auto; left: 15.9%; top: 21.3%; width: 63.5%; height: 64.4%; border: 0; font-size: 3.1cqw;
+  background: radial-gradient(circle at 50% 45%, #13224a, #0a1330 70%); box-shadow: 0 0 18px rgba(60,120,255,.25), 0 0 0 1px rgba(0,0,0,.6); }
+.hc-foto .rk-scr::after { background: linear-gradient(135deg, rgba(255,255,255,.14), rgba(255,255,255,0) 38%); }
+
+/* Klima: echtes Vivax Innengerät mit kühlem Luftstrom */
+.vx { margin: 0; }
+.vx-bild { position: relative; padding-bottom: 34%; }
+.vx-bild img { position: relative; z-index: 1; display: block; width: 100%; height: auto; filter: drop-shadow(0 26px 40px rgba(0,0,0,.6)); }
+.vx-luft { position: absolute; left: 10%; right: 18%; top: 52%; bottom: 0; display: flex; justify-content: space-around; pointer-events: none; -webkit-mask: linear-gradient(#000 30%, transparent); mask: linear-gradient(#000 30%, transparent); }
+.vx-luft i { width: 14%; border-radius: 50%; background: linear-gradient(rgba(140,225,255,.55), rgba(42,123,234,0)); filter: blur(10px); transform-origin: top; animation: vx-luft 3.6s ease-in-out infinite; }
+.vx-luft i:nth-child(2) { animation-delay: -.7s; } .vx-luft i:nth-child(3) { animation-delay: -1.5s; } .vx-luft i:nth-child(4) { animation-delay: -2.2s; } .vx-luft i:nth-child(5) { animation-delay: -2.9s; }
+@keyframes vx-luft { 0% { transform: translateY(-20%) scaleY(.4) skewX(8deg); opacity: 0; } 35% { opacity: .9; } 100% { transform: translateY(30%) scaleY(1.1) skewX(-8deg); opacity: 0; } }
+.vx figcaption { display: flex; justify-content: center; margin-top: -10px; }
+.vx-chip { display: inline-flex; align-items: center; gap: 10px; padding: 9px 16px; border-radius: 999px; background: var(--glas, rgba(22,26,32,.55)); border: 1px solid rgba(255,255,255,.1); -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); font-size: 14px; color: #dfe6f0; }
+.vx-chip i { width: 9px; height: 9px; border-radius: 50%; background: #5FD4F0; box-shadow: 0 0 10px #5FD4F0; }
+@media (prefers-reduced-motion: reduce) { .vx-luft i { animation: none; opacity: .5; } }
+.hc-foto .rk-scr { left: 16.6%; width: 64.2%; top: 21%; height: 65%; }
+.vx-luft i { background: linear-gradient(rgba(150,230,255,.28), rgba(42,123,234,0)); filter: blur(14px); }
+.ki-pic .ft-ki > img { filter: drop-shadow(0 30px 60px rgba(0,0,0,.6)) drop-shadow(0 0 60px rgba(42,123,234,.12)); }
+.vx-bild { padding-bottom: 8%; }
+/* Hub Core: Foto des runden Displays mit Drehring */
+.hc-foto { width: min(100%, 440px); }
+.hc-foto .rk { left: 7.25%; top: 7%; width: 85%; height: 86.25%; }
+.hc-foto .rk-scr { left: 7.35%; top: 6.7%; width: 87%; height: 85.8%; font-size: 3.7cqw; background: #000; box-shadow: none; }
+.hc-foto.hand > img { border-radius: 28px; }
+/* Falt-Handy: Ränder sauber, Statusleiste und Navigation mit Abstand zum Rahmen */
+.ft-fold .ft-scr { border-radius: 14px; background: #05070b; }
+.ft-fold .ft-in { position: absolute; left: 0; right: 0; top: 30px; bottom: 22px; overflow: hidden; }
+.ft-fold .ft-in iframe { top: -40px; height: calc(100% + 40px); }
+.ft-fold .ft-kam { position: absolute; z-index: 2; top: 9px; left: 71%; width: 14px; height: 14px; border-radius: 50%; background: #000; box-shadow: 0 0 0 2px #15181d; }
+.ft-wrap, .uw-duo .ft-fold { max-width: 470px; }
+/* Fotos nicht größer als ihre Auflösung trägt */
+.ki-pic .ft-ki { max-width: 760px; }
+.hd-pro .ft-tab { max-width: 700px; margin: 0 auto; }
+.vx { max-width: 460px; margin: 0 auto; }
+.ft-fold .ft-kam { left: 74%; top: 6px; }
+.ft-wrap, .uw-duo .ft-fold { max-width: 500px; }
+/* Falt-Handy Fold8: Bildschirm folgt dem leichten Knick zur Mitte (oben und unten) */
+.ft-fold .ft-scr { border-radius: 6px; clip-path: polygon(0 0, 50.1% 28px, 100% 0, 100% 100%, 50.1% calc(100% - 26px), 0 100%); }
+.ft-fold .ft-in { top: 42px; bottom: 34px; }
+.ft-fold .ft-kam { left: 74.4%; top: 30px; }
+/* Klima: Nahaufnahme der Vivax Front, davor das ganze Gerät */
+.vx2 { max-width: 560px; position: relative; padding-bottom: 70px; }
+.vx2 .vx-detail { border-radius: 26px; overflow: hidden; box-shadow: 0 30px 70px rgba(0,0,0,.55), 0 0 0 1px rgba(255,255,255,.06); }
+.vx2 .vx-detail img { display: block; width: 100%; height: auto; }
+.vx2 .vx-geraet { position: absolute; left: -6%; bottom: 34px; width: 62%; filter: drop-shadow(0 24px 30px rgba(0,0,0,.6)); }
+.vx2 .vx-geraet img { display: block; width: 100%; height: auto; }
+.vx2 figcaption { position: absolute; right: 0; bottom: 0; margin: 0; }
+@media (max-width: 700px) { .vx2 .vx-geraet { left: -2%; width: 66%; } }
+.vx2 { padding-bottom: 130px; }
+.vx2 .vx-geraet { bottom: 0; left: -5%; width: 54%; }
+.vx2 figcaption { bottom: 30px; }
+@media (max-width: 700px) { .vx2 { padding-bottom: 150px; } .vx2 .vx-geraet { width: 60%; left: -2%; } .vx2 figcaption { bottom: -8px; } }
+@media (max-width: 700px) { .vx2 { padding-bottom: 0; } .vx2 .vx-geraet { position: relative; left: -2%; bottom: auto; width: 70%; margin-top: -14%; } .vx2 figcaption { position: static; margin-top: 12px; } }
+/* Test: Falt-Handy in der Hand */
+.ft-wrap.hand { max-width: 760px; width: 100%; }
+#smart .smart-grid:has(.ft-wrap.hand) { grid-template-columns: 1.3fr 1fr; }
+.ft-hand > img { border-radius: 26px; filter: none; box-shadow: 0 30px 70px rgba(0,0,0,.55); }
+.ft-hand .ft-scr { clip-path: none; border-radius: 10px; }
+.ft-hand .ft-in { top: 34px; bottom: 0; }
+.ft-hand .ft-in iframe { width: 1000px; }
+.ft-hand .ft-kam { left: 75.6%; top: 12px; width: 26px; height: 26px; }
+.ft-hand .ft-scr::before { display: none; }
+.ft-hand2 .ft-scr { border-radius: 14px; }
+.ft-hand2 .ft-in { top: 26px; }
+.ft-daumen { position: absolute; inset: 0; width: 100%; height: auto; z-index: 3; pointer-events: none; }
+.ft-hand2 .ft-in iframe { width: 920px; }
+.ft-tab .ft-scr { border-radius: 12px; }
+.hd-pro .ft-tab { max-width: 760px; }
+.ki-pic .ft-ki { max-width: 900px; }
+.ft-tab .pf-scr { height: 100%; }
+
+/* ---------- Ein Tag mit VOLTHERM (Startbild, 2026-11-07) ---------- */
+.fx-tag { position: relative; z-index: 2; display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; width: min(860px, calc(100% - 32px)); margin: 56px auto 0; padding: 6px; border-radius: 22px;
+  background: rgba(255,255,255,.05); border: 1px solid var(--glas-rand); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); }
+.fx-tag button { position: relative; overflow: hidden; border: 0; background: transparent; color: var(--ink2); padding: 10px 6px 12px; border-radius: 16px; cursor: pointer; font-family: var(--font); text-align: center; transition: background .3s, color .3s; }
+.fx-tag button small { display: block; font-size: 12px; color: var(--grau); font-variant-numeric: tabular-nums; }
+.fx-tag button b { display: block; margin-top: 2px; font-size: 14px; font-weight: 600; letter-spacing: -.01em; white-space: nowrap; }
+.fx-tag button[aria-selected="true"] { background: rgba(255,255,255,.12); color: #fff; box-shadow: inset 0 1px 0 rgba(255,255,255,.1); }
+.fx-tag button[aria-selected="true"] small { color: var(--hell); }
+.fx-tag button::after { content: ""; position: absolute; left: 14px; right: 14px; bottom: 5px; height: 2px; border-radius: 2px; background: var(--hell); transform: scaleX(0); transform-origin: 0 50%; opacity: 0; }
+.fx-tag button.lauf::after { opacity: .9; animation: fxLauf 7s linear forwards; }
+@keyframes fxLauf { to { transform: scaleX(1); } }
+@media (max-width: 700px) { .fx-tag { grid-template-columns: repeat(3, 1fr); } .fx-tag button b { font-size: 13px; } }
+
+/* Himmel hinter dem Haus: Sonne/Mond wandert, Wolken bei Bewölkung */
+.fx-himmel { position: absolute; inset: 0; z-index: -1; pointer-events: none; }
+.fx-gestirn { position: absolute; left: var(--gx, 50%); top: var(--gy, 10%); width: 11%; aspect-ratio: 1; border-radius: 50%; transform: translate(-50%, -50%);
+  background: radial-gradient(circle, var(--gk, #FFE7A0) 0 28%, var(--gf, rgba(255,190,70,.45)) 34%, transparent 70%); filter: blur(1px); opacity: var(--go, 1);
+  transition: left 2.2s cubic-bezier(.5,0,.2,1), top 2.2s cubic-bezier(.5,0,.2,1), opacity 1.5s, background 1.5s; }
+.fx-wolke { position: absolute; width: 30%; height: 12%; border-radius: 50%; background: rgba(170,182,200,.28); filter: blur(18px); opacity: 0; transition: opacity 1.6s, transform 6s ease-out; }
+.fx-wolke.w1 { left: 48%; top: 6%; transform: translateX(-20%); }
+.fx-wolke.w2 { left: 28%; top: 14%; width: 26%; transform: translateX(20%); }
+.fx-haus { transition: filter 1.8s; }
+.fx-aura i { transition: background 2s, opacity 2s; }
+#start[data-phase="zwielicht"] { --gx: 14%; --gy: 46%; --gk: #FFB46B; --gf: rgba(255,120,60,.4); --go: .8; }
+#start[data-phase="morgen"]    { --gx: 26%; --gy: 22%; --gk: #FFE2A0; --gf: rgba(255,180,80,.42); }
+#start[data-phase="sonne"]     { --gx: 36%; --gy: 9%;  --gk: #FFF6D8; --gf: rgba(255,210,90,.55); }
+#start[data-phase="wolken"]    { --gx: 64%; --gy: 10%; --gk: #E8E2CC; --gf: rgba(220,210,170,.18); --go: .45; }
+#start[data-phase="abend"]     { --gx: 78%; --gy: 30%; --gk: #FF9A5C; --gf: rgba(255,80,60,.38); --go: .85; }
+#start[data-phase="nacht"]     { --gx: 76%; --gy: 8%;  --gk: #DDE6F5; --gf: rgba(150,180,230,.18); --go: .9; }
+#start[data-phase="wolken"] .fx-wolke { opacity: 1; transform: none; }
+#start[data-phase="zwielicht"] .fx-haus { filter: drop-shadow(0 40px 60px rgba(0,0,0,.6)) brightness(.7) saturate(.85) sepia(.15); }
+#start[data-phase="morgen"] .fx-haus    { filter: drop-shadow(0 40px 60px rgba(0,0,0,.6)) brightness(.9); }
+#start[data-phase="wolken"] .fx-haus    { filter: drop-shadow(0 40px 60px rgba(0,0,0,.6)) brightness(.82) saturate(.7); }
+#start[data-phase="abend"] .fx-haus     { filter: drop-shadow(0 40px 60px rgba(0,0,0,.6)) brightness(.68) sepia(.25) saturate(1.1); }
+#start[data-phase="nacht"] .fx-haus     { filter: drop-shadow(0 40px 60px rgba(0,0,0,.6)) brightness(.45) saturate(.6) hue-rotate(10deg); }
+
+/* Zusätzliche Chips */
+.fx-chip .chip-ic { width: 26px; height: 26px; margin: 2px; color: #C9D3E3; fill: none; stroke: currentColor; stroke-width: 1.6; }
+.fx-chip .euro-ic { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; font: 700 15px/1 var(--font); font-style: normal; color: #0b0f14; background: linear-gradient(140deg, #8fe3ff, #2a7bea); }
+.fx-preis { border-color: rgba(95,212,240,.35); }
+@media (max-width: 700px) { .fx-chip .chip-ic { width: 20px; height: 20px; } .fx-chip .euro-ic { width: 22px; height: 22px; font-size: 12px; } }
+
+/* Text unter dem Haus: Uhrzeit, wohin die Energie geht, was VOLTHERM macht */
+.fx-einsicht { min-height: 8.5em; }
+.fx-einsicht p { margin: 0 auto; max-width: 44em; }
+.fx-einsicht .fx-zeit { font-size: 13px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--hell); margin-bottom: 10px; }
+.fx-einsicht .fx-macht { margin-top: 12px; color: var(--ink2); }
+
+/* ---------- Bidirektionales Laden ---------- */
+.fx-v2h .fx-kopf h2 span { background: linear-gradient(90deg, #2FD18B, #5FD4F0, #FFC94A); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.v2h-buehne { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 12px; max-width: 920px; margin: 0 auto 40px; padding: 28px clamp(16px, 3vw, 36px); border-radius: 32px;
+  background: radial-gradient(120% 140% at 50% 0%, rgba(47,209,139,.16), rgba(20,24,30,.55) 60%); border: 1px solid var(--glas-rand); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); }
+.v2h-knoten { display: grid; justify-items: center; gap: 4px; text-align: center; min-width: 110px; }
+.v2h-knoten img, .v2h-haus { width: 72px; height: 72px; object-fit: contain; }
+.v2h-haus { color: #fff; fill: none; stroke: currentColor; stroke-width: 1.4; }
+.v2h-knoten b { color: #fff; font-size: 16px; } .v2h-knoten small { color: var(--ink2); font-size: 13px; }
+.v2h-fluss { width: 100%; height: 120px; overflow: visible; }
+.v2h-fluss path { fill: none; stroke: rgba(255,255,255,.12); stroke-width: 1.5; }
+.v2h-gruen circle { fill: #2FD18B; filter: drop-shadow(0 0 6px #2FD18B); }
+.v2h-gelb circle { fill: #FFC94A; filter: drop-shadow(0 0 6px #FFC94A); }
+.v2h-karten { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.v2h-hinweis { text-align: center; }
+@media (max-width: 700px) { .v2h-karten { grid-template-columns: 1fr; } .v2h-knoten { min-width: 70px; } .v2h-knoten img, .v2h-haus { width: 48px; height: 48px; } .v2h-buehne { gap: 4px; } }
+@media (max-width: 700px) { .fx-chip[style*="--x:6%"] { left: calc(var(--x) + 15%); } .fx-chip[style*="--x:94%"] { left: calc(var(--x) - 13%); } }

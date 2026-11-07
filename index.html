@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Photovoltaik &amp; Wärmepumpe aus der Oberpfalz | VOLTHERM</title>
 <meta name="description" content="VOLTHERM Integrated Solutions aus Mockersdorf (Bayern): Elektroinstallation, Photovoltaik, Stromspeicher, Wallbox, Wärmepumpe, Vivax Klimaanlagen und Smart Home als Loxone Partner und mit unserem Energiemanagementsystem (HEMS) VOLTHERM. Geplant, montiert und intelligent vernetzt.">
-<meta name="theme-color" content="#0B1220">
+<meta name="theme-color" content="#05070A">
 <meta property="og:type" content="website">
 <meta property="og:title" content="VOLTHERM · Ihre Energie. Intelligent verteilt.">
 <meta property="og:description" content="Photovoltaik, Speicher, Wallbox, Wärmepumpe und Klimaanlagen aus einer Hand. Aus Mockersdorf, Bayern.">
@@ -16,6 +16,7 @@
 <link rel="stylesheet" href="site.css?v=20261026b">
 <link rel="stylesheet" href="design-b.css?v=20261106a">
 <link rel="stylesheet" href="chat.css?v=20261022b">
+<link rel="stylesheet" href="design-d.css?v=20261107z2">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -84,6 +85,7 @@
     <symbol id="i-wb" viewBox="0 0 24 24"><path d="M5 21V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v16 M3 21h14 M8 7h4 M15 9h2a2 2 0 0 1 2 2v5a1.5 1.5 0 0 0 3 0V9l-2-2 M10.8 10 9 13.5h2.5L10 17"/></symbol>
     <symbol id="i-wp" viewBox="0 0 24 24"><path d="M3 5h18v14H3Z M12 9.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5Z M12 7c1.8 0 2 2.5 0 2.5 M17 12c0 1.8-2.5 2-2.5 0 M12 17c-1.8 0-2-2.5 0-2.5 M7 12c0-1.8 2.5-2 2.5 0"/></symbol>
     <symbol id="i-kl" viewBox="0 0 24 24"><path d="M2 5h20v7H2Z M5 9.5h14 M7 15l-1 3 M12 15v4 M17 15l1 3"/></symbol>
+    <symbol id="i-v2h" viewBox="0 0 24 24"><path d="M4 8.5h14 M15 5.5l3 3-3 3 M20 15.5H6 M9 12.5l-3 3 3 3"/></symbol>
     <symbol id="i-sh" viewBox="0 0 24 24"><path d="M3 11 12 4l9 7 M5 9.5V20h14V9.5 M12.8 10 10.5 14h3l-2.3 4"/></symbol>
     <symbol id="i-el" viewBox="0 0 24 24"><path d="M13 2 4.5 13.5h6.5L10 22l9-12h-6.5Z"/></symbol>
     <symbol id="i-tel" viewBox="0 0 24 24"><path d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 5a2 2 0 0 1 2-2Z"/></symbol>
@@ -92,7 +94,6 @@
     <symbol id="i-wa" viewBox="0 0 24 24"><path d="M4 20l1.3-4A8 8 0 1 1 8 18.7Z M9 8.5c0 3.5 3 6.5 6.5 6.5l1-1.5-2-1-1 .8a5 5 0 0 1-2.3-2.3l.8-1-1-2Z"/></symbol>
     <symbol id="i-uhr" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Z M12 7v5l3.5 2"/></symbol>
     <symbol id="i-netz" viewBox="0 0 24 24"><path d="M10 2h4 M12 2 7 22 M12 2l5 20 M4 7h16 M8.4 15h7.2 M7.6 19l8.6-4 M7.8 15l8.6 4"/></symbol>
-    <symbol id="i-v2h" viewBox="0 0 24 24"><path d="M4 8.5h14 M15 5.5l3 3-3 3 M20 15.5H6 M9 12.5l-3 3 3 3"/></symbol>
     <symbol id="i-puls" viewBox="0 0 24 24"><path d="M2 12h4.5l2-5 4 10 2.5-6 1.5 1H22"/></symbol>
     <symbol id="i-lock" viewBox="0 0 24 24"><path d="M5.5 11h13v10h-13Z M8.5 11V8a3.5 3.5 0 0 1 7 0v3 M12 14.5v3"/></symbol>
     <symbol id="i-ww" viewBox="0 0 24 24"><path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11Z"/></symbol>
@@ -128,47 +129,87 @@
 
 <main id="inhalt">
 
-<section class="hero" id="start">
-  <div class="hero-glow" aria-hidden="true"></div>
-  <div class="wrap hero-grid">
-    <div class="hero-text">
-      <p class="pille"><i></i>Elektrobetrieb aus Mockersdorf · Oberpfalz</p>
-      <h1>Strom vom Dach.<br><span class="grad">Wärme, Kühlung und Mobilität</span><br>aus einer Hand.</h1>
-      <p class="lead">Wir planen, montieren und vernetzen Photovoltaik, Speicher, Wallbox, Wärmepumpe, Klimaanlage und Smart Home, so dass Ihr Haus seinen Sonnenstrom selbst klug verteilt.</p>
-      <div class="cta-row">
-        <a class="btn" href="#kontakt">Kostenlos beraten lassen <svg class="ic" aria-hidden="true"><use href="#i-pfeil"/></svg></a>
-        <a class="btn btn-ghost" href="https://wa.me/4915568656548" rel="noopener"><svg class="ic" aria-hidden="true"><use href="#i-wa"/></svg>Per WhatsApp schreiben</a>
-      </div>
-      <ul class="haken">
-        <li>Loxone Partner</li><li>Installation nach VDE</li><li>Eigenes Energiemanagement (HEMS)</li>
-      </ul>
-    </div>
-    <div class="b-stage" aria-hidden="true">
-      <span class="boden"></span><span class="ring"></span>
-      <img class="b-haus" src="assets/3d/haus-v2.webp" width="1400" height="1045" alt="" decoding="async" fetchpriority="high">
-      <svg class="netzwerk" viewBox="0 0 100 100" preserveAspectRatio="none">
-        <path class="kabel" d="M14 9 Q14 70 50 70"/><path class="fluss c" d="M14 9 Q14 70 50 70" style="animation-delay:-0.0s"/>
-        <path class="kabel" d="M86 9 Q86 70 50 70"/><path class="fluss c" d="M86 9 Q86 70 50 70" style="animation-delay:-0.4s"/>
-        <path class="kabel" d="M50 70 Q8 70 8 47"/><path class="fluss o" d="M50 70 Q8 70 8 47" style="animation-delay:-0.8s"/>
-        <path class="kabel" d="M50 70 Q92 70 92 47"/><path class="fluss c" d="M50 70 Q92 70 92 47" style="animation-delay:-1.2s"/>
-        <path class="kabel" d="M50 70 Q14 70 14 85"/><path class="fluss o" d="M50 70 Q14 70 14 85" style="animation-delay:-1.6s"/>
-        <path class="kabel" d="M50 70 Q86 70 86 85"/><path class="fluss c" d="M50 70 Q86 70 86 85" style="animation-delay:-2.0s"/>
-        <path class="kabel" d="M50 70 Q50 70 50 95"/><path class="fluss o" d="M50 70 Q50 70 50 95" style="animation-delay:-2.4s"/>
-      </svg>
-      <span class="kern"><svg viewBox="0 0 300 300"><use href="#logo"/></svg><b>VOLTHERM</b><small>HEMS</small></span>
-      <span class="wert c" style="left:14%;top:9%;animation-delay:-0.0s"><i class="sonne-ic"></i><span><b>6,4 kW</b><small>Sonne</small></span></span>
-      <span class="wert c" style="left:86%;top:9%;animation-delay:-0.9s"><img src="assets/3d/mast.webp" alt=""><span><b>0,2 kW</b><small>Netz</small></span></span>
-      <span class="wert o" style="left:8%;top:47%;animation-delay:-1.8s"><img src="assets/3d/boiler.webp" alt=""><span><b>52 °C</b><small>Warmwasser</small></span></span>
-      <span class="wert c" style="left:92%;top:47%;animation-delay:-2.7s"><img src="assets/3d/batterie.webp" alt=""><span><b>82 %</b><small>Speicher</small></span></span>
-      <span class="wert o" style="left:14%;top:85%;animation-delay:-3.6s"><img src="assets/3d/wp.webp" alt=""><span><b>1,8 kW</b><small>Wärmepumpe</small></span></span>
-      <span class="wert c" style="left:86%;top:85%;animation-delay:-4.5s"><img src="assets/3d/wallbox.webp" alt=""><span><b>11 kW</b><small>Wallbox</small></span></span>
-      <span class="wert o" style="left:50%;top:95%;animation-delay:-5.4s"><img src="assets/3d/klima.webp" alt=""><span><b>22 °C</b><small>Klima</small></span></span>
+<section class="fx-hero" id="start">
+  <div class="fx-aura" aria-hidden="true"><i class="a1"></i><i class="a2"></i><i class="a3"></i></div>
+  <div class="wrap fx-hero-in">
+    <p class="fx-over">VOLTHERM · Integrated Solutions</p>
+    <h1>Ihre Energie.<br><span>Intelligent verteilt.</span></h1>
+    <p class="fx-sub">Photovoltaik, Speicher, Wallbox, Wärmepumpe, Klimaanlage und Smart Home. Geplant, montiert und vernetzt von einem Elektrobetrieb mit 30 Jahren Erfahrung, aus Mockersdorf in der Oberpfalz.</p>
+    <div class="fx-cta">
+      <a class="btn" href="#kontakt">Beratung anfragen</a>
+      <a class="fx-link" href="#hub">Hub Core und Hub Pro erleben <svg class="ic" aria-hidden="true"><use href="#i-pfeil"/></svg></a>
     </div>
   </div>
-  <div class="band" aria-hidden="true"><div class="band-in">
-    <span>Elektroinstallation</span><span>Photovoltaik</span><span>Stromspeicher</span><span>Wallbox</span><span>Wärmepumpe</span><span>Klimaanlagen</span><span>Smart Home</span><span>Energiemanagement</span>
-    <span>Elektroinstallation</span><span>Photovoltaik</span><span>Stromspeicher</span><span>Wallbox</span><span>Wärmepumpe</span><span>Klimaanlagen</span><span>Smart Home</span><span>Energiemanagement</span>
-  </div></div>
+  <div class="fx-tag" role="tablist" aria-label="Ein Tag mit VOLTHERM">
+    <button type="button" role="tab" aria-selected="true" data-szene="zwielicht"><small>06:15</small><b>Morgengrauen</b></button>
+    <button type="button" role="tab" aria-selected="false" data-szene="morgen"><small>08:30</small><b>Morgen</b></button>
+    <button type="button" role="tab" aria-selected="false" data-szene="sonne"><small>12:30</small><b>Volle Sonne</b></button>
+    <button type="button" role="tab" aria-selected="false" data-szene="wolken"><small>15:00</small><b>Wolken</b></button>
+    <button type="button" role="tab" aria-selected="false" data-szene="abend"><small>19:00</small><b>Abend</b></button>
+    <button type="button" role="tab" aria-selected="false" data-szene="nacht"><small>02:00</small><b>Nacht</b></button>
+  </div>
+  <div class="fx-buehne" id="fx-buehne">
+    <div class="fx-himmel" aria-hidden="true"><i class="fx-gestirn"></i><i class="fx-wolke w1"></i><i class="fx-wolke w2"></i></div>
+    <canvas class="fx-flow" id="fx-flow" aria-hidden="true"></canvas>
+    <img class="fx-haus" src="assets/3d/haus-v2.webp" width="1400" height="1045" alt="Haus mit Photovoltaik, Speicher, Wallbox und Wärmepumpe" decoding="async" fetchpriority="high">
+    <span class="fx-kern" data-knoten="kern"><svg viewBox="0 0 300 300" aria-hidden="true"><use href="#logo"/></svg><b>HEMS</b></span>
+    <span class="fx-chip" data-id="sonne" data-knoten="quelle" data-farbe="#FFC94A" style="--x:10%;--y:16%"><i class="sonne-ic"></i><span><b>6,4 kW</b><small>Wechselrichter</small></span></span>
+    <span class="fx-chip" data-id="netz" data-knoten="quelle" data-farbe="#9AA6B8" style="--x:90%;--y:16%"><img src="assets/3d/mast.webp" alt=""><span><b>0,2 kW</b><small>Netz</small></span></span>
+    <span class="fx-chip" data-id="ww" data-knoten="ziel" data-farbe="#FF7A3D" style="--x:6%;--y:50%"><img src="assets/3d/boiler.webp" alt=""><span><b>52 °C</b><small>Boiler · Heizstab</small></span></span>
+    <span class="fx-chip" data-id="speicher" data-knoten="ziel" data-farbe="#2FD18B" style="--x:94%;--y:50%"><img src="assets/3d/batterie.webp" alt=""><span><b>82 %</b><small>Speicher</small></span></span>
+    <span class="fx-chip" data-id="wp" data-knoten="ziel" data-farbe="#FF7A3D" style="--x:12%;--y:84%"><img src="assets/3d/wp.webp" alt=""><span><b>1,8 kW</b><small>Wärmepumpe</small></span></span>
+    <span class="fx-chip" data-id="wallbox" data-knoten="ziel" data-farbe="#3C9BFF" style="--x:88%;--y:84%"><img src="assets/3d/wallbox.webp" alt=""><span><b>11 kW</b><small>Wallbox</small></span></span>
+    <span class="fx-chip" data-id="klima" data-knoten="ziel" data-farbe="#5FD4F0" style="--x:33%;--y:100%"><img src="assets/3d/klima.webp" alt=""><span><b>22 °C</b><small>Klima</small></span></span>
+    <span class="fx-chip" data-id="haushalt" data-knoten="ziel" data-farbe="#C9D3E3" style="--x:67%;--y:100%"><svg class="chip-ic" aria-hidden="true"><use href="#i-sh"/></svg><span><b>0,5 kW</b><small>Haushalt</small></span></span>
+    <span class="fx-chip fx-preis" data-id="epex" data-knoten="info" style="--x:50%;--y:2%"><i class="euro-ic" aria-hidden="true">€</i><span><b>12 ct/kWh</b><small>Strompreis EPEX</small></span></span>
+  </div>
+  <div class="fx-einsicht"><p class="fx-zeit" id="fx-zeit"></p><p id="fx-einsicht" aria-live="polite"></p><p class="fx-macht" id="fx-macht"></p></div>
+  <p class="fx-hinweis">Beispielwerte zur Veranschaulichung.</p>
+</section>
+
+<section class="fx-sec fx-erf" id="erfahrung">
+  <div class="wrap">
+    <header class="fx-kopf">
+      <p class="fx-over">Erfahrung</p>
+      <h2>Kein Neuling.<br><span>Seit 30 Jahren nur Elektrotechnik.</span></h2>
+      <p>Von der Elektronik über Hauptverteilungen bis zur Automatisierung eines Wasserkraftwerks. Diese Erfahrung steckt in jeder Anlage, die wir bei Ihnen einbauen.</p>
+    </header>
+    <div class="fx-zahlen">
+      <div class="fx-zahl gross"><b data-zaehl="30">30</b><small>Jahre</small><p>Im Beruf seit dem 18. Lebensjahr, immer in der Elektrotechnik.</p></div>
+      <div class="fx-zahl"><b data-zaehl="3000">3000</b><small>Ampere</small><p>Energieverteilung und Hauptverteilungen bis 3000 A aufgebaut.</p></div>
+      <div class="fx-zahl"><b data-zaehl="1">1</b><small>Megawatt</small><p>Automatisierung eines Wasserkraftwerks mit 1 MW Leistung.</p></div>
+      <div class="fx-zahl"><b>PV</b><small>Großanlagen</small><p>Photovoltaik mit hoher Leistung, nicht nur auf dem Einfamilienhaus.</p></div>
+      <div class="fx-zahl"><b>Industrie</b><small>Automation</small><p>Automatisierung und Steuerungstechnik, auch in der Industrie.</p></div>
+      <div class="fx-zahl"><b>Elektronik</b><small>bis zur Platine</small><p>Kenntnisse in Elektronik, nicht nur in der Elektroinstallation.</p></div>
+      <div class="fx-zahl"><b>Loxone · KNX</b><small>Programmierung</small><p>Smart Home planen und selbst programmieren.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="fx-sec fx-v2h" id="bidirektional">
+  <div class="wrap">
+    <header class="fx-kopf">
+      <p class="fx-over">Bidirektionales Laden · V2H</p>
+      <h2>Ihr Auto wird zum Stromspeicher.<br><span>VOLTHERM steuert beide Richtungen.</span></h2>
+      <p>Ein E-Auto speichert oft 60 kWh und mehr, ein Vielfaches eines Hausspeichers. Mittags lädt es mit Sonnenstrom vom Dach, abends gibt es Strom an das Haus zurück. VOLTHERM entscheidet, wann geladen und wann entladen wird.</p>
+    </header>
+    <div class="v2h-buehne" aria-hidden="true">
+      <div class="v2h-knoten"><img src="assets/3d/wallbox.webp" alt=""><b>Auto + Wallbox</b><small>bidirektional</small></div>
+      <svg class="v2h-fluss" viewBox="0 0 600 120" preserveAspectRatio="none">
+        <path id="v2h-hin" d="M10 40 C 200 0, 400 0, 590 40" />
+        <path id="v2h-rueck" d="M590 80 C 400 120, 200 120, 10 80" />
+        <g class="v2h-gelb"><circle r="5"><animateMotion dur="2.6s" repeatCount="indefinite"><mpath href="#v2h-rueck"/></animateMotion></circle><circle r="5"><animateMotion dur="2.6s" begin=".85s" repeatCount="indefinite"><mpath href="#v2h-rueck"/></animateMotion></circle><circle r="5"><animateMotion dur="2.6s" begin="1.7s" repeatCount="indefinite"><mpath href="#v2h-rueck"/></animateMotion></circle></g>
+        <g class="v2h-gruen"><circle r="5"><animateMotion dur="2.6s" repeatCount="indefinite"><mpath href="#v2h-hin"/></animateMotion></circle><circle r="5"><animateMotion dur="2.6s" begin=".85s" repeatCount="indefinite"><mpath href="#v2h-hin"/></animateMotion></circle><circle r="5"><animateMotion dur="2.6s" begin="1.7s" repeatCount="indefinite"><mpath href="#v2h-hin"/></animateMotion></circle></g>
+      </svg>
+      <div class="v2h-knoten"><svg class="v2h-haus"><use href="#i-sh"/></svg><b>Haus</b><small>Abend und Nacht</small></div>
+    </div>
+    <div class="v2h-karten">
+      <div class="fx-zahl"><b>Mittags</b><small>Auto laden</small><p>Der Überschuss vom Dach fließt ins Auto statt für wenige Cent ins Netz.</p></div>
+      <div class="fx-zahl"><b>Abends</b><small>Haus versorgen</small><p>Wenn der Strom teuer ist, versorgt das Auto das Haus mit dem Sonnenstrom vom Mittag.</p></div>
+      <div class="fx-zahl"><b>Morgens</b><small>bereit zur Fahrt</small><p>Sie legen fest, wie viel Ladung für Ihre Fahrt bleibt. Darunter entlädt VOLTHERM nicht.</p></div>
+    </div>
+    <p class="fx-hinweis v2h-hinweis">Voraussetzung: ein Auto und eine Wallbox, die bidirektionales Laden unterstützen, sowie die Freigabe durch den Netzbetreiber.</p>
+  </div>
 </section>
 
 <section class="sec" id="leistungen">
@@ -187,7 +228,7 @@
       <a class="lk" href="#kontakt" data-interesse="Stromspeicher"><img src="/bild/speicher" alt="" loading="lazy" decoding="async" onerror="this.remove()">
         <p class="kicker">Sonne für den Abend</p><h3>Stromspeicher</h3><p>Sonnenstrom vom Mittag für den Abend, auch als Nachrüstung.</p><span class="los">Mehr erfahren <svg class="ic"><use href="#i-ecke"/></svg></span></a>
       <a class="lk" href="#kontakt" data-interesse="Wallbox"><img src="/bild/wallbox" alt="" loading="lazy" decoding="async" onerror="this.remove()">
-        <p class="kicker">Laden zu Hause</p><h3>Wallbox</h3><p>Laden mit Überschuss vom Dach oder in den günstigsten Stunden, vorbereitet für V2H.</p><span class="los">Mehr erfahren <svg class="ic"><use href="#i-ecke"/></svg></span></a>
+        <p class="kicker">Laden zu Hause</p><h3>Wallbox</h3><p>Laden mit Überschuss vom Dach oder in den günstigsten Stunden. Bidirektional: Das Auto versorgt auch das Haus (V2H).</p><span class="los">Mehr erfahren <svg class="ic"><use href="#i-ecke"/></svg></span></a>
       <a class="lk" href="#kontakt" data-interesse="Wärmepumpe"><img src="/bild/waermepumpe" alt="" loading="lazy" decoding="async" onerror="this.remove()">
         <p class="kicker">Heizen mit Strom</p><h3>Wärmepumpe</h3><p>Heizen mit Strom statt Öl oder Gas, mit SG-Ready und eigenem Sonnenstrom.</p><span class="los">Mehr erfahren <svg class="ic"><use href="#i-ecke"/></svg></span></a>
       <a class="lk" href="#kontakt" data-interesse="Klimaanlage"><img src="/bild/klima" alt="" loading="lazy" decoding="async" onerror="this.remove()">
@@ -211,42 +252,11 @@
       </ul>
       <a class="btn" href="#kontakt" data-interesse="Klimaanlage">Klimaanlage anfragen</a>
     </div>
-    <div class="band-art" aria-hidden="true">
-      <svg class="klima" viewBox="0 0 480 300">
-        <defs>
-          <linearGradient id="kSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2b6f9f"/><stop offset="1" stop-color="#86c9dc"/></linearGradient>
-          <linearGradient id="kSkyW" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1a2944"/><stop offset="1" stop-color="#40597b"/></linearGradient>
-          <linearGradient id="kBody" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fdfdff"/><stop offset=".55" stop-color="#eef2f7"/><stop offset="1" stop-color="#cbd4e1"/></linearGradient>
-          <linearGradient id="kCool" gradientUnits="userSpaceOnUse" x1="0" y1="122" x2="0" y2="290"><stop offset="0" stop-color="#b5f3ff"/><stop offset="1" stop-color="#19C3E6" stop-opacity="0"/></linearGradient>
-          <linearGradient id="kWarm" gradientUnits="userSpaceOnUse" x1="0" y1="122" x2="0" y2="290"><stop offset="0" stop-color="#ffcf9a"/><stop offset="1" stop-color="#FF6B2C" stop-opacity="0"/></linearGradient>
-          <radialGradient id="kSun"><stop offset="0" stop-color="#fff4c8"/><stop offset=".4" stop-color="#ffc24d" stop-opacity=".9"/><stop offset="1" stop-color="#ff9a3c" stop-opacity="0"/></radialGradient>
-          <clipPath id="kFenster"><rect x="338" y="26" width="112" height="96" rx="8"/></clipPath>
-          <filter id="kWeich" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="7"/></filter>
-        </defs>
-        <g clip-path="url(#kFenster)">
-          <g class="k-sum"><rect x="338" y="26" width="112" height="96" fill="url(#kSky)"/><circle class="k-glow" cx="410" cy="62" r="46" fill="url(#kSun)"/><g class="k-rays"><path d="M429.0 62.0L437.0 62.0"/><path d="M423.4 75.4L429.1 81.1"/><path d="M410.0 81.0L410.0 89.0"/><path d="M396.6 75.4L390.9 81.1"/><path d="M391.0 62.0L383.0 62.0"/><path d="M396.6 48.6L390.9 42.9"/><path d="M410.0 43.0L410.0 35.0"/><path d="M423.4 48.6L429.1 42.9"/></g><circle cx="410" cy="62" r="13" fill="#ffd27a"/></g>
-          <g class="k-win"><rect x="338" y="26" width="112" height="96" fill="url(#kSkyW)"/><circle class="k-sn" cx="348" cy="20" r="1.6" style="--d:0s;--t:4.2s"/><circle class="k-sn" cx="362" cy="20" r="1.2" style="--d:-1.5s;--t:5s"/><circle class="k-sn" cx="377" cy="20" r="2" style="--d:-3s;--t:4.6s"/><circle class="k-sn" cx="391" cy="20" r="1.4" style="--d:-0.7s;--t:3.8s"/><circle class="k-sn" cx="404" cy="20" r="1.8" style="--d:-2.4s;--t:5.2s"/><circle class="k-sn" cx="418" cy="20" r="1.3" style="--d:-3.6s;--t:4.4s"/><circle class="k-sn" cx="431" cy="20" r="2" style="--d:-1.1s;--t:4.9s"/><circle class="k-sn" cx="444" cy="20" r="1.5" style="--d:-2.9s;--t:4.1s"/><circle class="k-sn" cx="370" cy="20" r="1.1" style="--d:-4s;--t:5.5s"/><circle class="k-sn" cx="425" cy="20" r="1.2" style="--d:-0.3s;--t:5.8s"/></g>
-        </g>
-        <rect x="338" y="26" width="112" height="96" rx="8" fill="none" stroke="#5d6f8f" stroke-width="3"/>
-        <path d="M394 26v96M338 74h112" stroke="#5d6f8f" stroke-width="2"/>
-        <g class="k-air k-sum"><g class="k-sway"><path class="b" d="M112 124C96 160 128 196 104 232S118 270 96 292" stroke="url(#kCool)"/><path class="b" d="M150 124C138 166 168 200 148 238S160 274 146 294" stroke="url(#kCool)"/><path class="b" d="M190 124C182 168 208 204 192 242S204 276 196 296" stroke="url(#kCool)"/><path class="b" d="M230 124C228 166 252 200 240 238S258 272 256 294" stroke="url(#kCool)"/><path class="b" d="M266 124C276 162 300 196 292 232S314 266 322 288" stroke="url(#kCool)"/><path class="s" d="M112 124C96 160 128 196 104 232S118 270 96 292" stroke="url(#kCool)" style="--d:-0.00s"/><path class="s" d="M150 124C138 166 168 200 148 238S160 274 146 294" stroke="url(#kCool)" style="--d:-0.37s"/><path class="s" d="M190 124C182 168 208 204 192 242S204 276 196 296" stroke="url(#kCool)" style="--d:-0.74s"/><path class="s" d="M230 124C228 166 252 200 240 238S258 272 256 294" stroke="url(#kCool)" style="--d:-1.11s"/><path class="s" d="M266 124C276 162 300 196 292 232S314 266 322 288" stroke="url(#kCool)" style="--d:-1.48s"/></g><circle class="k-p" cx="100" cy="122" r="1.8" fill="#d6f9ff" style="--dx:-26px;--d:-0s"/><circle class="k-p" cx="128" cy="122" r="1.4" fill="#d6f9ff" style="--dx:-14px;--d:-1.1s"/><circle class="k-p" cx="156" cy="122" r="2" fill="#d6f9ff" style="--dx:-6px;--d:-0.5s"/><circle class="k-p" cx="184" cy="122" r="1.5" fill="#d6f9ff" style="--dx:4px;--d:-1.7s"/><circle class="k-p" cx="212" cy="122" r="1.9" fill="#d6f9ff" style="--dx:14px;--d:-0.2s"/><circle class="k-p" cx="240" cy="122" r="1.4" fill="#d6f9ff" style="--dx:26px;--d:-1.3s"/><circle class="k-p" cx="268" cy="122" r="1.8" fill="#d6f9ff" style="--dx:40px;--d:-0.8s"/><circle class="k-p" cx="292" cy="122" r="1.3" fill="#d6f9ff" style="--dx:52px;--d:-2s"/></g>
-        <g class="k-air k-win"><g class="k-sway"><path class="b" d="M112 124C96 160 128 196 104 232S118 270 96 292" stroke="url(#kWarm)"/><path class="b" d="M150 124C138 166 168 200 148 238S160 274 146 294" stroke="url(#kWarm)"/><path class="b" d="M190 124C182 168 208 204 192 242S204 276 196 296" stroke="url(#kWarm)"/><path class="b" d="M230 124C228 166 252 200 240 238S258 272 256 294" stroke="url(#kWarm)"/><path class="b" d="M266 124C276 162 300 196 292 232S314 266 322 288" stroke="url(#kWarm)"/><path class="s" d="M112 124C96 160 128 196 104 232S118 270 96 292" stroke="url(#kWarm)" style="--d:-0.00s"/><path class="s" d="M150 124C138 166 168 200 148 238S160 274 146 294" stroke="url(#kWarm)" style="--d:-0.37s"/><path class="s" d="M190 124C182 168 208 204 192 242S204 276 196 296" stroke="url(#kWarm)" style="--d:-0.74s"/><path class="s" d="M230 124C228 166 252 200 240 238S258 272 256 294" stroke="url(#kWarm)" style="--d:-1.11s"/><path class="s" d="M266 124C276 162 300 196 292 232S314 266 322 288" stroke="url(#kWarm)" style="--d:-1.48s"/></g><circle class="k-p" cx="100" cy="122" r="1.8" fill="#ffd9b0" style="--dx:-26px;--d:-0s"/><circle class="k-p" cx="128" cy="122" r="1.4" fill="#ffd9b0" style="--dx:-14px;--d:-1.1s"/><circle class="k-p" cx="156" cy="122" r="2" fill="#ffd9b0" style="--dx:-6px;--d:-0.5s"/><circle class="k-p" cx="184" cy="122" r="1.5" fill="#ffd9b0" style="--dx:4px;--d:-1.7s"/><circle class="k-p" cx="212" cy="122" r="1.9" fill="#ffd9b0" style="--dx:14px;--d:-0.2s"/><circle class="k-p" cx="240" cy="122" r="1.4" fill="#ffd9b0" style="--dx:26px;--d:-1.3s"/><circle class="k-p" cx="268" cy="122" r="1.8" fill="#ffd9b0" style="--dx:40px;--d:-0.8s"/><circle class="k-p" cx="292" cy="122" r="1.3" fill="#ffd9b0" style="--dx:52px;--d:-2s"/></g>
-        <g class="k-pflanze"><g class="k-blatt"><path d="M430 262C414 236 398 222 384 216C402 214 420 228 430 262Z"/><path d="M430 262C420 226 418 200 426 178C436 200 436 232 430 262Z"/><path d="M430 262C440 230 456 210 474 204C466 224 448 244 430 262Z"/><path d="M430 262C426 240 408 196 394 186C414 190 432 226 430 262Z" opacity=".8"/><path d="M430 262C436 236 450 198 462 188C462 210 446 240 430 262Z" opacity=".8"/></g>
-          <path d="M412 260h36l-5 40h-26Z" fill="#22314f"/><path d="M410 258h40v6h-40Z" fill="#2c3d60"/></g>
-        <ellipse cx="180" cy="130" rx="128" ry="9" fill="#000" opacity=".4" filter="url(#kWeich)"/>
-        <rect x="60" y="46" width="240" height="78" rx="17" fill="url(#kBody)"/>
-        <rect x="72" y="49" width="216" height="3" rx="1.5" fill="#fff"/>
-        <path d="M63 100Q180 108 297 100" fill="none" stroke="#c2cbd8" stroke-width="1.2"/>
-        <rect x="74" y="107" width="212" height="12" rx="6" fill="#1a2436"/>
-        <rect class="k-flap" x="77" y="109" width="206" height="7" rx="3.5" fill="#e4e9f1"/>
-        <text class="k-t k-sum" x="276" y="86" text-anchor="end" fill="#0ea5c8">22°</text>
-        <text class="k-t k-win" x="276" y="86" text-anchor="end" fill="#f26a2a">22°</text>
-        <circle class="k-led" cx="282" cy="77" r="2.2"/>
-        <g class="k-chip"><rect x="18" y="258" width="214" height="28" rx="14" fill="rgba(11,18,32,.7)" stroke="rgba(143,163,200,.35)"/>
-          <g class="k-sum"><circle cx="34" cy="272" r="4.5" fill="#19C3E6"/><text x="46" y="276.5">Kühlen mit Sonnenstrom</text></g>
-          <g class="k-win"><circle cx="34" cy="272" r="4.5" fill="#FF6B2C"/><text x="46" y="276.5">Heizen in der Übergangszeit</text></g></g>
-      </svg>
-    </div>
+    <figure class="vx vx2">
+      <div class="vx-detail"><img src="assets/geraete/vivax-detail.webp" width="1500" height="1000" alt="Vivax Klimaanlage: Front mit Stoffoptik und Vivax inverter Logo, Nahaufnahme" loading="lazy"></div>
+      <div class="vx-geraet"><img src="assets/geraete/vivax-gold-2.webp" width="508" height="297" alt="Vivax Klimaanlage, Innengerät in Gold" loading="lazy"></div>
+      <figcaption><span class="vx-chip"><i></i>Kühlen mit Sonnenstrom · 22 °C</span></figcaption>
+    </figure>
   </div>
 </section>
 
@@ -281,10 +291,15 @@
 
 <section class="sec" id="smart">
   <div class="wrap smart-grid">
-    <div class="phone"><img src="assets/app-demo.webp?v=037" width="400" height="860" alt="VOLTHERM App: Haus mit Photovoltaik, Speicher, Wallbox, Klima, Wärmepumpe und Warmwasser" loading="lazy"></div>
+    <div class="ft-wrap hand">
+      <div class="ft ft-fold ft-hand" data-quad="238,30 817,28 242,461 811,464" data-bild="960x540" data-w="1000" data-h="750">
+        <img src="assets/geraete/fold-hand.webp" width="960" height="540" alt="Faltbares Smartphone in der Hand mit der VOLTHERM App" loading="lazy">
+        <div class="ft-scr"><i class="ft-kam"></i><div class="ft-in"><iframe title="VOLTHERM App, laufende Demo mit Beispielwerten" loading="lazy" src="voltherm/demo.html" tabindex="-1"></iframe></div></div>
+      </div>
+    </div>
     <div>
       <p class="kicker">Ihre Energie. Intelligent verteilt.</p>
-      <h2>VOLTHERM Smart Energy&nbsp;–<br><span class="grad-dark">Das intelligente Energie&shy;management&shy;system (HEMS)</span></h2>
+      <h2>VOLTHERM Smart Energy&nbsp;–<br><span class="blau">Das intelligente Energie&shy;management&shy;system (HEMS)</span></h2>
       <p>Ein kleiner Rechner im Haus verbindet Solaranlage, Speicher, Wallbox, Warmwasser, Wärmepumpe und Klimaanlage. Er sieht, wie viel Sonne gerade da ist und was Strom aus dem Netz kostet, und entscheidet danach.</p>
       <ul class="ticks">
         <li>Sonnenstrom zuerst selbst nutzen statt billig einspeisen</li>
@@ -316,7 +331,7 @@
   <div class="wrap uw-grid">
     <div>
       <p class="kicker">VOLTHERM App &amp; Smartwatch</p>
-      <h2>Ihr Haus in der Hosentasche.<br><span class="grad">Und am Handgelenk.</span></h2>
+      <h2>Ihr Haus in der Hosentasche.<br><span class="blau">Und am Handgelenk.</span></h2>
       <p>Mit der VOLTHERM App haben Sie Ihre Anlage immer dabei. Zu Hause im WLAN genauso wie unterwegs: Sie sehen, was Ihr Haus gerade macht, und steuern es mit einem Fingertipp.</p>
       <ul class="ticks">
         <li>Live: Sonne vom Dach, Speicher, Netz und aktueller Strompreis</li>
@@ -335,38 +350,39 @@
     </div>
     <figure class="uw-pic">
       <div class="uw-duo">
-        <div class="phone uw-phone"><img src="assets/app-demo.webp?v=037" width="400" height="860" alt="VOLTHERM App auf dem Handy" loading="lazy"></div>
+        <div class="ft ft-fold" data-quad="124,11 469,11 124,468 469,468" data-bild="485x481" data-w="760" data-h="1007">
+        <img src="assets/geraete/fold8-f.webp" width="485" height="481" alt="Faltbares Smartphone, aufgeklappt, mit der VOLTHERM App" loading="lazy">
+        <div class="ft-scr"><i class="ft-kam"></i><div class="ft-in"><iframe title="VOLTHERM App auf dem Handy, laufende Demo" loading="lazy" src="voltherm/demo.html" tabindex="-1"></iframe></div></div>
+      </div>
         <div class="uw-watch" aria-hidden="true">
-          <svg viewBox="0 0 360 360">
-            <defs>
-              <radialGradient id="uwFace" cx=".5" cy=".42" r=".6"><stop offset="0" stop-color="#18233b"/><stop offset="1" stop-color="#070c16"/></radialGradient>
-              <linearGradient id="uwRing" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9aa4b4"/><stop offset=".5" stop-color="#3b4456"/><stop offset="1" stop-color="#c8cfdb"/></linearGradient>
-            </defs>
-            <circle cx="180" cy="180" r="176" fill="url(#uwRing)"/>
-            <circle cx="180" cy="180" r="162" fill="url(#uwFace)"/>
-            <g class="uw-ticks" stroke="#4a5873" stroke-width="3" stroke-linecap="round">
-              <path d="M180 26v12 M180 322v12 M26 180h12 M322 180h12"/>
-            </g>
-            <use href="#logo" x="156" y="98" width="48" height="48"/>
-            <text x="180" y="162" class="uw-wm">VOLT<tspan fill="#19C3E6">HERM</tspan></text>
-            <text x="180" y="66" class="uw-v">↑ 97 W</text><text x="180" y="82" class="uw-l">Netz</text>
-            <circle cx="88" cy="180" r="34" fill="none" stroke="#26324a" stroke-width="7"/>
-            <circle cx="88" cy="180" r="34" fill="none" stroke="#FFC24D" stroke-width="7" stroke-linecap="round" stroke-dasharray="45 214" transform="rotate(-90 88 180)"/>
-            <text x="88" y="180" class="uw-v">2,1</text><text x="88" y="196" class="uw-l">kW Sonne</text>
-            <circle cx="272" cy="180" r="34" fill="none" stroke="#26324a" stroke-width="7"/>
-            <circle cx="272" cy="180" r="34" fill="none" stroke="#19C3E6" stroke-width="7" stroke-linecap="round" stroke-dasharray="211 214" transform="rotate(-90 272 180)"/>
-            <text x="272" y="180" class="uw-v">99</text><text x="272" y="196" class="uw-l">% Speicher</text>
-            <text x="180" y="276" class="uw-v">23,4 ct</text><text x="180" y="294" class="uw-l uw-g">GÜNSTIG</text>
-            <text x="180" y="226" class="uw-time" id="uw-zeit">17:42</text>
-            <g class="uw-hands">
-              <line class="uw-h" id="uw-h" x1="180" y1="180" x2="180" y2="112"/>
-              <line class="uw-m" id="uw-m" x1="180" y1="180" x2="180" y2="76"/>
-              <circle cx="180" cy="180" r="6" fill="#FF6B2C"/>
-            </g>
+          <svg viewBox="0 0 360 360" id="uhr">
+            <defs><linearGradient id="uhrRing" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#b9c0ca"/><stop offset=".5" stop-color="#3b4049"/><stop offset="1" stop-color="#d7dce3"/></linearGradient></defs>
+            <circle cx="180" cy="180" r="179" fill="url(#uhrRing)"/>
+            <circle cx="180" cy="180" r="172" fill="#000"/>
+            <g id="uhr-striche" stroke-linecap="round"><line class="q" x1="180.0" y1="10.0" x2="180.0" y2="30.0"/><line class="k" x1="197.8" y1="10.9" x2="196.7" y2="20.9"/><line class="k" x1="215.3" y1="13.7" x2="213.3" y2="23.5"/><line class="k" x1="232.5" y1="18.3" x2="229.4" y2="27.8"/><line class="k" x1="249.1" y1="24.7" x2="245.1" y2="33.8"/><line class="q" x1="265.0" y1="32.8" x2="255.0" y2="50.1"/><line class="k" x1="279.9" y1="42.5" x2="274.0" y2="50.6"/><line class="k" x1="293.8" y1="53.7" x2="287.1" y2="61.1"/><line class="k" x1="306.3" y1="66.2" x2="298.9" y2="72.9"/><line class="k" x1="317.5" y1="80.1" x2="309.4" y2="86.0"/><line class="q" x1="327.2" y1="95.0" x2="309.9" y2="105.0"/><line class="k" x1="335.3" y1="110.9" x2="326.2" y2="114.9"/><line class="k" x1="341.7" y1="127.5" x2="332.2" y2="130.6"/><line class="k" x1="346.3" y1="144.7" x2="336.5" y2="146.7"/><line class="k" x1="349.1" y1="162.2" x2="339.1" y2="163.3"/><line class="k" x1="349.1" y1="197.8" x2="339.1" y2="196.7"/><line class="k" x1="346.3" y1="215.3" x2="336.5" y2="213.3"/><line class="k" x1="341.7" y1="232.5" x2="332.2" y2="229.4"/><line class="k" x1="335.3" y1="249.1" x2="326.2" y2="245.1"/><line class="q" x1="327.2" y1="265.0" x2="309.9" y2="255.0"/><line class="k" x1="317.5" y1="279.9" x2="309.4" y2="274.0"/><line class="k" x1="306.3" y1="293.8" x2="298.9" y2="287.1"/><line class="k" x1="293.8" y1="306.3" x2="287.1" y2="298.9"/><line class="k" x1="279.9" y1="317.5" x2="274.0" y2="309.4"/><line class="q" x1="265.0" y1="327.2" x2="255.0" y2="309.9"/><line class="k" x1="249.1" y1="335.3" x2="245.1" y2="326.2"/><line class="k" x1="232.5" y1="341.7" x2="229.4" y2="332.2"/><line class="k" x1="215.3" y1="346.3" x2="213.3" y2="336.5"/><line class="k" x1="197.8" y1="349.1" x2="196.7" y2="339.1"/><line class="q" x1="180.0" y1="350.0" x2="180.0" y2="330.0"/><line class="k" x1="162.2" y1="349.1" x2="163.3" y2="339.1"/><line class="k" x1="144.7" y1="346.3" x2="146.7" y2="336.5"/><line class="k" x1="127.5" y1="341.7" x2="130.6" y2="332.2"/><line class="k" x1="110.9" y1="335.3" x2="114.9" y2="326.2"/><line class="q" x1="95.0" y1="327.2" x2="105.0" y2="309.9"/><line class="k" x1="80.1" y1="317.5" x2="86.0" y2="309.4"/><line class="k" x1="66.2" y1="306.3" x2="72.9" y2="298.9"/><line class="k" x1="53.7" y1="293.8" x2="61.1" y2="287.1"/><line class="k" x1="42.5" y1="279.9" x2="50.6" y2="274.0"/><line class="q" x1="32.8" y1="265.0" x2="50.1" y2="255.0"/><line class="k" x1="24.7" y1="249.1" x2="33.8" y2="245.1"/><line class="k" x1="18.3" y1="232.5" x2="27.8" y2="229.4"/><line class="k" x1="13.7" y1="215.3" x2="23.5" y2="213.3"/><line class="k" x1="10.9" y1="197.8" x2="20.9" y2="196.7"/><line class="k" x1="10.9" y1="162.2" x2="20.9" y2="163.3"/><line class="k" x1="13.7" y1="144.7" x2="23.5" y2="146.7"/><line class="k" x1="18.3" y1="127.5" x2="27.8" y2="130.6"/><line class="k" x1="24.7" y1="110.9" x2="33.8" y2="114.9"/><line class="q" x1="32.8" y1="95.0" x2="50.1" y2="105.0"/><line class="k" x1="42.5" y1="80.1" x2="50.6" y2="86.0"/><line class="k" x1="53.7" y1="66.2" x2="61.1" y2="72.9"/><line class="k" x1="66.2" y1="53.7" x2="72.9" y2="61.1"/><line class="k" x1="80.1" y1="42.5" x2="86.0" y2="50.6"/><line class="q" x1="95.0" y1="32.8" x2="105.0" y2="50.1"/><line class="k" x1="110.9" y1="24.7" x2="114.9" y2="33.8"/><line class="k" x1="127.5" y1="18.3" x2="130.6" y2="27.8"/><line class="k" x1="144.7" y1="13.7" x2="146.7" y2="23.5"/><line class="k" x1="162.2" y1="10.9" x2="163.3" y2="20.9"/></g>
+            <text x="34" y="190" class="uz">9</text><text x="326" y="190" class="uz">3</text>
+            <use href="#logo" x="166" y="40" width="28" height="28"/>
+            <rect x="122" y="80" width="116" height="26" rx="13" fill="#0f1a26"/>
+            <text x="180" y="98" class="up" id="uhr-netz" fill="#3DDC84">Netz ↑ 2,1 kW</text>
+            <circle cx="102" cy="182" r="38" fill="#0c1220" stroke="#1d2533" stroke-width="2"/>
+            <circle cx="102" cy="182" r="31" fill="none" stroke="#1f2a3a" stroke-width="5"/>
+            <circle cx="102" cy="182" r="31" fill="none" stroke="#FFC24D" stroke-width="5" stroke-linecap="round" id="uhr-sonne-ring" stroke-dasharray="100 195" transform="rotate(135 102 182)"/>
+            <text x="102" y="168" class="ul">Sonne</text><text x="102" y="190" class="uv" id="uhr-sonne">5,2</text><text x="102" y="204" class="ue" fill="#FFC24D">kW</text>
+            <circle cx="258" cy="182" r="38" fill="#0c1220" stroke="#1d2533" stroke-width="2"/>
+            <circle cx="258" cy="182" r="31" fill="none" stroke="#1f2a3a" stroke-width="5"/>
+            <circle cx="258" cy="182" r="31" fill="none" stroke="#4C8DFF" stroke-width="5" stroke-linecap="round" id="uhr-sp-ring" stroke-dasharray="150 195" transform="rotate(135 258 182)"/>
+            <text x="258" y="168" class="ul">Speicher</text><text x="258" y="190" class="uv" id="uhr-sp">78</text><text x="258" y="204" class="ue" fill="#4C8DFF">%</text>
+            <text x="180" y="252" class="ut" id="uhr-zeit">15:53</text>
+            <text x="180" y="272" class="ud" id="uhr-datum">Sa., 7. Nov.</text>
+            <rect x="113" y="284" width="134" height="26" rx="13" fill="#0e2a1c" stroke="#2fd18b" stroke-opacity=".6"/>
+            <text x="180" y="302" class="up" id="uhr-preis" fill="#3DDC84">21,4 ct · GÜNSTIG</text>
+            <g id="uhr-std"><line x1="180" y1="190" x2="180" y2="112" stroke="#fff" stroke-width="9" stroke-linecap="round"/></g>
+            <g id="uhr-min"><line x1="180" y1="195" x2="180" y2="56" stroke="#fff" stroke-width="6" stroke-linecap="round"/></g>
+            <g id="uhr-sek"><line x1="180" y1="206" x2="180" y2="40" stroke="#19C3E6" stroke-width="2.4" stroke-linecap="round"/><circle cx="180" cy="180" r="7" fill="#000" stroke="#19C3E6" stroke-width="3"/></g>
           </svg>
         </div>
       </div>
-      <figcaption>Visualisierung, Beispielwerte.</figcaption>
+      <figcaption>Echte Uhrzeit, Werte als Beispiel. Das Zifferblatt ist das der VOLTHERM Uhr-App.</figcaption>
     </figure>
   </div>
 </section>
@@ -374,12 +390,8 @@
 <section class="sec soft" id="hub">
   <div class="wrap">
     <p class="kicker">VOLTHERM Hub · In Entwicklung</p>
-    <h2>Zwei Geräte.<br><span class="grad-dark">Ein System.</span></h2>
+    <h2>Zwei Geräte.<br><span class="blau">Ein System.</span></h2>
     <p class="intro">Der VOLTHERM Hub ist das Herz Ihrer Anlage. Er muss nicht im Keller verschwinden: Das Gehäuse im eigenen Design passt ins Wohnzimmer, steuert Ihre Energie und zeigt Ihnen, was im Haus passiert.</p>
-    <figure class="hub-pic">
-      <img src="assets/hub-core-pro.webp" srcset="assets/hub-core-pro-900.webp 900w, assets/hub-core-pro.webp 1600w" sizes="(min-width: 1140px) 1100px, 100vw" width="1600" height="893" alt="VOLTHERM Hub Core mit Drehknopf und rundem Display sowie Hub Pro mit großem Touch-Display auf einem Sideboard im Wohnzimmer" loading="lazy">
-      <figcaption>Visualisierung, Beispielwerte. Links Hub Core, rechts Hub Pro. Das Seriengerät kann im Detail abweichen.</figcaption>
-    </figure>
     <div class="hub-duo">
       <article class="card hub-card">
         <p class="tag">Hub Core</p>
@@ -410,10 +422,12 @@
     <div class="hd">
       <article class="hd-box">
         <div class="hd-dev hd-core">
-          <span class="hd-name" aria-hidden="true">VOLTHERM HUB CORE</span>
+          <div class="hc-foto hand">
+          <img src="assets/geraete/matouch-hand.webp" width="400" height="400" alt="Rundes Display mit Drehring, wie im VOLTHERM Hub Core" loading="lazy">
           <div class="rk" id="rk" tabindex="0" role="group" aria-roledescription="Drehknopf" aria-label="Drehknopf mit rundem Display. Pfeiltasten drehen, Eingabetaste drückt.">
             <div class="rk-ring" aria-hidden="true"></div>
             <div class="rk-scr" aria-hidden="true"></div>
+          </div>
           </div>
           <p class="sr" id="rk-ansage" aria-live="polite"></p>
           <div class="hd-ctl">
@@ -438,13 +452,13 @@
       </article>
       <article class="hd-box hd-p">
         <div class="hd-dev hd-pro">
-          <div class="pf">
-            <div class="pf-scr" id="pf-scr">
+          <div class="ft ft-tab" data-quad="102.5,22.5 674.8,33.3 23.3,405 595.5,475.8" data-bild="1045x556" data-w="1280" data-h="800">
+            <img src="assets/geraete/tablet-plus-2.webp" width="1045" height="556" alt="Tablet auf dem Standfuß mit VOLTHERM Home" loading="lazy">
+            <div class="ft-scr"><div class="pf-scr" id="pf-scr">
               <iframe title="VOLTHERM Home auf dem Display von Hub Pro, Beispielwerte" loading="lazy" src="voltherm/demo.html"></iframe>
               <a class="pf-voll" href="voltherm/demo.html"><span>Antippen und ausprobieren</span></a>
               <div class="pf-voice" id="pf-voice" aria-live="polite"></div>
-            </div>
-            <div class="pf-side" aria-hidden="true"><svg viewBox="0 0 300 300"><use href="#logo"/></svg><span>VOLTHERM HUB PRO</span></div>
+            </div></div>
           </div>
           <div class="pf-unten"></div>
           <div class="hd-fragen">
@@ -457,7 +471,7 @@
         <div class="hd-txt">
           <p class="tag pro">Hub Pro</p>
           <h3>Tippen oder einfach fragen.</h3>
-          <p>Auf dem 7-Zoll-Touch-Display läuft VOLTHERM Home, dieselbe Oberfläche wie in der App. Hier läuft sie mit Beispielwerten, probieren Sie es aus.</p>
+          <p>Auf dem 7-Zoll-Touch-Display des Hub Pro läuft VOLTHERM Home, dieselbe Oberfläche wie in der App. Auf Wunsch auch an der Wand, auf einem Tablet mit 11,5 Zoll, wie hier im Bild. Hier läuft sie mit Beispielwerten, probieren Sie es aus.</p>
           <p>Mikrofon und Lautsprecher sind im Gehäuse eingebaut. Sie fragen, der Hub antwortet mit Stimme und zeigt die Antwort auf dem Display. Bevor er etwas einschaltet, fragt er nach.</p>
           <a class="btn btn-ghost hd-voll" href="voltherm/demo.html">Im Vollbild öffnen</a>
         </div>
@@ -482,7 +496,7 @@
       <div class="card"><svg class="hexi" viewBox="0 0 64 64" aria-hidden="true"><use href="#hex"/><use href="#i-uhr" x="17" y="17" width="30" height="30"/></svg><b>Günstige Stunden nutzen</b><p>Mit einem dynamischen Stromtarif lädt der Hub Auto und Speicher dann, wenn der Strom am wenigsten kostet.</p></div>
       <div class="card warm"><svg class="hexi" viewBox="0 0 64 64" aria-hidden="true"><use href="#hex"/><use href="#i-wp" x="17" y="17" width="30" height="30"/></svg><b>Wärme mit Sonnenstrom</b><p>Bei Überschuss bekommt die Wärmepumpe über SG-Ready das Signal, Wärme auf Vorrat zu machen. Das Warmwasser heizt mit Sonne.</p></div>
       <div class="card"><svg class="hexi" viewBox="0 0 64 64" aria-hidden="true"><use href="#hex"/><use href="#i-netz" x="17" y="17" width="30" height="30"/></svg><b>Bereit für §14a EnWG</b><p>Begrenzt der Netzbetreiber die Leistung, verteilt der Hub den verfügbaren Strom nach Ihren Prioritäten.</p></div>
-      <div class="card"><svg class="hexi" viewBox="0 0 64 64" aria-hidden="true"><use href="#hex"/><use href="#i-v2h" x="17" y="17" width="30" height="30"/></svg><b>Strom aus dem Auto</b><p>Vorbereitet für bidirektionales Laden (V2H), sobald Auto und Wallbox es unterstützen.</p></div>
+      <div class="card"><svg class="hexi" viewBox="0 0 64 64" aria-hidden="true"><use href="#hex"/><use href="#i-v2h" x="17" y="17" width="30" height="30"/></svg><b>Strom aus dem Auto</b><p>Bidirektionales Laden (V2H): VOLTHERM lädt das Auto mit Sonnenstrom und holt abends Strom zurück ins Haus.</p></div>
       <div class="card warm"><svg class="hexi" viewBox="0 0 64 64" aria-hidden="true"><use href="#hex"/><use href="#i-puls" x="17" y="17" width="30" height="30"/></svg><b>Service, bevor etwas ausfällt</b><p>Der Hub prüft Geräte und Verbindungen und meldet Auffälligkeiten. Auf Wunsch helfen wir über einen sicheren Fernzugang.</p></div>
       <div class="card"><svg class="hexi" viewBox="0 0 64 64" aria-hidden="true"><use href="#hex"/><use href="#i-lock" x="17" y="17" width="30" height="30"/></svg><b>Ihre Daten bleiben im Haus</b><p>Kein Cloud-Abo, keine Daten auf fremden Servern. Der Hub arbeitet lokal.</p></div>
     </div>
@@ -503,7 +517,7 @@
   <div class="wrap ki-grid">
     <div>
       <p class="kicker">VOLTHERM KI · Premium-Option</p>
-      <h2>Einfach fragen.<br><span class="grad">Ihr Haus antwortet.</span></h2>
+      <h2>Einfach fragen.<br><span class="blau">Ihr Haus antwortet.</span></h2>
       <p>Mit der Premium-Option VOLTHERM KI sprechen Sie mit Ihrer Anlage wie mit einem Menschen. Die künstliche Intelligenz läuft auf einem eigenen Gerät bei Ihnen im Haus, ohne Cloud. Ihre Daten und Ihre Stimme verlassen das Haus nicht.</p>
       <ul class="ticks">
         <li>Fragen per Sprache oder am Wandtablet: „Warum lädt das Auto nicht?“</li>
@@ -516,7 +530,9 @@
   </div>
   <div class="wrap">
     <figure class="ki-pic">
-      <div class="kt" id="ki-demo" aria-hidden="true">
+      <div class="ft ft-tab ft-ki" data-quad="102.5,22.5 674.8,33.3 23.3,405 595.5,475.8" data-bild="1045x556" data-w="1320" data-h="792">
+        <img src="assets/geraete/tablet-plus-2.webp" width="1045" height="556" alt="" loading="lazy">
+        <div class="ft-scr"><div class="kt" id="ki-demo" aria-hidden="true">
         <div class="kt-dev"><i class="kt-cam"></i>
           <div class="kt-scr">
             <div class="kt-top"><svg class="kt-logo" viewBox="0 0 300 300"><use href="#logo"/></svg><span class="kt-wm">VOLT<span>HERM</span></span><span class="kt-wx">☀ 19 °C · Mockersdorf</span><span class="kt-time">17:42</span></div>
@@ -540,9 +556,10 @@
             </div>
           </div>
         </div>
+      </div></div>
       </div>
       <p class="sr">Beispiel am Wandtablet: Der Kunde fragt „Wie war der Tag bisher?“. VOLTHERM antwortet, dass heute 82 Prozent des Stroms von der Sonne kamen. Dann sagt der Kunde „Mach bitte warmes Wasser.“ VOLTHERM nennt die Speichertemperatur, schlägt vor, mit Sonnenstrom auf 60 °C zu heizen, und fragt vor dem Start nach.</p>
-      <figcaption>Visualisierung, Beispielwerte.</figcaption>
+      <figcaption>Beispielwerte. Der Ton startet nach der ersten Berührung auf der Seite.</figcaption>
     </figure>
   </div>
 </section>
@@ -577,10 +594,14 @@
 
 <section class="sec" id="ueber-uns">
   <div class="wrap">
+    <figure class="fx-zitat">
+      <blockquote>„Ich sehe täglich Häuser mit teurer Photovoltaik, Wärmepumpe und Wallbox, bei denen jedes Gerät seine eigene App hat, aber keines mit dem anderen spricht. Abends zieht das E-Auto den Hausspeicher leer, während der Heizstab teuren Netzstrom kauft. Genau dieses Problem lösen wir bei VOLTHERM.“</blockquote>
+      <figcaption><b>Valentin Motoc</b> · Inhaber, 30 Jahre Elektrotechnik</figcaption>
+    </figure>
     <p class="kicker">Über uns</p>
     <h2>Klassisches Handwerk trifft Energiemanagement</h2>
     <div class="text-spalten">
-      <p>Hallo, ich bin Valentin, Elektriker und der Kopf hinter VOLTHERM.</p>
+      <p>Hallo, ich bin Valentin, seit 30 Jahren Elektriker und der Kopf hinter VOLTHERM.</p>
       <p>Alles begann mit meinem eigenen Zuhause und einer klaren Vision: Ich wollte, dass mein Haus mitdenkt. Wenn mittags die Sonne scheint, sollte der Strom nicht einfach billig ins Netz fließen, sondern intelligent genutzt werden – für die Wärmepumpe, das Warmwasser oder das E-Auto in der Garage. Und wenn die Sonne mal nicht scheint, wollte ich die günstigsten Stunden eines dynamischen Stromtarifs automatisch nutzen.</p>
       <p>Dabei stieß ich auf ein Problem, das viele Hausbesitzer kennen: Klassische Installateure bauen zwar hervorragende Hardware ein, aber die Geräte sprechen oft nicht miteinander. Die Solaranlage weiß nichts von der Wärmepumpe, und die Wallbox ignoriert den aktuellen Strompreis.</p>
       <p>Als Elektriker und begeisterter Smart-Home-Entwickler wollte ich mich damit nicht abfinden. Ich begann, verschiedene Systeme wie Loxone und offene Standards zu kombinieren, zu programmieren und die Abläufe im eigenen Haus so lange zu perfektionieren, bis alles reibungslos aus einer Hand lief. Aus dieser Leidenschaft entstand der VOLTHERM Hub – unser eigenes, lokales Home Energy Management System (HEMS).</p>
@@ -744,7 +765,9 @@
 </dialog>
 <!-- Fotos aus echten Projekten je Leistung: {"photovoltaik": [{"src": "...", "t": "Vorschaubild", "text": "Bildunterschrift"}], ...} -->
 <script type="application/json" id="galerie-daten">{}</script>
-<script src="site.js?v=20261026b" defer></script>
+<script src="site.js?v=20261107e" defer></script>
 <script src="chat.js?v=20261026a" defer></script>
+<script src="flagship.js?v=20261107v" defer></script>
+
 </body>
 </html>
