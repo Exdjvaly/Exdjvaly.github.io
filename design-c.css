@@ -1,0 +1,83 @@
+/* VOLTHERM Design C (2026-11-07): Farben der VOLTHERM Dienstwagen. Grafitgrau + Blau, Cyan nur im Logo-Blitz.
+   Keine Verläufe in Schrift, keine Pillen, kein Laufband. Liegt über site.css und design-b.css. */
+:root {
+  --g0: #16181B; --g1: #1C1F23; --g2: #24282D; --g3: #2E3339; --g4: #3A4047;
+  --blau: #1F6FD6; --blau2: #3C8AF0; --blau-dunkel: #164F9A;
+  --bg: var(--g0); --bg2: var(--g1); --card: var(--g2); --card2: var(--g3);
+  --navy: var(--g0); --navy2: var(--g1); --navy3: var(--g2);
+  --cyan: var(--blau2); --steel: #A9B0B8;
+  --line: rgba(200,206,214,.12); --line2: rgba(200,206,214,.24);
+  --ink: #EEF0F2; --ink2: #AEB4BB; --mut: #A3AAB2;
+  --r: 8px;
+}
+body { background: var(--g0); }
+::selection { background: rgba(31,111,214,.45); }
+
+/* Schrift: einfarbig, keine Verläufe */
+.blau { color: var(--blau2); }
+.grad, .grad-dark { background: none; -webkit-background-clip: border-box; background-clip: border-box; color: var(--blau2); }
+
+/* Kopfzeile */
+.top { background: rgba(22,24,27,.94); border-bottom: 3px solid var(--blau); }
+.logo-box { background: var(--g2); border-radius: 6px; }
+.wm span { color: var(--blau2); }
+
+/* Knöpfe: eckig, Blau wie der Wagen */
+.btn { border-radius: 6px; background: var(--blau); color: #fff !important; box-shadow: none; }
+.btn:hover { background: var(--blau2); box-shadow: none; transform: none; }
+.btn-ghost { background: transparent; color: var(--ink) !important; box-shadow: inset 0 0 0 2px var(--g4); }
+.btn-ghost:hover { background: var(--g2); box-shadow: inset 0 0 0 2px var(--steel); }
+.btn-line { box-shadow: inset 0 0 0 2px var(--g4); border-radius: 6px; }
+
+/* Hero: Grau oben, blaue Schräge unten wie auf dem Wagen */
+.hero { background: linear-gradient(180deg, #2A2E33 0%, #202327 55%, var(--g0) 100%); position: relative; overflow: hidden; padding-bottom: 0; }
+.hero-glow { display: none; }
+.hero h1 { font-size: clamp(40px, 5.6vw, 72px); letter-spacing: -.03em; }
+.ort { margin: 0 0 18px; font: 700 14px/1.3 var(--font); letter-spacing: .02em; color: var(--steel); }
+.ort::before { content: ""; display: inline-block; width: 22px; height: 3px; background: var(--blau); vertical-align: middle; margin-right: 10px; }
+.fakten { list-style: none; padding: 0; margin: 34px 0 0; display: grid; grid-template-columns: repeat(2, 1fr); gap: 0; border-top: 1px solid var(--line2); }
+@media (min-width: 640px) { .fakten { grid-template-columns: repeat(4, auto); } }
+.fakten li { padding: 14px 18px 14px 0; display: flex; flex-direction: column; gap: 2px; }
+@media (min-width: 640px) { .fakten li + li { padding-left: 18px; border-left: 1px solid var(--line2); } }
+.fakten b { font: 800 22px/1.1 var(--font); color: var(--ink); letter-spacing: -.01em; }
+.fakten span { font-size: 13.5px; color: var(--mut); line-height: 1.3; }
+.livree { height: 72px; margin-top: 40px; background: var(--blau); clip-path: polygon(0 55%, 100% 0, 100% 100%, 0 100%); }
+.livree + * { margin-top: 0; }
+.kern { background: var(--g1) !important; box-shadow: 0 0 0 2px var(--blau), 0 10px 30px rgba(0,0,0,.5) !important; }
+.wert { background: rgba(36,40,45,.92) !important; border-color: var(--g4) !important; border-radius: 6px !important; }
+.b-stage .ring { border-color: rgba(31,111,214,.35) !important; }
+.band { display: none; }
+
+/* Abschnitte: Grau im Wechsel, Kicker mit blauem Strich statt Mono-Sperrschrift */
+.sec, .sec.soft { background: var(--g0); }
+.sec.soft, .sec.dark { background: var(--g1); }
+.kicker, .eyebrow { font: 700 14px/1.2 var(--font); letter-spacing: .02em; text-transform: none; color: var(--blau2); display: flex; align-items: center; gap: 10px; }
+.kicker::before, .eyebrow::before { content: ""; width: 22px; height: 3px; background: var(--blau); flex: none; }
+
+/* Karten: flacher, eckiger, blaue Kante beim Überfahren */
+.card, .b-card, .bento > *, .bk, .feat, .faq details { border-radius: 8px !important; }
+.card:hover, .bk:hover { box-shadow: inset 0 3px 0 var(--blau) !important; transform: none !important; }
+
+/* Erfahrung */
+.erfahrung { background: var(--g1); border-top: 3px solid var(--blau); }
+.erfahrung h2 { max-width: 16em; }
+.erfahrung .intro { max-width: 40em; margin-bottom: 36px; }
+.erf-grid { display: grid; grid-template-columns: 1fr; gap: 1px; background: var(--line2); border: 1px solid var(--line2); }
+@media (min-width: 640px) { .erf-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1000px) { .erf-grid { grid-template-columns: repeat(4, 1fr); } }
+.erf { background: var(--g2); padding: 22px 22px 24px; }
+.erf:first-child { background: var(--blau); }
+.erf:first-child p { color: rgba(255,255,255,.85); }
+.erf b { display: block; font: 800 clamp(30px, 3.2vw, 42px)/1 var(--font); letter-spacing: -.02em; color: var(--ink); margin-bottom: 10px; }
+.erf p { margin: 0; font-size: 15px; color: var(--mut); }
+
+/* Kontakt-Bereich mit blauer Kante */
+#kontakt { border-top: 3px solid var(--blau); }
+
+/* Navy-Reste aus Design B auf Grafit */
+.bk { background: linear-gradient(160deg, var(--g3), var(--g2)) !important; border-radius: 8px !important; }
+.hub-card.pro { background: var(--g2) !important; box-shadow: inset 0 0 0 2px var(--blau) !important; }
+.lk::before { background: linear-gradient(180deg, rgba(22,24,27,.1) 0%, rgba(22,24,27,.75) 48%, rgba(22,24,27,.97) 100%) !important; }
+.steps.linie::before { background: var(--blau) !important; opacity: .8; }
+@media (min-width: 1000px) { .erf:first-child { grid-column: span 2; } }
+@media (min-width: 640px) and (max-width: 999px) { .erf:first-child { grid-column: span 2; } }
