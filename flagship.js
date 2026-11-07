@@ -130,3 +130,59 @@
     zahlen.forEach(function (z) { z.textContent = '0'; io.observe(z); });
   }
 })();
+
+/* ---------- Faltbares Handy: klappt auf, sobald es sichtbar ist; App läuft live im iframe ---------- */
+(function () {
+  var f = document.getElementById('fold'); if (!f) return;
+  var innen = f.querySelector('.fold-innen'), knopf = document.getElementById('fold-knopf'), uhr = f.querySelector('.fold-uhr');
+  function mass() {
+    var w = innen.clientWidth, h = innen.clientHeight; if (!w) return;
+    var s = w / 760; innen.style.setProperty('--s', s); innen.style.setProperty('--ih', Math.ceil(h / s + 40) + 'px');
+  }
+  function setze(auf) { f.classList.toggle('auf', auf); f.classList.toggle('zu', !auf); if (knopf) knopf.textContent = auf ? 'Zuklappen' : 'Aufklappen'; }
+  function zeit() { var d = new Date(); if (uhr) uhr.textContent = String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0'); }
+  zeit(); setInterval(zeit, 15000);
+  mass(); addEventListener('resize', mass); addEventListener('load', mass);
+  if (knopf) knopf.addEventListener('click', function () { setze(!f.classList.contains('auf')); });
+  f.querySelector('.fold-klappe').addEventListener('click', function () { setze(true); });
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) { setze(true); return; }
+  var io = new IntersectionObserver(function (e) {
+    if (e[0].isIntersecting) { io.disconnect(); setTimeout(function () { setze(true); }, 500); }
+  }, { threshold: .55 });
+  io.observe(f);
+})();
+
+/* ---------- Handy-iframe skalieren + VOLTHERM Zifferblatt mit echter Zeit ---------- */
+(function () {
+  var scr = document.querySelector('.uw-scr');
+  function mass() { if (!scr || !scr.clientWidth) return; var s = scr.clientWidth / 420; scr.style.setProperty('--s', s); scr.style.setProperty('--ih', Math.ceil(scr.clientHeight / s + 40) + 'px'); }
+  mass(); addEventListener('resize', mass); addEventListener('load', mass);
+
+  var uhr = document.getElementById('uhr'); if (!uhr) return;
+  var $ = function (id) { return document.getElementById(id); };
+  var std = $('uhr-std'), min = $('uhr-min'), sek = $('uhr-sek'), zeit = $('uhr-zeit'), datum = $('uhr-datum');
+  var TAGE = ['So.', 'Mo.', 'Di.', 'Mi.', 'Do.', 'Fr.', 'Sa.'], MON = ['Jan.', 'Feb.', 'März', 'Apr.', 'Mai', 'Juni', 'Juli', 'Aug.', 'Sept.', 'Okt.', 'Nov.', 'Dez.'];
+  var striche = uhr.querySelectorAll('#uhr-striche .q'), ruhig = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // Quelle je nach Tageszeit: Sonne gelb, Speicher grün, Netz rot (wie auf der Uhr)
+  function quelle(h) { return h >= 8 && h < 17 ? '#FFC24D' : (h >= 17 && h < 23 ? '#3DDC84' : '#FF5A4E'); }
+  function tick() {
+    var d = new Date(), h = d.getHours(), m = d.getMinutes(), s = d.getSeconds() + d.getMilliseconds() / 1000;
+    sek.style.transform = 'rotate(' + (s * 6) + 'deg)';
+    min.style.transform = 'rotate(' + (m * 6 + s / 10) + 'deg)';
+    std.style.transform = 'rotate(' + ((h % 12) * 30 + m / 2) + 'deg)';
+    zeit.textContent = String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0');
+    datum.textContent = TAGE[d.getDay()] + ', ' + d.getDate() + '. ' + MON[d.getMonth()];
+    // Werte passend zur Tageszeit, leicht schwankend
+    var t = d.getTime() / 1000, sonnenhoehe = Math.max(0, Math.sin((h + m / 60 - 7) / 11 * Math.PI));
+    var kw = sonnenhoehe * 7.4 + (sonnenhoehe > 0 ? Math.sin(t / 9) * .25 : 0);
+    $('uhr-sonne').textContent = kw.toFixed(1).replace('.', ',');
+    $('uhr-sonne-ring').setAttribute('stroke-dasharray', (kw / 10 * 146).toFixed(1) + ' 195');
+    var sp = Math.round(Math.min(98, 40 + sonnenhoehe * 50 + Math.sin(t / 60) * 2));
+    $('uhr-sp').textContent = sp; $('uhr-sp-ring').setAttribute('stroke-dasharray', (sp / 100 * 146).toFixed(1) + ' 195');
+    var netz = kw > 1.6 ? 'Netz ↑ ' + (kw - 1.4).toFixed(1).replace('.', ',') + ' kW' : 'Netz ↓ 0,' + (2 + (d.getSeconds() % 5)) + ' kW';
+    $('uhr-netz').textContent = netz; $('uhr-netz').setAttribute('fill', kw > 1.6 ? '#3DDC84' : '#FF8A7A');
+    var farbe = quelle(h); striche.forEach(function (l, i) { l.style.stroke = farbe; });
+    if (!ruhig) requestAnimationFrame(tick);
+  }
+  if (ruhig) { tick(); setInterval(tick, 1000); } else requestAnimationFrame(tick);
+})();

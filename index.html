@@ -16,7 +16,7 @@
 <link rel="stylesheet" href="site.css?v=20261026b">
 <link rel="stylesheet" href="design-b.css?v=20261106a">
 <link rel="stylesheet" href="chat.css?v=20261022b">
-<link rel="stylesheet" href="design-d.css?v=20261107b">
+<link rel="stylesheet" href="design-d.css?v=20261107d">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -290,7 +290,24 @@
 
 <section class="sec" id="smart">
   <div class="wrap smart-grid">
-    <div class="phone"><img src="assets/app-demo.webp?v=037" width="400" height="860" alt="VOLTHERM App: Haus mit Photovoltaik, Speicher, Wallbox, Klima, Wärmepumpe und Warmwasser" loading="lazy"></div>
+    <div class="fold-wrap">
+      <div class="fold zu" id="fold">
+        <div class="fold-gehaeuse">
+          <div class="fold-innen"><iframe title="VOLTHERM App, laufende Demo mit Beispielwerten" loading="lazy" src="voltherm/demo.html" tabindex="-1"></iframe></div>
+          <span class="fold-falz" aria-hidden="true"></span>
+        </div>
+        <div class="fold-klappe" aria-hidden="true">
+          <div class="fold-aussen">
+            <span class="fold-cam"></span>
+            <svg viewBox="0 0 300 300"><use href="#logo"/></svg>
+            <b class="fold-uhr">13:20</b>
+            <small>VOLTHERM</small>
+            <span class="fold-mini"><i></i>6,4 kW Sonne · Speicher 82 %</span>
+          </div>
+        </div>
+      </div>
+      <button type="button" class="fold-knopf" id="fold-knopf">Aufklappen</button>
+    </div>
     <div>
       <p class="kicker">Ihre Energie. Intelligent verteilt.</p>
       <h2>VOLTHERM Smart Energy&nbsp;–<br><span class="blau">Das intelligente Energie&shy;management&shy;system (HEMS)</span></h2>
@@ -344,38 +361,36 @@
     </div>
     <figure class="uw-pic">
       <div class="uw-duo">
-        <div class="phone uw-phone"><img src="assets/app-demo.webp?v=037" width="400" height="860" alt="VOLTHERM App auf dem Handy" loading="lazy"></div>
+        <div class="phone uw-phone uw-live"><div class="uw-scr"><iframe title="VOLTHERM App auf dem Handy, laufende Demo" loading="lazy" src="voltherm/demo.html" tabindex="-1"></iframe></div></div>
         <div class="uw-watch" aria-hidden="true">
-          <svg viewBox="0 0 360 360">
-            <defs>
-              <radialGradient id="uwFace" cx=".5" cy=".42" r=".6"><stop offset="0" stop-color="#18233b"/><stop offset="1" stop-color="#070c16"/></radialGradient>
-              <linearGradient id="uwRing" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9aa4b4"/><stop offset=".5" stop-color="#3b4456"/><stop offset="1" stop-color="#c8cfdb"/></linearGradient>
-            </defs>
-            <circle cx="180" cy="180" r="176" fill="url(#uwRing)"/>
-            <circle cx="180" cy="180" r="162" fill="url(#uwFace)"/>
-            <g class="uw-ticks" stroke="#4a5873" stroke-width="3" stroke-linecap="round">
-              <path d="M180 26v12 M180 322v12 M26 180h12 M322 180h12"/>
-            </g>
-            <use href="#logo" x="156" y="98" width="48" height="48"/>
-            <text x="180" y="162" class="uw-wm">VOLT<tspan fill="#19C3E6">HERM</tspan></text>
-            <text x="180" y="66" class="uw-v">↑ 97 W</text><text x="180" y="82" class="uw-l">Netz</text>
-            <circle cx="88" cy="180" r="34" fill="none" stroke="#26324a" stroke-width="7"/>
-            <circle cx="88" cy="180" r="34" fill="none" stroke="#FFC24D" stroke-width="7" stroke-linecap="round" stroke-dasharray="45 214" transform="rotate(-90 88 180)"/>
-            <text x="88" y="180" class="uw-v">2,1</text><text x="88" y="196" class="uw-l">kW Sonne</text>
-            <circle cx="272" cy="180" r="34" fill="none" stroke="#26324a" stroke-width="7"/>
-            <circle cx="272" cy="180" r="34" fill="none" stroke="#19C3E6" stroke-width="7" stroke-linecap="round" stroke-dasharray="211 214" transform="rotate(-90 272 180)"/>
-            <text x="272" y="180" class="uw-v">99</text><text x="272" y="196" class="uw-l">% Speicher</text>
-            <text x="180" y="276" class="uw-v">23,4 ct</text><text x="180" y="294" class="uw-l uw-g">GÜNSTIG</text>
-            <text x="180" y="226" class="uw-time" id="uw-zeit">17:42</text>
-            <g class="uw-hands">
-              <line class="uw-h" id="uw-h" x1="180" y1="180" x2="180" y2="112"/>
-              <line class="uw-m" id="uw-m" x1="180" y1="180" x2="180" y2="76"/>
-              <circle cx="180" cy="180" r="6" fill="#FF6B2C"/>
-            </g>
+          <svg viewBox="0 0 360 360" id="uhr">
+            <defs><linearGradient id="uhrRing" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#b9c0ca"/><stop offset=".5" stop-color="#3b4049"/><stop offset="1" stop-color="#d7dce3"/></linearGradient></defs>
+            <circle cx="180" cy="180" r="179" fill="url(#uhrRing)"/>
+            <circle cx="180" cy="180" r="172" fill="#000"/>
+            <g id="uhr-striche" stroke-linecap="round"><line class="q" x1="180.0" y1="10.0" x2="180.0" y2="30.0"/><line class="k" x1="197.8" y1="10.9" x2="196.7" y2="20.9"/><line class="k" x1="215.3" y1="13.7" x2="213.3" y2="23.5"/><line class="k" x1="232.5" y1="18.3" x2="229.4" y2="27.8"/><line class="k" x1="249.1" y1="24.7" x2="245.1" y2="33.8"/><line class="q" x1="265.0" y1="32.8" x2="255.0" y2="50.1"/><line class="k" x1="279.9" y1="42.5" x2="274.0" y2="50.6"/><line class="k" x1="293.8" y1="53.7" x2="287.1" y2="61.1"/><line class="k" x1="306.3" y1="66.2" x2="298.9" y2="72.9"/><line class="k" x1="317.5" y1="80.1" x2="309.4" y2="86.0"/><line class="q" x1="327.2" y1="95.0" x2="309.9" y2="105.0"/><line class="k" x1="335.3" y1="110.9" x2="326.2" y2="114.9"/><line class="k" x1="341.7" y1="127.5" x2="332.2" y2="130.6"/><line class="k" x1="346.3" y1="144.7" x2="336.5" y2="146.7"/><line class="k" x1="349.1" y1="162.2" x2="339.1" y2="163.3"/><line class="k" x1="349.1" y1="197.8" x2="339.1" y2="196.7"/><line class="k" x1="346.3" y1="215.3" x2="336.5" y2="213.3"/><line class="k" x1="341.7" y1="232.5" x2="332.2" y2="229.4"/><line class="k" x1="335.3" y1="249.1" x2="326.2" y2="245.1"/><line class="q" x1="327.2" y1="265.0" x2="309.9" y2="255.0"/><line class="k" x1="317.5" y1="279.9" x2="309.4" y2="274.0"/><line class="k" x1="306.3" y1="293.8" x2="298.9" y2="287.1"/><line class="k" x1="293.8" y1="306.3" x2="287.1" y2="298.9"/><line class="k" x1="279.9" y1="317.5" x2="274.0" y2="309.4"/><line class="q" x1="265.0" y1="327.2" x2="255.0" y2="309.9"/><line class="k" x1="249.1" y1="335.3" x2="245.1" y2="326.2"/><line class="k" x1="232.5" y1="341.7" x2="229.4" y2="332.2"/><line class="k" x1="215.3" y1="346.3" x2="213.3" y2="336.5"/><line class="k" x1="197.8" y1="349.1" x2="196.7" y2="339.1"/><line class="q" x1="180.0" y1="350.0" x2="180.0" y2="330.0"/><line class="k" x1="162.2" y1="349.1" x2="163.3" y2="339.1"/><line class="k" x1="144.7" y1="346.3" x2="146.7" y2="336.5"/><line class="k" x1="127.5" y1="341.7" x2="130.6" y2="332.2"/><line class="k" x1="110.9" y1="335.3" x2="114.9" y2="326.2"/><line class="q" x1="95.0" y1="327.2" x2="105.0" y2="309.9"/><line class="k" x1="80.1" y1="317.5" x2="86.0" y2="309.4"/><line class="k" x1="66.2" y1="306.3" x2="72.9" y2="298.9"/><line class="k" x1="53.7" y1="293.8" x2="61.1" y2="287.1"/><line class="k" x1="42.5" y1="279.9" x2="50.6" y2="274.0"/><line class="q" x1="32.8" y1="265.0" x2="50.1" y2="255.0"/><line class="k" x1="24.7" y1="249.1" x2="33.8" y2="245.1"/><line class="k" x1="18.3" y1="232.5" x2="27.8" y2="229.4"/><line class="k" x1="13.7" y1="215.3" x2="23.5" y2="213.3"/><line class="k" x1="10.9" y1="197.8" x2="20.9" y2="196.7"/><line class="k" x1="10.9" y1="162.2" x2="20.9" y2="163.3"/><line class="k" x1="13.7" y1="144.7" x2="23.5" y2="146.7"/><line class="k" x1="18.3" y1="127.5" x2="27.8" y2="130.6"/><line class="k" x1="24.7" y1="110.9" x2="33.8" y2="114.9"/><line class="q" x1="32.8" y1="95.0" x2="50.1" y2="105.0"/><line class="k" x1="42.5" y1="80.1" x2="50.6" y2="86.0"/><line class="k" x1="53.7" y1="66.2" x2="61.1" y2="72.9"/><line class="k" x1="66.2" y1="53.7" x2="72.9" y2="61.1"/><line class="k" x1="80.1" y1="42.5" x2="86.0" y2="50.6"/><line class="q" x1="95.0" y1="32.8" x2="105.0" y2="50.1"/><line class="k" x1="110.9" y1="24.7" x2="114.9" y2="33.8"/><line class="k" x1="127.5" y1="18.3" x2="130.6" y2="27.8"/><line class="k" x1="144.7" y1="13.7" x2="146.7" y2="23.5"/><line class="k" x1="162.2" y1="10.9" x2="163.3" y2="20.9"/></g>
+            <text x="34" y="190" class="uz">9</text><text x="326" y="190" class="uz">3</text>
+            <use href="#logo" x="166" y="40" width="28" height="28"/>
+            <rect x="122" y="80" width="116" height="26" rx="13" fill="#0f1a26"/>
+            <text x="180" y="98" class="up" id="uhr-netz" fill="#3DDC84">Netz ↑ 2,1 kW</text>
+            <circle cx="102" cy="182" r="38" fill="#0c1220" stroke="#1d2533" stroke-width="2"/>
+            <circle cx="102" cy="182" r="31" fill="none" stroke="#1f2a3a" stroke-width="5"/>
+            <circle cx="102" cy="182" r="31" fill="none" stroke="#FFC24D" stroke-width="5" stroke-linecap="round" id="uhr-sonne-ring" stroke-dasharray="100 195" transform="rotate(135 102 182)"/>
+            <text x="102" y="168" class="ul">Sonne</text><text x="102" y="190" class="uv" id="uhr-sonne">5,2</text><text x="102" y="204" class="ue" fill="#FFC24D">kW</text>
+            <circle cx="258" cy="182" r="38" fill="#0c1220" stroke="#1d2533" stroke-width="2"/>
+            <circle cx="258" cy="182" r="31" fill="none" stroke="#1f2a3a" stroke-width="5"/>
+            <circle cx="258" cy="182" r="31" fill="none" stroke="#4C8DFF" stroke-width="5" stroke-linecap="round" id="uhr-sp-ring" stroke-dasharray="150 195" transform="rotate(135 258 182)"/>
+            <text x="258" y="168" class="ul">Speicher</text><text x="258" y="190" class="uv" id="uhr-sp">78</text><text x="258" y="204" class="ue" fill="#4C8DFF">%</text>
+            <text x="180" y="252" class="ut" id="uhr-zeit">15:53</text>
+            <text x="180" y="272" class="ud" id="uhr-datum">Sa., 7. Nov.</text>
+            <rect x="113" y="284" width="134" height="26" rx="13" fill="#0e2a1c" stroke="#2fd18b" stroke-opacity=".6"/>
+            <text x="180" y="302" class="up" id="uhr-preis" fill="#3DDC84">21,4 ct · GÜNSTIG</text>
+            <g id="uhr-std"><line x1="180" y1="190" x2="180" y2="112" stroke="#fff" stroke-width="9" stroke-linecap="round"/></g>
+            <g id="uhr-min"><line x1="180" y1="195" x2="180" y2="56" stroke="#fff" stroke-width="6" stroke-linecap="round"/></g>
+            <g id="uhr-sek"><line x1="180" y1="206" x2="180" y2="40" stroke="#19C3E6" stroke-width="2.4" stroke-linecap="round"/><circle cx="180" cy="180" r="7" fill="#000" stroke="#19C3E6" stroke-width="3"/></g>
           </svg>
         </div>
       </div>
-      <figcaption>Visualisierung, Beispielwerte.</figcaption>
+      <figcaption>Echte Uhrzeit, Werte als Beispiel. Das Zifferblatt ist das der VOLTHERM Uhr-App.</figcaption>
     </figure>
   </div>
 </section>
@@ -551,7 +566,7 @@
         </div>
       </div>
       <p class="sr">Beispiel am Wandtablet: Der Kunde fragt „Wie war der Tag bisher?“. VOLTHERM antwortet, dass heute 82 Prozent des Stroms von der Sonne kamen. Dann sagt der Kunde „Mach bitte warmes Wasser.“ VOLTHERM nennt die Speichertemperatur, schlägt vor, mit Sonnenstrom auf 60 °C zu heizen, und fragt vor dem Start nach.</p>
-      <figcaption>Visualisierung, Beispielwerte.</figcaption>
+      <figcaption>Echte Uhrzeit, Werte als Beispiel. Das Zifferblatt ist das der VOLTHERM Uhr-App.</figcaption>
     </figure>
   </div>
 </section>
@@ -759,7 +774,7 @@
 <script type="application/json" id="galerie-daten">{}</script>
 <script src="site.js?v=20261026b" defer></script>
 <script src="chat.js?v=20261026a" defer></script>
-<script src="flagship.js?v=20261107b" defer></script>
+<script src="flagship.js?v=20261107d" defer></script>
 
 </body>
 </html>
